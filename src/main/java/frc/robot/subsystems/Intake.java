@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -22,15 +23,38 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
+
     sensor = new AnalogInput(0);//placeholder
+
     encoder = new AnalogEncoder(0);//placeholder
+
     pivotMotor = new TalonFX(0);//placeholder
+
     axelRotation = new TalonFX(0);//placeholder
 
   }
 
+
+  public double getPivotDegrees()
+  {
+    return encoder.get() * 360.0;
+  }
+
+  public void setSpeed(double speed)
+  {
+    axelRotation.set(speed);
+  }
+
+  public void setPivotSpeed(double speed)
+  {
+    pivotMotor.set(speed);
+  }
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Pivot Postition(Degrees)", getPivotDegrees());
+
   }
 }
