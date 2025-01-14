@@ -5,10 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmSetArcAngle;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,8 +25,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+  private final Claw claw = new Claw();
+
+  private final ArmSetArcAngle fourtyFive = new ArmSetArcAngle(claw, 240);
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final CommandXboxController driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -48,7 +55,20 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    driverController.x().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.05)));
+    driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(-.05)));
+    driverController.b().onTrue(new InstantCommand(() -> claw.setArcingSpeed(0)));
+
+    // driverController.x().onTrue(fourtyFive);
+
+    driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
+    driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
+
+  
+    
+    driverController.a().onTrue(new InstantCommand(() -> claw.zeroRotation()));
   }
 
   /**
