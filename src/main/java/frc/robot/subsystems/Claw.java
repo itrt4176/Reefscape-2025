@@ -47,8 +47,16 @@ public class Claw extends SubsystemBase {
 
   public void setArcingSpeed(double speed)
   {
-    leftMotor.set(speed);
-    rightMotor.set(speed);
+    if(speed > 0.05)
+    {
+      leftMotor.set(speed);
+      rightMotor.set(-(speed - 0.03));
+    }
+    else
+    {
+      leftMotor.set(speed);
+      rightMotor.set(-speed);
+    }
   }
 
   public void zeroRotation()
@@ -65,7 +73,6 @@ public class Claw extends SubsystemBase {
   public double getLeftRotationDegrees()
   {
     return leftMotor.getEncoder().getPosition();
-    
 
   }
 
@@ -74,18 +81,32 @@ public class Claw extends SubsystemBase {
     return rightMotor.getEncoder().getPosition();
   }
 
+  public double getLeftRotationSpeed()
+  {
+    return leftMotor.getEncoder().getVelocity() / 11000.0;
+  }
+
+
+  public double getRightRotationSpeed()
+  {
+    return rightMotor.getEncoder().getVelocity() / 11000.0;
+  }
+
+  public void setRightSpeed(double speed)
+  {
+    rightMotor.set(speed);
+  }
+
+  public void setLeftSpeed(double speed)
+  {
+    leftMotor.set(speed);
+  }
+
+
   public void setRotationSpeed(double speed)
   {
-    if(speed == 0)
-    {
-      leftMotor.set(speed);
-      rightMotor.set(speed);
-    }
-    else
-    {
-      leftMotor.set(speed);
-      rightMotor.set(-(speed - 0.05));
-    }
+    leftMotor.set(speed);
+    rightMotor.set(speed);
   }
 
   @Override

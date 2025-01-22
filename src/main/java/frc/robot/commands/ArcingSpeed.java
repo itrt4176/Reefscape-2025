@@ -4,18 +4,27 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class HomeWrist extends Command {
-
+public class ArcingSpeed extends Command {
   Claw claw;
 
-  /** Creates a new HomeWrist. */
-  public HomeWrist(Claw claw) {
+  double leftSpeed;
+  double rightSpeed;
+
+  double speed;
+
+  PIDController leftPid = new PIDController(0.01, 0.0, 0.0);
+  PIDController rightPid = new PIDController(0.01, 0.0, 0.0);
+
+  /** Creates a new ArcingSpeed. */
+  public ArcingSpeed(Claw claw, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
 
+    this.speed = speed;
     this.claw = claw;
 
     addRequirements(claw);
@@ -23,26 +32,27 @@ public class HomeWrist extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    claw.setArcingSpeed(0);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    claw.setRotationSpeed(-.35);
+    leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), speed);
+    claw.setLeftSpeed(speed + leftSpeed);
+
+    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), -speed);
+    
+    claw.setRightSpeed(-speed + rightSpeed);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    claw.setRotationSpeed(0);
-    claw.zeroRotation();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw.isRotationHomed();
+    return false;
   }
 }
