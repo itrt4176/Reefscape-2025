@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmSetArcAngle;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.HomeWrist;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +28,9 @@ public class RobotContainer {
 
   private final Claw claw = new Claw();
 
-  private final ArmSetArcAngle fourtyFive = new ArmSetArcAngle(claw, 240);
+  private final ArmSetArcAngle fourtyFive = new ArmSetArcAngle(claw, 45);
+
+  private final HomeWrist homeWrist = new HomeWrist(claw);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -57,18 +60,23 @@ public class RobotContainer {
     // cancelling on release.
     // driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    driverController.x().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.05)));
-    driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(-.05)));
-    driverController.b().onTrue(new InstantCommand(() -> claw.setArcingSpeed(0)));
+    // driverController.x().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.05)));
+    // driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(-.05)));
+    // driverController.b().onTrue(new InstantCommand(() -> claw.setArcingSpeed(0)));
 
     // driverController.x().onTrue(fourtyFive);
 
-    driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
-    driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
+    // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
+    // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
 
   
     
-    driverController.a().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+    driverController.a().onTrue(homeWrist);
+
+    driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
+
+    driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
+    driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));
   }
 
   /**

@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,23 +26,29 @@ public class Claw extends SubsystemBase {
 
   AnalogEncoder arcThrift;
 
+  DigitalInput rotationInput;
+
   /** Creates a new Claw. */
   public Claw() {
     rightMotor = new SparkMax(3, MotorType.kBrushless);
     leftMotor = new SparkMax(4, MotorType.kBrushless);
 
     arcThrift = new AnalogEncoder(0);
+
+    rotationInput = new DigitalInput(0);
   }
 
   public double getArcDegrees()
   {
     return arcThrift.get() * 360.0;
+
+    
   }
 
   public void setArcingSpeed(double speed)
   {
     leftMotor.set(speed);
-    rightMotor.set(-speed);
+    rightMotor.set(speed);
   }
 
   public void zeroRotation()
@@ -50,9 +57,15 @@ public class Claw extends SubsystemBase {
     rightMotor.getEncoder().setPosition(0);
   }
 
+  public boolean isRotationHomed()
+  {
+    return !rotationInput.get();
+  }
+
   public double getLeftRotationDegrees()
   {
     return leftMotor.getEncoder().getPosition();
+    
 
   }
 
@@ -63,8 +76,16 @@ public class Claw extends SubsystemBase {
 
   public void setRotationSpeed(double speed)
   {
-    leftMotor.set(speed);
-    rightMotor.set(speed);
+    if(speed == 0)
+    {
+      leftMotor.set(speed);
+      rightMotor.set(speed);
+    }
+    else
+    {
+      leftMotor.set(speed);
+      rightMotor.set(-(speed - 0.05));
+    }
   }
 
   @Override
@@ -74,5 +95,6 @@ public class Claw extends SubsystemBase {
     SmartDashboard.putNumber("Arc Degrees", getArcDegrees());
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());
+    SmartDashboard.putBoolean("Is Homed", isRotationHomed());
   }
 }
