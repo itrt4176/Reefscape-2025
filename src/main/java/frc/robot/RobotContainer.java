@@ -6,11 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcingSpeed;
-import frc.robot.commands.ArmSetArcAngle;
+import frc.robot.commands.ClawSetArcAngle;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HomeWrist;
 import frc.robot.commands.RotationSetpoint;
+import frc.robot.commands.RotationSpeed;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,7 +35,9 @@ public class RobotContainer {
 
   private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.1);
 
-  private final ArmSetArcAngle fourtyFive = new ArmSetArcAngle(claw, 45);
+  private final RotationSpeed rotate = new RotationSpeed(claw, .3);
+
+  private final ClawSetArcAngle fourtyFive = new ClawSetArcAngle(claw, 45);
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
 
@@ -77,14 +80,16 @@ public class RobotContainer {
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
 
-  
+  driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.3)));
     
-    // driverController.a().onTrue(homeWrist);
+    driverController.a().onTrue(homeWrist);
 
     driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
 
     driverController.rightBumper().onTrue(reverseArc);
     driverController.leftBumper().onTrue(arcing);
+
+    // driverController.a().onTrue(rotate);
 
     // driverController.y().onTrue(ninetyRot);
 

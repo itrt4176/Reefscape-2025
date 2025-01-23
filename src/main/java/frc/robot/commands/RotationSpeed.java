@@ -9,21 +9,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmSetArcAngle extends Command {
+public class RotationSpeed extends Command {
+  Claw claw;
 
-  private Claw claw;
+  double leftSpeed;
+  double rightSpeed;
 
-  private double angle;
+  double speed;
 
-  private double speed;
+  PIDController leftPid = new PIDController(0.01, 0.0, 0.0);
+  PIDController rightPid = new PIDController(0.01, 0.0, 0.0);
 
-  private PIDController pid = new PIDController(0.0001, 0.000, 0.0); //test for vals
-
-  /** Creates a new ArmSetArcAngle. */
-  public ArmSetArcAngle(Claw claw, double angle) {
+  /** Creates a new ArcingSpeed. */
+  public RotationSpeed(Claw claw, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
+
+    this.speed = speed;
     this.claw = claw;
-    this.angle = angle;
 
     addRequirements(claw);
   }
@@ -35,9 +37,13 @@ public class ArmSetArcAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    speed = pid.calculate(claw.getArcDegrees(), angle);
+    leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), speed);
+    claw.setLeftSpeed(speed + leftSpeed);
 
-    claw.setArcingSpeed(speed);
+    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), speed);
+    
+    claw.setRightSpeed(speed + rightSpeed);
+
   }
 
   // Called once the command ends or is interrupted.

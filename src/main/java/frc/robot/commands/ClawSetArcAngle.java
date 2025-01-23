@@ -9,21 +9,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class HomeWrist extends Command {
-  Claw claw;
+public class ClawSetArcAngle extends Command {
 
-  double leftSpeed;
-  double rightSpeed;
+  private Claw claw;
 
+  private double angle;
 
-  PIDController leftPid = new PIDController(0.01, 0.0, 0.0);
-  PIDController rightPid = new PIDController(0.01, 0.0, 0.0);
+  private double speed;
 
-  /** Creates a new ArcingSpeed. */
-  public HomeWrist(Claw claw) {
+  private PIDController pid = new PIDController(0.0001, 0.000, 0.0); //test for vals
+
+  /** Creates a new ArmSetArcAngle. */
+  public ClawSetArcAngle(Claw claw, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
-
     this.claw = claw;
+    this.angle = angle;
 
     addRequirements(claw);
   }
@@ -35,24 +35,18 @@ public class HomeWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), .35);
-    claw.setLeftSpeed(.35 + leftSpeed);
+    speed = pid.calculate(claw.getArcDegrees(), angle);
 
-    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), .35);
-    
-    claw.setRightSpeed(.35 + rightSpeed);
-
+    claw.setArcingSpeed(speed);
   }
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    claw.setRotationSpeed(0);
-    claw.zeroRotation();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return claw.isRotationHomed();
+    return false;
   }
 }

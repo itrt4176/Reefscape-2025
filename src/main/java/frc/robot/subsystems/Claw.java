@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,12 +28,22 @@ public class Claw extends SubsystemBase {
 
   AnalogEncoder arcThrift;
 
+  SparkMaxConfig leftConfig = new SparkMaxConfig();
+  SparkMaxConfig rightConfig = new SparkMaxConfig();
+
   DigitalInput rotationInput;
 
   /** Creates a new Claw. */
   public Claw() {
     rightMotor = new SparkMax(3, MotorType.kBrushless);
     leftMotor = new SparkMax(4, MotorType.kBrushless);
+
+    leftConfig.idleMode(IdleMode.kBrake);
+    rightConfig.idleMode(IdleMode.kBrake);
+
+    leftMotor.configure(leftConfig, null, null);
+    rightMotor.configure(rightConfig, null, null);
+    
 
     arcThrift = new AnalogEncoder(0);
 
