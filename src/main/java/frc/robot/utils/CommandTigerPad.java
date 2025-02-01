@@ -3,9 +3,13 @@ package frc.robot.utils;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.utils.TigerPad.LED;
+import frc.robot.utils.TigerPad.LEDMode;
 
 /**
  * A version of {@link TigerPad} with {@link Trigger} factories for command-based.
@@ -33,6 +37,97 @@ public class CommandTigerPad extends CommandGenericHID {
     @Override
     public TigerPad getHID() {
         return tigerPad;
+    }
+
+    /**
+     * Sets the LED mode for the specified LED.
+     * 
+     * @param led The LED to set the mode for.
+     * @param mode The mode to set the LED to.
+     * @return A command that sets the LED mode.
+     */
+    public Command setLED(LED led, LEDMode mode) {
+        return new InstantCommand(() -> tigerPad.setLEDMode(led, mode), null);
+    }
+
+    /**
+     * Sets the LED mode for the intake LED.
+     * 
+     * @param mode The mode to set the intake LED to.
+     * @return A command that sets the intake LED mode.
+     */
+    public Command setIntakeLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Intake, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 1 LED.
+     * 
+     * @param mode The mode to set the level 1 LED to.
+     * @return A command that sets the level 1 LED mode.
+     */
+    public Command setLevel1LED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level1, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 2 left LED.
+     * 
+     * @param mode The mode to set the level 2 left LED to.
+     * @return A command that sets the level 2 left LED mode.
+     */
+    public Command setLevel2LeftLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level2Left, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 2 right LED.
+     * 
+     * @param mode The mode to set the level 2 right LED to.
+     * @return A command that sets the level 2 right LED mode.
+     */
+    public Command setLevel2RightLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level2Right, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 3 left LED.
+     * 
+     * @param mode The mode to set the level 3 left LED to.
+     * @return A command that sets the level 3 left LED mode.
+     */
+    public Command setLevel3LeftLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level3Left, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 3 right LED.
+     * 
+     * @param mode The mode to set the level 3 right LED to.
+     * @return A command that sets the level 3 right LED mode.
+     */
+    public Command setLevel3RightLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level3Right, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 4 left LED.
+     * 
+     * @param mode The mode to set the level 4 left LED to.
+     * @return A command that sets the level 4 left LED mode.
+     */
+    public Command setLevel4LeftLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level4Left, mode);
+    }
+
+    /**
+     * Sets the LED mode for the level 4 right LED.
+     * 
+     * @param mode The mode to set the level 4 right LED to.
+     * @return A command that sets the level 4 right LED mode.
+     */
+    public Command setLevel4RightLED(LEDMode mode) {
+        return setLED(TigerPad.LED.Level4Right, mode);
     }
 
     /**
