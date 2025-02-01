@@ -31,7 +31,7 @@ public class TigerPad extends GenericHID implements Sendable {
 
     public enum ToggleSwitch {
         ArmOverride(8),
-        WristOverrdie(9);
+        WristOverride(9);
 
         public final int value;
 
