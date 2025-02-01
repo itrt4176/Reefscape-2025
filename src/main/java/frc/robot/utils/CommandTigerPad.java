@@ -1,11 +1,10 @@
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utils.TigerPad.LED;
@@ -47,7 +46,7 @@ public class CommandTigerPad extends CommandGenericHID {
      * @return A command that sets the LED mode.
      */
     public Command setLED(LED led, LEDMode mode) {
-        return new InstantCommand(() -> tigerPad.setLEDMode(led, mode), null);
+        return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode), null);
     }
 
     /**
