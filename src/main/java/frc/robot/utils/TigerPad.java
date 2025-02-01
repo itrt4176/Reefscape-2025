@@ -275,7 +275,6 @@ public class TigerPad extends GenericHID implements Sendable {
         return getRawAxis(Axis.WristPivot.value);
     }
 
-    
     /**
      * Get the mode of the LED.
      *
@@ -885,5 +884,75 @@ public class TigerPad extends GenericHID implements Sendable {
         );
         builder.addBooleanProperty("ArmOverride", this::getArmOverrideSwitch, null);
         builder.addBooleanProperty("WristOverride", this::getWristOverrideSwitch, null);
+    }
+
+    @Override
+    public int getPOV(int pov) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public int getPOV() {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent pov(int angle, EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent pov(int pov, int angle, EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povUp(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povUpLeft(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povUpRight(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povDown(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povLeft(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povRight(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povDownLeft(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povDownRight(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public BooleanEvent povCenter(EventLoop loop) {
+        throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");
+    }
+
+    @Override
+    public void setRumble(RumbleType type, double value) {
+        throw new UnsupportedOperationException("Rumble is not supported by TigerPad.");
     }
 }
