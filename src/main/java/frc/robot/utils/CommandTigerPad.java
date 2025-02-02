@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utils.TigerPad.LED;
@@ -47,6 +48,22 @@ public class CommandTigerPad extends CommandGenericHID {
      */
     public Command setLED(LED led, LEDMode mode) {
         return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode));
+    }
+
+    /**
+     * Sets the LED mode for all LEDs.
+     * 
+     * @param mode The mode to set the LED to.
+     * @return A command that sets the LED mode.
+     */
+    public Command setAllLEDs(LEDMode mode) {
+        Command command = new InstantCommand();
+
+        for (LED led : LED.values()) {
+            command = command.andThen(setLED(led, mode));
+        }
+
+        return command;
     }
 
     /**

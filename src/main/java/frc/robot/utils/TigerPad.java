@@ -349,6 +349,17 @@ public class TigerPad extends GenericHID implements Sendable {
     }
 
     /**
+     * Set the mode of all LEDs.
+     *
+     * @param mode The {@link LEDMode} to set the LED to.
+     */
+    public void setAllLEDs(LEDMode mode) {
+        for (LED led : LED.values()) {
+            setLEDMode(led, mode);
+        }
+    }
+
+    /**
      * Read the value of the intake button on the controller.
      *
      * @return The state of the button.
