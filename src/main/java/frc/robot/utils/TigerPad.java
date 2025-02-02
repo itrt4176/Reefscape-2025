@@ -35,21 +35,21 @@ public class TigerPad extends GenericHID implements Sendable {
     /** Represents a digital button on a TigerPad. */
     public enum Button {
         /** Intake button. */
-        Intake(0),
+        Intake(1),
         /** Level 1 button. */
-        Level1(1),
+        Level1(2),
         /** Level 2 left button. */
-        Level2Left(2),
+        Level2Left(3),
         /** Level 2 right button. */
-        Level2Right(3),
+        Level2Right(4),
         /** Level 3 left button. */
-        Level3Left(4),
+        Level3Left(5),
         /** Level 3 right button. */
-        Level3Right(5),
+        Level3Right(6),
         /** Level 4 left button. */
-        Level4Left(6),
+        Level4Left(7),
         /** Level 4 right button. */
-        Level4Right(7);
+        Level4Right(8);
 
         /** Button value. */
         public final int value;
@@ -74,9 +74,9 @@ public class TigerPad extends GenericHID implements Sendable {
     /** Represents a toggle switch on a TigerPad. */
     public enum ToggleSwitch {
         /** Arm override switch. */
-        ArmOverride(8),
+        ArmOverride(9),
         /** Wrist override switch. */
-        WristOverride(9);
+        WristOverride(10);
 
         /** Switch value. */
         public final int value;
