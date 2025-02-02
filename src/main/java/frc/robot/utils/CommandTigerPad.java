@@ -376,6 +376,47 @@ public class CommandTigerPad extends CommandGenericHID {
         return tigerPad.getWristPivot();
     }
 
+    /**
+     * @see TigerPad#zeroWristDial()
+     *
+     * @return A command that runs zeroes the wrist dial.
+     */
+    public Command zeroWristDial() {
+        return Commands.runOnce(tigerPad::zeroWristDial, null);
+    }
+
+    /**
+     * Gets the wrist rotation in degrees.
+     * 
+     * This method retrieves the raw axis value for wrist rotation, adjusts it by
+     * subtracting the dial offset, and then maps the adjusted value from the range
+     * [-0.5, 0.5] to the range [-180.0, 180.0] degrees.
+     * 
+     * <p>To get the unitless wrist dial value without offset, use {@link #getHID()} and
+     * {@link TigerPad#getRawAxis(int)}.
+     * 
+     * @return The wrist rotation in degrees, ranging from -180.0 to 180.0.
+     */
+    public double getWristDegrees() {
+        return tigerPad.getWristDegrees();
+    }
+
+    /**
+     * Gets the wrist rotation in radians.
+     *
+     * This method retrieves the raw axis value for wrist rotation, adjusts it by subtracting
+     * the dial offset, and then maps the adjusted value from the range [-0.5, 0.5] to the range
+     * [-π, π].
+     * 
+     * <p>To get the unitless wrist dial value without offset, use {@link #getHID()} and
+     * {@link TigerPad#getRawAxis(int)}.
+     *
+     * @return The wrist rotation in radians -π to π.
+     */
+    public double getWristRadians() {
+        return tigerPad.getWristRadians();
+    }
+
     @Override
     public Trigger pov(int pov, int angle, EventLoop loop) {
         throw new UnsupportedOperationException("POV methods are not supported by TigerPad.");

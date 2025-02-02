@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 public class TigerPad extends GenericHID implements Sendable {
     
     private int outputState;
+    private double dialOffset;
 
     /** Represents a digital button on a TigerPad. */
     public enum Button {
@@ -103,7 +105,9 @@ public class TigerPad extends GenericHID implements Sendable {
         /** Upper arm axis. */
         UpperArm(1),
         /** Wrist pivot axis. */
-        WristPivot(2);
+        WristPivot(2),
+        /** Wrist rotation axis. */
+        WristRotation(3);
 
         /** Axis value. */
         public final int value;
@@ -245,6 +249,7 @@ public class TigerPad extends GenericHID implements Sendable {
     public TigerPad(final int port) {
         super(port);
         outputState = 0;
+        dialOffset = 0.0;
         HAL.report(tResourceType.kResourceType_Controller, port + 1);
     }
 
@@ -273,6 +278,47 @@ public class TigerPad extends GenericHID implements Sendable {
      */
     public double getWristPivot() {
         return getRawAxis(Axis.WristPivot.value);
+    }
+
+    /**
+     * Sets the dial offset for the wrist rotation to the current raw axis value.
+     */
+    public void zeroWristDial() {
+        dialOffset = getRawAxis(Axis.WristRotation.value);
+    }
+
+    /**
+     * Gets the wrist rotation in degrees.
+     * 
+     * This method retrieves the raw axis value for wrist rotation, adjusts it by
+     * subtracting the dial offset, and then maps the adjusted value from the range
+     * [-0.5, 0.5] to the range [-180.0, 180.0] degrees.
+     * 
+     * <p>To get the unitless wrist dial value without offset, use
+     * {@link GenericHID#getRawAxis(int) getRawAxis(Axis.WristRotation.value)}.
+     * 
+     * @return The wrist rotation in degrees, ranging from -180.0 to 180.0.
+     */
+    public double getWristDegrees() {
+        var adjustedValue = getRawAxis(Axis.WristRotation.value) - dialOffset;
+        return Utils.mapRange(adjustedValue, -0.5, 0.5, -180.0, 180.0);
+    }
+
+    /**
+     * Gets the wrist rotation in radians.
+     *
+     * This method retrieves the raw axis value for wrist rotation, adjusts it by subtracting
+     * the dial offset, and then maps the adjusted value from the range [-0.5, 0.5] to the range
+     * [-π, π].
+     * 
+     * <p>To get the unitless wrist dial value without offset, use
+     * {@link GenericHID#getRawAxis(int) getRawAxis(Axis.WristRotation.value)}.
+     *
+     * @return The wrist rotation in radians -π to π.
+     */
+    public double getWristRadians() {
+        var adjustedValue = getRawAxis(Axis.WristRotation.value) - dialOffset;
+        return Utils.mapRange(adjustedValue, -0.5, 0.5, -Math.PI, Math.PI);
     }
 
     /**
