@@ -46,7 +46,7 @@ public class CommandTigerPad extends CommandGenericHID {
      * @return A command that sets the LED mode.
      */
     public Command setLED(LED led, LEDMode mode) {
-        return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode), null);
+        return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode));
     }
 
     /**
@@ -382,7 +382,7 @@ public class CommandTigerPad extends CommandGenericHID {
      * @return A command that runs zeroes the wrist dial.
      */
     public Command zeroWristDial() {
-        return Commands.runOnce(tigerPad::zeroWristDial, null);
+        return Commands.runOnce(tigerPad::zeroWristDial);
     }
 
     /**
