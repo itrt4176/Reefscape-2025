@@ -198,7 +198,7 @@ public class TigerPad extends GenericHID implements Sendable {
         }
 
         private static LEDMode getByValue(int value) {
-            if (value - 1 < ledsByValue.size()) {
+            if (value > ledsByValue.size() - 1) {
                 throw new NoSuchElementException(value + " is not a valid LEDMode.");
             }
 
