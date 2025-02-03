@@ -19,5 +19,6 @@ package frc.robot;
 public final class Constants {
     public static class OperatorConstants {
         public static final int driverControllerPort = 0;
+        public static final int armControlPanel = 1;
     }
 }
