@@ -11,6 +11,10 @@ import org.apache.commons.lang3.StringUtils;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.IntegerTopic;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -28,8 +32,21 @@ import edu.wpi.first.wpilibj.event.EventLoop;
  * Sim is not guaranteed to have the same mapping.
  */
 public class TigerPad extends GenericHID implements Sendable {
+    private static TigerPad instance;
+
+    public static TigerPad getInstance(final int port) {
+        if (instance == null) {
+            instance = new TigerPad(port);
+        }
+
+        return instance;
+    }
     
     private int outputState;
+    private final NetworkTable ledTable = NetworkTableInstance
+        .getDefault()
+        .getTable("tigerpad")
+        .getSubTable("leds");
     private double dialOffset;
 
     /** Represents a digital button on a TigerPad. */
@@ -158,9 +175,12 @@ public class TigerPad extends GenericHID implements Sendable {
 
         /** LED value. */
         public final int value;
+        private final IntegerTopic topic;
+        private final IntegerPublisher pub;
 
         LED(int value) {
             this.value = value;
+            this$0.
         }
 
         private BitField getBitField() {
@@ -246,7 +266,7 @@ public class TigerPad extends GenericHID implements Sendable {
      *
      * @param port The port index on the Driver Station that the controller is plugged into (0-5).
      */
-    public TigerPad(final int port) {
+    private TigerPad(final int port) {
         super(port);
         outputState = 0;
         dialOffset = 0.0;

@@ -17,6 +17,16 @@ import frc.robot.utils.TigerPad.LEDMode;
  * @see TigerPad
  */
 public class CommandTigerPad extends CommandGenericHID {
+    private static CommandTigerPad instance;
+
+    public static CommandTigerPad getInstance(final int port) {
+        if (instance == null) {
+            instance = new CommandTigerPad(port);
+        }
+
+        return instance;
+    }
+
     private final TigerPad tigerPad;
 
     /**
@@ -24,9 +34,9 @@ public class CommandTigerPad extends CommandGenericHID {
      * 
      * @param port The port index on the Driver Station that the conroller is plugged into.
      */
-    public CommandTigerPad(int port) {
+    private CommandTigerPad(final int port) {
         super(port);
-        tigerPad = new TigerPad(port);
+        tigerPad = TigerPad.getInstance(port);
     }
 
     /**
