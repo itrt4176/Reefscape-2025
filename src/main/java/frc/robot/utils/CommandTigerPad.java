@@ -19,6 +19,15 @@ import frc.robot.utils.TigerPad.LEDMode;
 public class CommandTigerPad extends CommandGenericHID {
     private static CommandTigerPad instance;
 
+    /**
+     * Returns the singleton instance of the CommandTigerPad class for the
+     * specified port. If the instance does not exist, it will be created.
+     * Subsequent calls to this method will return the same instance
+     * regardless of the value of port.
+     *
+     * @param port the port index on the Driver Station that the conroller is plugged into. (0-5)
+     * @return the singleton instance of the CommandTigerPad class
+     */
     public static CommandTigerPad getInstance(final int port) {
         if (instance == null) {
             instance = new CommandTigerPad(port);

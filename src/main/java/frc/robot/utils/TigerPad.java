@@ -32,6 +32,14 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 public class TigerPad extends GenericHID implements Sendable {
     private static TigerPad instance;
 
+    /**
+     * Returns the singleton instance of the TigerPad class for the specified port.
+     * If the instance does not exist, it will be created. Subsequent calls to this
+     * method will return the same instance regardless of the value of port.
+     *
+     * @param port the port index on the Driver Station that the conroller is plugged into. (0-5)
+     * @return the singleton instance of the TigerPad class
+     */
     public static TigerPad getInstance(final int port) {
         if (instance == null) {
             instance = new TigerPad(port);
