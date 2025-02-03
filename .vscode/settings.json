@@ -65,5 +65,10 @@
   },
   "terminal.integrated.env.linux": {
     "JAVA_HOME": "${env:HOME}/wpilib/2025/jdk"
+  },
+  "[java]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
   }
 }
