@@ -5,13 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.lang3.BitField;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.IntegerTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -42,8 +40,7 @@ public class TigerPad extends GenericHID implements Sendable {
         return instance;
     }
     
-    private int outputState;
-    private final NetworkTable ledTable = NetworkTableInstance
+    private static final NetworkTable ledTable = NetworkTableInstance
         .getDefault()
         .getTable("tigerpad")
         .getSubTable("leds");
@@ -165,26 +162,16 @@ public class TigerPad extends GenericHID implements Sendable {
         /** Level 4 right LED. */
         Level4Right(7);
 
-        private static final Map<LED, BitField> bitFieldMap = new HashMap<>();
-
-        static {
-            for (LED led : LED.values()) {
-                bitFieldMap.put(led, new BitField(0b11 << (led.value * 2)));
-            }
-        }
-
         /** LED value. */
         public final int value;
         private final IntegerTopic topic;
-        private final IntegerPublisher pub;
+        private final IntegerEntry entry;
 
         LED(int value) {
             this.value = value;
-            this$0.
-        }
-
-        private BitField getBitField() {
-            return bitFieldMap.get(this);
+            topic = TigerPad.ledTable.getIntegerTopic(toString());
+            entry = topic.getEntry(LEDMode.Off.value);
+            entry.set(LEDMode.Off.value);
         }
 
         /** Get the human-friendly name of the LED, matching the relevant methods. This is done by
@@ -268,7 +255,6 @@ public class TigerPad extends GenericHID implements Sendable {
      */
     private TigerPad(final int port) {
         super(port);
-        outputState = 0;
         dialOffset = 0.0;
         HAL.report(tResourceType.kResourceType_Controller, port + 1);
     }
@@ -348,7 +334,7 @@ public class TigerPad extends GenericHID implements Sendable {
      * @return The {@link LEDMode} of the LED.
      */
     public LEDMode getLEDMode(LED led) {
-        var modeValue = (outputState >> (led.value * 2)) & 0b11;
+        var modeValue = (int) led.entry.get();
         return LEDMode.getByValue(modeValue);
     }
 
@@ -359,13 +345,7 @@ public class TigerPad extends GenericHID implements Sendable {
      * @param mode The {@link LEDMode} to set the LED to.
      */
     public void setLEDMode(LED led, LEDMode mode) {
-        if (mode == null) {
-            return;
-        }
-
-        var bitField = led.getBitField();
-        outputState = bitField.setValue(outputState, mode.value);
-        setOutputs(outputState);
+        led.entry.set(mode.value);
     }
 
     /**
