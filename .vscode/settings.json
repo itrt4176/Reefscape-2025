@@ -67,7 +67,7 @@
     "JAVA_HOME": "${env:HOME}/wpilib/2025/jdk"
   },
   "[java]": {
-    "editor.tabSize": 4,
+    "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false
   }
