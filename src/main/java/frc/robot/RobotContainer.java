@@ -9,7 +9,9 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.utils.CommandTigerPad;
+import frc.robot.utils.TigerPad.LEDMode;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -28,12 +30,10 @@ public class RobotContainer {
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driverController = new CommandXboxController(
-        OperatorConstants.driverControllerPort
-    );
+            OperatorConstants.driverControllerPort);
 
     private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
-        OperatorConstants.armControlPanel
-    );
+            OperatorConstants.armControlPanel);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,6 +66,15 @@ public class RobotContainer {
         // pressed,
         // cancelling on release.
         driverController.b().whileTrue(exampleSubsystem.exampleMethodCommand());
+
+        new Trigger(armControlPanel::isConnected).onTrue(armControlPanel.setAllLEDs(LEDMode.Off));
+
+        armControlPanel.level1().onTrue(
+                armControlPanel.setLevel1LED(LEDMode.Blink)
+                        .andThen(new WaitCommand(5))
+                        .andThen(armControlPanel.setLevel1LED(LEDMode.On))
+                        .andThen(new WaitCommand(5))
+                        .andThen(armControlPanel.setLevel1LED(LEDMode.Off)));
     }
 
     /**
