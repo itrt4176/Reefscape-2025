@@ -12,7 +12,8 @@ import frc.robot.utils.TigerPad.LED;
 import frc.robot.utils.TigerPad.LEDMode;
 
 /**
- * A version of {@link TigerPad} with {@link Trigger} factories for command-based.
+ * A version of {@link TigerPad} with {@link Trigger} factories for
+ * command-based.
  * 
  * @see TigerPad
  */
@@ -25,7 +26,8 @@ public class CommandTigerPad extends CommandGenericHID {
      * Subsequent calls to this method will return the same instance
      * regardless of the value of port.
      *
-     * @param port the port index on the Driver Station that the conroller is plugged into. (0-5)
+     * @param port the port index on the Driver Station that the conroller is
+     *             plugged into. (0-5)
      * @return the singleton instance of the CommandTigerPad class
      */
     public static CommandTigerPad getInstance(final int port) {
@@ -41,7 +43,8 @@ public class CommandTigerPad extends CommandGenericHID {
     /**
      * Construct an instance of a controller.
      * 
-     * @param port The port index on the Driver Station that the conroller is plugged into.
+     * @param port The port index on the Driver Station that the conroller is
+     *             plugged into.
      */
     private CommandTigerPad(final int port) {
         super(port);
@@ -61,12 +64,12 @@ public class CommandTigerPad extends CommandGenericHID {
     /**
      * Sets the LED mode for the specified LED.
      * 
-     * @param led The LED to set the mode for.
+     * @param led  The LED to set the mode for.
      * @param mode The mode to set the LED to.
      * @return A command that sets the LED mode.
      */
     public Command setLED(LED led, LEDMode mode) {
-        return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode));
+        return Commands.runOnce(() -> tigerPad.setLEDMode(led, mode)).ignoringDisable(true);
     }
 
     /**
@@ -82,7 +85,7 @@ public class CommandTigerPad extends CommandGenericHID {
             command = command.andThen(setLED(led, mode));
         }
 
-        return command;
+        return command.ignoringDisable(true);
     }
 
     /**
@@ -170,7 +173,7 @@ public class CommandTigerPad extends CommandGenericHID {
      * 
      * @param loop the event loop instance to attach the event to.
      * @return a Trigger instance representing the intake button's digital signal
-     *     attached to the given loop.
+     *         attached to the given loop.
      */
     public Trigger intake(EventLoop loop) {
         return button(TigerPad.Button.Intake.value, loop);
@@ -179,8 +182,10 @@ public class CommandTigerPad extends CommandGenericHID {
     /**
      * Constructs a Trigger instance around the intake button's digital signal.
      *
-     * @return a Trigger instance representing the intake button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the intake button's digital signal
+     *         attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #intake(EventLoop)
      */
     public Trigger intake() {
@@ -192,7 +197,7 @@ public class CommandTigerPad extends CommandGenericHID {
      * 
      * @param loop the event loop instance to attach the event to.
      * @return a Trigger instance representing the level 1 button's digital signal
-     *     attached to the given loop.
+     *         attached to the given loop.
      */
     public Trigger level1(EventLoop loop) {
         return button(TigerPad.Button.Level1.value, loop);
@@ -201,8 +206,10 @@ public class CommandTigerPad extends CommandGenericHID {
     /**
      * Constructs a Trigger instance around the level 1 button's digital signal.
      *
-     * @return a Trigger instance representing the level 1 button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 1 button's digital signal
+     *         attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level1(EventLoop)
      */
     public Trigger level1() {
@@ -210,21 +217,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 2 left button's digital signal.
+     * Constructs a Trigger instance around the level 2 left button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 2 left button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 2 left button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level2Left(EventLoop loop) {
         return button(TigerPad.Button.Level2Left.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 2 left button's digital signal.
+     * Constructs a Trigger instance around the level 2 left button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 2 left button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 2 left button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level2Left(EventLoop)
      */
     public Trigger level2Left() {
@@ -232,21 +244,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 2 right button's digital signal.
+     * Constructs a Trigger instance around the level 2 right button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 2 right button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 2 right button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level2Right(EventLoop loop) {
         return button(TigerPad.Button.Level2Right.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 2 right button's digital signal.
+     * Constructs a Trigger instance around the level 2 right button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 2 right button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 2 right button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level2Right(EventLoop)
      */
     public Trigger level2Right() {
@@ -254,21 +271,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 3 left button's digital signal.
+     * Constructs a Trigger instance around the level 3 left button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 3 left button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 3 left button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level3Left(EventLoop loop) {
         return button(TigerPad.Button.Level3Left.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 3 left button's digital signal.
+     * Constructs a Trigger instance around the level 3 left button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 3 left button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 3 left button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level3Left(EventLoop)
      */
     public Trigger level3Left() {
@@ -276,21 +298,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 3 right button's digital signal.
+     * Constructs a Trigger instance around the level 3 right button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 3 right button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 3 right button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level3Right(EventLoop loop) {
         return button(TigerPad.Button.Level3Right.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 3 right button's digital signal.
+     * Constructs a Trigger instance around the level 3 right button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 3 right button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 3 right button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level3Right(EventLoop)
      */
     public Trigger level3Right() {
@@ -298,21 +325,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 4 left button's digital signal.
+     * Constructs a Trigger instance around the level 4 left button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 4 left button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 4 left button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level4Left(EventLoop loop) {
         return button(TigerPad.Button.Level4Left.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 4 left button's digital signal.
+     * Constructs a Trigger instance around the level 4 left button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 4 left button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 4 left button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level4Left(EventLoop)
      */
     public Trigger level4Left() {
@@ -320,21 +352,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the level 4 right button's digital signal.
+     * Constructs a Trigger instance around the level 4 right button's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the level 4 right button's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the level 4 right button's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger level4Right(EventLoop loop) {
         return button(TigerPad.Button.Level4Right.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the level 4 right button's digital signal.
+     * Constructs a Trigger instance around the level 4 right button's digital
+     * signal.
      *
-     * @return a Trigger instance representing the level 4 right button's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the level 4 right button's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #level4Right(EventLoop)
      */
     public Trigger level4Right() {
@@ -342,21 +379,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the arm override switch's digital signal.
+     * Constructs a Trigger instance around the arm override switch's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the arm override switch's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the arm override switch's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger armOverride(EventLoop loop) {
         return button(TigerPad.ToggleSwitch.ArmOverride.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the arm override switch's digital signal.
+     * Constructs a Trigger instance around the arm override switch's digital
+     * signal.
      *
-     * @return a Trigger instance representing the arm override switch's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the arm override switch's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #armOverride(EventLoop)
      */
     public Trigger armOverride() {
@@ -364,21 +406,26 @@ public class CommandTigerPad extends CommandGenericHID {
     }
 
     /**
-     * Constructs a Trigger instance around the wrist override switch's digital signal.
+     * Constructs a Trigger instance around the wrist override switch's digital
+     * signal.
      * 
      * @param loop the event loop instance to attach the event to.
-     * @return a Trigger instance representing the wrist override switch's digital signal
-     *     attached to the given loop.
+     * @return a Trigger instance representing the wrist override switch's digital
+     *         signal
+     *         attached to the given loop.
      */
     public Trigger wristOverride(EventLoop loop) {
         return button(TigerPad.ToggleSwitch.WristOverride.value, loop);
     }
 
     /**
-     * Constructs a Trigger instance around the wrist override switch's digital signal.
+     * Constructs a Trigger instance around the wrist override switch's digital
+     * signal.
      *
-     * @return a Trigger instance representing the wrist override switch's digital signal attached
-     *     to the {@link CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+     * @return a Trigger instance representing the wrist override switch's digital
+     *         signal attached
+     *         to the {@link CommandScheduler#getDefaultButtonLoop() default
+     *         scheduler button loop}.
      * @see #wristOverride(EventLoop)
      */
     public Trigger wristOverride() {
@@ -428,7 +475,9 @@ public class CommandTigerPad extends CommandGenericHID {
      * subtracting the dial offset, and then maps the adjusted value from the range
      * [-0.5, 0.5] to the range [-180.0, 180.0] degrees.
      * 
-     * <p>To get the unitless wrist dial value without offset, use {@link #getHID()} and
+     * <p>
+     * To get the unitless wrist dial value without offset, use {@link #getHID()}
+     * and
      * {@link TigerPad#getRawAxis(int)}.
      * 
      * @return The wrist rotation in degrees, ranging from -180.0 to 180.0.
@@ -440,11 +489,15 @@ public class CommandTigerPad extends CommandGenericHID {
     /**
      * Gets the wrist rotation in radians.
      *
-     * This method retrieves the raw axis value for wrist rotation, adjusts it by subtracting
-     * the dial offset, and then maps the adjusted value from the range [-0.5, 0.5] to the range
+     * This method retrieves the raw axis value for wrist rotation, adjusts it by
+     * subtracting
+     * the dial offset, and then maps the adjusted value from the range [-0.5, 0.5]
+     * to the range
      * [-π, π].
      * 
-     * <p>To get the unitless wrist dial value without offset, use {@link #getHID()} and
+     * <p>
+     * To get the unitless wrist dial value without offset, use {@link #getHID()}
+     * and
      * {@link TigerPad#getRawAxis(int)}.
      *
      * @return The wrist rotation in radians -π to π.
