@@ -172,14 +172,18 @@ public class TigerPad extends GenericHID implements Sendable {
 
         /** LED value. */
         public final int value;
+        private final NetworkTable table;
         private final IntegerTopic topic;
         private final IntegerEntry entry;
 
         LED(int value) {
             this.value = value;
-            topic = TigerPad.ledTable.getIntegerTopic(toString());
+            table = TigerPad.ledTable.getSubTable(Integer.toString(value));
+            topic = table.getIntegerTopic("value");
             entry = topic.getEntry(LEDMode.Off.value);
             entry.set(LEDMode.Off.value);
+
+            table.getStringTopic("name").publish().set(this.toString());
         }
 
         /** Get the human-friendly name of the LED, matching the relevant methods. This is done by
