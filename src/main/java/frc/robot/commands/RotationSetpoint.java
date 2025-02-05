@@ -13,11 +13,13 @@ public class RotationSetpoint extends Command {
 
   Claw claw;
 
-  double angle;
+  double angle; 
 
-  double speed;
+  double leftSpeed;
+  double rightSpeed;
 
-  PIDController pid = new PIDController(0.001, 0.0, 0.0);
+  PIDController leftpid = new PIDController(0.035, 0.0, 0.0065);
+  PIDController rightpid = new PIDController(0.035, 0.0, 0.0065);
 
   
   /** Creates a new RotationSetpoint. */
@@ -38,11 +40,15 @@ public class RotationSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double setpoint = angle / 0.035;
+    double setpoint = angle - 10.0;
 
-    speed = pid.calculate(claw.getLeftRotationDegrees(), setpoint);
+    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees(), setpoint);
+    claw.setLeftSpeed(leftSpeed);
 
-    claw.setRotationSpeed(speed);
+
+    rightSpeed = rightpid.calculate(claw.getRightRotationDegrees(), -setpoint);
+    claw.setRightSpeed(rightSpeed);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -52,10 +58,6 @@ public class RotationSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(speed <= 0.01)
-    {
-      return true;
-    }
     return false;
   }
 }

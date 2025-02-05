@@ -16,6 +16,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,11 +38,13 @@ public class RobotContainer {
 
   private final RotationSpeed rotate = new RotationSpeed(claw, .3);
 
-  private final ClawSetArcAngle fourtyFive = new ClawSetArcAngle(claw, 45);
+  private final ClawSetArcAngle twoThirty = new ClawSetArcAngle(claw, 205);
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
 
   private final HomeWrist homeWrist = new HomeWrist(claw);
+
+  // private final SequentialCommandGroup homing = new SequentialCommandGroup(twoThirty, homeWrist);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -80,7 +83,7 @@ public class RobotContainer {
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
 
-  driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.3)));
+  // driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.3)));
     
     driverController.a().onTrue(homeWrist);
 
@@ -88,10 +91,11 @@ public class RobotContainer {
 
     driverController.rightBumper().onTrue(reverseArc);
     driverController.leftBumper().onTrue(arcing);
-
     // driverController.a().onTrue(rotate);
 
-    // driverController.y().onTrue(ninetyRot);
+    driverController.x().onTrue(twoThirty);
+
+    driverController.y().onTrue(ninetyRot);
 
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));

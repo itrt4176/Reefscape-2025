@@ -17,7 +17,7 @@ public class ClawSetArcAngle extends Command {
 
   private double speed;
 
-  private PIDController pid = new PIDController(0.0001, 0.000, 0.0); //test for vals
+  private PIDController pid = new PIDController(0.03, 0.000, 0.0028); //test for vals
 
   /** Creates a new ArmSetArcAngle. */
   public ClawSetArcAngle(Claw claw, double angle) {
@@ -37,16 +37,19 @@ public class ClawSetArcAngle extends Command {
   public void execute() {
     speed = pid.calculate(claw.getArcDegrees(), angle);
 
-    claw.setArcingSpeed(speed);
+    claw.setArcingSpeed(-speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // return (speed < 0.01 && (Math.abs(claw.getArcDegrees() - angle) < 0.8));
+    return false; 
   }
 }

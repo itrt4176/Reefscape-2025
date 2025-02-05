@@ -40,9 +40,9 @@ public class RotationSpeed extends Command {
     leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), speed);
     claw.setLeftSpeed(speed + leftSpeed);
 
-    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), speed);
+    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), -speed);
     
-    claw.setRightSpeed(speed + rightSpeed);
+    claw.setRightSpeed(-(speed + rightSpeed));
 
   }
 

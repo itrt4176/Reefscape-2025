@@ -41,6 +41,9 @@ public class Claw extends SubsystemBase {
     leftConfig.idleMode(IdleMode.kBrake);
     rightConfig.idleMode(IdleMode.kBrake);
 
+    rightConfig.inverted(true);
+
+
     leftMotor.configure(leftConfig, null, null);
     rightMotor.configure(rightConfig, null, null);
     
@@ -59,16 +62,8 @@ public class Claw extends SubsystemBase {
 
   public void setArcingSpeed(double speed)
   {
-    if(speed > 0.05)
-    {
-      leftMotor.set(speed);
-      rightMotor.set(-(speed - 0.03));
-    }
-    else
-    {
-      leftMotor.set(speed);
-      rightMotor.set(-speed);
-    }
+    leftMotor.set(speed);
+    rightMotor.set(speed);
   }
 
   public void zeroRotation()
@@ -118,7 +113,7 @@ public class Claw extends SubsystemBase {
   public void setRotationSpeed(double speed)
   {
     leftMotor.set(speed);
-    rightMotor.set(speed);
+    rightMotor.set(-speed);
   }
 
   @Override
@@ -129,5 +124,8 @@ public class Claw extends SubsystemBase {
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());
     SmartDashboard.putBoolean("Is Homed", isRotationHomed());
+
+    SmartDashboard.putNumber("Left Speed", getLeftRotationSpeed());
+    SmartDashboard.putNumber("Right Speed", getRightRotationSpeed());
   }
 }
