@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.signals.PIDRefPIDErr_ClosedLoopModeValue;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmJoint1;
@@ -17,7 +19,9 @@ public class Joint2Position extends Command {
 
   double speed;
 
-  PIDController pid = new PIDController(0.02, 0.0, 0.00);
+  PIDController pid = new PIDController(0.016, 0.0, 0.00);
+
+  
 
   /** Creates a new Joint2Position. */
   public Joint2Position(ArmJoint2 arm, double angle) {

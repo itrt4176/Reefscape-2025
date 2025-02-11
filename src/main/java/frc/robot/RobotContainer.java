@@ -37,9 +37,11 @@ public class RobotContainer {
 
   private final Joint2Position fullyErect2 = new Joint2Position(armJoint2, 190);
 
-  private final Joint1Position intakeJoint1 = new Joint1Position(armJoint1, 188);
+  private final Joint1Position intakeJoint1 = new Joint1Position(armJoint1, 162);
 
-  private final Joint2Position intakeJoint2 = new Joint2Position(armJoint2, 277);
+  private final Joint2Position intakeJoint2 = new Joint2Position(armJoint2, 306);
+
+  private final Joint1Position stow1 = new Joint1Position(armJoint1, 0);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
