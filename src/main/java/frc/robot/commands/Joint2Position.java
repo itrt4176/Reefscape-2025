@@ -7,25 +7,28 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmJoint1;
+import frc.robot.subsystems.ArmJoint2;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Joint1Position extends Command {
-  ArmJoint1 arm;
+public class Joint2Position extends Command {
+  ArmJoint2 arm;
 
   double angle;
 
   double speed;
 
-  PIDController pid = new PIDController(0.016, 0.0, 0.001);
+  PIDController pid = new PIDController(0.02, 0.0, 0.00);
 
-  /** Creates a new Joint1Position. */
-  public Joint1Position(ArmJoint1 arm, double angle) {
+  /** Creates a new Joint2Position. */
+  public Joint2Position(ArmJoint2 arm, double angle) {
+    this.angle = angle;
 
     this.arm = arm;
 
-    this.angle = angle;
 
     addRequirements(arm);
+
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -35,10 +38,9 @@ public class Joint1Position extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    speed = pid.calculate(arm.getJointOnePosition(), angle);
+    speed = pid.calculate(arm.getJointTwoPosition(), angle);
 
-    arm.setJoint1Speed(speed);
-     
+    arm.setJoint2Speed(speed);
   }
 
   // Called once the command ends or is interrupted.

@@ -7,7 +7,10 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.commands.Joint1Position;
+import frc.robot.commands.Joint2Position;
+import frc.robot.subsystems.ArmJoint1;
+import frc.robot.subsystems.ArmJoint2;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,7 +27,19 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ArmSubsystem arm = new ArmSubsystem();
+  private final ArmJoint1 armJoint1 = new ArmJoint1();
+
+  private final ArmJoint2 armJoint2 = new ArmJoint2();
+
+  private final Joint1Position joint1TwoHundred = new Joint1Position(armJoint1, 200);
+
+  private final Joint1Position fullyErect1 = new Joint1Position(armJoint1, 170);
+
+  private final Joint2Position fullyErect2 = new Joint2Position(armJoint2, 190);
+
+  private final Joint1Position intakeJoint1 = new Joint1Position(armJoint1, 188);
+
+  private final Joint2Position intakeJoint2 = new Joint2Position(armJoint2, 277);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -54,15 +69,30 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_driverController.a().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(0.05)));
+    // m_driverController.a().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(0.3)));
 
-    m_driverController.y().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(-0.05)));
+    // m_driverController.y().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(-0.3)));
 
-    m_driverController.rightBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(.05)));
-    m_driverController.leftBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(-0.05)));
+    // m_driverController.rightBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(.05)));
+    // m_driverController.leftBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(-0.05)));
 
-    m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
-    m_driverController.x().onTrue(new InstantCommand(() -> arm.setJoint2Speed(0)));
+    // m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
+    // m_driverController.x().onTrue(new InstantCommand(() -> arm.setJoint2Speed(0)));
+
+
+
+
+    // m_driverController.a().onTrue(joint1TwoHundred);
+    // m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
+
+
+    m_driverController.y().onTrue(intakeJoint1);
+
+    m_driverController.a().onTrue(intakeJoint2);
+
+    m_driverController.rightBumper().onTrue(fullyErect1);
+    m_driverController.leftBumper().onTrue(fullyErect2);
+
   }
 
   /**

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ArmSubsystem extends SubsystemBase {
+public class ArmJoint1 extends SubsystemBase {
 
   AnalogEncoder joint1Encoder;
 
@@ -20,40 +20,29 @@ public class ArmSubsystem extends SubsystemBase {
 
   TalonFX joint2Motor;
   /** Creates a new ArmSubsystem. */
-  public ArmSubsystem() {
-    joint1Encoder = new AnalogEncoder(3);
-    // joint2Encoder = new AnalogEncoder(2);
+  public ArmJoint1() {
+    joint1Encoder = new AnalogEncoder(0);
 
-    joint1Motor = new TalonFX(21);
-    joint2Motor = new TalonFX(17);
+    joint1Motor = new TalonFX(41);
 
   }
 
   public double getJointOnePosition()
   {
-    return joint1Encoder.get();
+    return joint1Encoder.get() * 360.0;
   }
 
-  // public double getJointTwoPosition()
-  // {
-  //   return joint2Encoder.get();
-  // }
-
+  
   public void setJoint1Speed(double speed)
   {
     joint1Motor.set(speed);
   }
 
-  public void setJoint2Speed(double speed)
-  {
-    joint2Motor.set(speed);
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("Arm Joint 1 Position", getJointOnePosition());
-    // SmartDashboard.putNumber("Arm Joint 2 Position", getJointTwoPosition());
   }
 }
