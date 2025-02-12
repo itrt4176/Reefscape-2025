@@ -27,6 +27,9 @@ public final class Constants {
     public static final double DEADBAND        = 0.1;
   public static final double LEFT_Y_DEADBAND = 0.1;
   public static final double RIGHT_X_DEADBAND = 0.1;
+  public static final double LEFT_DEADBAND_X  = 0.1;
+    public static final double LEFT_DEADBAND_Y  = 0.1;
+    public static final double RIGHT_DEADBAND_X = 0.1;
   public static final double TURN_CONSTANT    = 6;
   }
   

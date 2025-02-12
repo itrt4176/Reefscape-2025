@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.io.File;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -133,7 +134,14 @@ public class RobotContainer {
       drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
     } else
     {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+      // drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+      drivebase.setDefaultCommand(
+        drivebase.driveCommand(
+          () -> MathUtil.applyDeadband(m_driverController.getLeftY(), OperatorConstants.DEADBAND),
+          () -> MathUtil.applyDeadband(m_driverController.getLeftX(), OperatorConstants.DEADBAND),
+          () -> MathUtil.applyDeadband(m_driverController.getRightX(), OperatorConstants.DEADBAND)
+        )
+      );
     }
 
     if (Robot.isSimulation())
