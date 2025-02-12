@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,14 +17,14 @@ public class ArmJoint1 extends SubsystemBase {
 
   AnalogEncoder joint2Encoder;
 
-  TalonFX joint1Motor;
+  SparkMax joint1Motor;
 
-  TalonFX joint2Motor;
+  SparkMax joint2Motor;
   /** Creates a new ArmSubsystem. */
   public ArmJoint1() {
     joint1Encoder = new AnalogEncoder(0);
 
-    joint1Motor = new TalonFX(41);
+    joint1Motor = new SparkMax(41, MotorType.kBrushless);
 
   }
 
