@@ -11,13 +11,15 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionConstants.*;
 
 public class Vision extends SubsystemBase {
 
@@ -32,34 +34,43 @@ public class Vision extends SubsystemBase {
   public Vision() {
     
     //Name the camera
-    camera = new PhotonCamera("camera");
-    photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,poseStrategy,Constants.VisionConstants.kRobotToCam);
+    camera = new PhotonCamera(VisionConstants.kCamName1);
+    photonPoseEstimator = new PhotonPoseEstimator(
+      aprilTagFieldLayout,poseStrategy,VisionConstants.kRobotToCam);
   }
 
   public Optional<PhotonPipelineResult> getResult() {
     var results = camera.getAllUnreadResults();
     PhotonPipelineResult result = null;
     if (!results.isEmpty()) {
-        // Camera processed a new frame since last
-        // Get the last one in the list.
         result = results.get(results.size() - 1);
     }
     return Optional.of(result);
   }
 
-  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-  //       photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-  //       return photonPoseEstimator.update();
-  //   }
+  public Optional<EstimatedRobotPose> getEstimatedPose(PhotonPipelineResult result) {
+    return photonPoseEstimator.update(result);
+  }
+
+  public Optional<PhotonTrackedTarget> getTarget(PhotonPipelineResult result) {
+    return Optional.of(result.getBestTarget());
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     Optional<PhotonPipelineResult> optResult = getResult();
+    EstimatedRobotPose estimatedPose = null;
+
     if (optResult.isPresent()) {
       PhotonPipelineResult result = optResult.get();
-      photonPoseEstimator.update(result);
+      Optional<EstimatedRobotPose> optEstimatedPose = photonPoseEstimator.update(result);
+      if (optEstimatedPose.isPresent()) {
+        estimatedPose = optEstimatedPose.get();
+      }
     }
+
+    
 
   }
 }

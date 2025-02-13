@@ -22,6 +22,10 @@ public final class Constants {
   }
   public static class VisionConstants {
     //Get actual values
-    public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0,0,0));
+    public static final Transform3d kRobotToCam = new Transform3d(
+      new Translation3d(0.0, 0.0, 0.0),
+      new Rotation3d(0,0,0)
+      );
+    public static final String kCamName1 = "camera";
   }
 }
