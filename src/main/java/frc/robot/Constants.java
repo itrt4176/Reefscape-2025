@@ -16,4 +16,28 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ArmJoint1Constants {
+    public static final double loopTime = 0.02;
+    public static final double p = 0.016;
+    public static final double i = 0.0;
+    public static final double d = 0.001;
+    public static final double s = 1.1; // PLACEHOLDER
+    public static final double g = 1.2; // PLACEHOLDER
+    public static final double v = 1.3; // PLACEHOLDER
+    public static final double maxVelocity = 80.0; // PLACEHOLDER
+    public static final double maxAcceleration = 160.0; // PLACEHOLDER
+  }
+
+  public static class ArmJoint2Constants {
+    public static final double loopTime = 0.02;
+    public static final double p = 0.016;
+    public static final double i = 0.0;
+    public static final double d = 0.0;
+    public static final double s = 1.1; // PLACEHOLDER
+    public static final double g = 1.2; // PLACEHOLDER
+    public static final double v = 1.3; // PLACEHOLDER
+    public static final double maxVelocity = 80.0; // PLACEHOLDER
+    public static final double maxAcceleration = 160.0; // PLACEHOLDER
+  }
 }
