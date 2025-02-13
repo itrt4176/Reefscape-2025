@@ -8,8 +8,8 @@ import com.ctre.phoenix6.signals.PIDRefPIDErr_ClosedLoopModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmJoint1;
-import frc.robot.subsystems.ArmJoint2;
+import frc.robot.subsystems.arm.ArmJoint1;
+import frc.robot.subsystems.arm.ArmJoint2;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Joint2Position extends Command {
