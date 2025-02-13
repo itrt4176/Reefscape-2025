@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class ArmJoint extends SubsystemBase {
   public enum Position {
@@ -58,6 +59,8 @@ public class ArmJoint extends SubsystemBase {
 
   private final Map<Position, Double> angleMap;
 
+  private final Trigger atGoal;
+
   private boolean enabled;
 
 /** Creates a new ArmSubsystem. */
@@ -92,6 +95,8 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.loopTime()
     );
 
+    atGoal = new Trigger(pid::atGoal);
+
     enabled = true;
   }
 
@@ -105,6 +110,10 @@ public class ArmJoint extends SubsystemBase {
 
   public Angle getGoal() {
     return goal;
+  }
+
+  public Trigger atGoal() {
+    return atGoal;
   }
 
   public Angle getOffset() {
