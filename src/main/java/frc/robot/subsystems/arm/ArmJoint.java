@@ -7,7 +7,6 @@ package frc.robot.subsystems.arm;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
@@ -23,9 +22,8 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmJoint1Constants;
 
-public class ArmJoint1 extends SubsystemBase implements ArmJointSubsystem {
+public class ArmJoint extends SubsystemBase {
   private AnalogEncoder jointEncoder;
   private SparkMax jointMotor;
 
@@ -36,82 +34,76 @@ public class ArmJoint1 extends SubsystemBase implements ArmJointSubsystem {
   private ProfiledPIDController pid;
   private ArmFeedforward ff;
 
-  private static final Map<ArmPosition, Double> angleMap;
-
-  static {
-    angleMap = new EnumMap<>(ArmPosition.class);
-    angleMap.put(ArmPosition.STOW, 0.0);
-    angleMap.put(ArmPosition.INTAKE, 162.0);
-    angleMap.put(ArmPosition.LEVEL_ONE, 200.0);
-    angleMap.put(ArmPosition.LEVEL_TWO, 190.0);
-    angleMap.put(ArmPosition.LEVEL_THREE, 180.0);
-    angleMap.put(ArmPosition.LEVEL_FOUR, 170.0);
-  }
+  private final Map<ArmPosition, Double> angleMap;
 
   /** Creates a new ArmSubsystem. */
-  public ArmJoint1() {
-    jointEncoder = new AnalogEncoder(0);
-    jointMotor = new SparkMax(41, MotorType.kBrushless);
+  public ArmJoint(int motorId, int encoderId, ArmJointPIDConfig pidConfig, Map<ArmPosition, Double> angleMap, String name) {
+    super(name);
+    jointEncoder = new AnalogEncoder(encoderId);
+    jointMotor = new SparkMax(motorId, MotorType.kBrushless);
+
+    this.angleMap = angleMap;
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0);
     goal = Degrees.mutable(angleMap.get(ArmPosition.STOW));
     offset = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
-      ArmJoint1Constants.p,
-      ArmJoint1Constants.i,
-      ArmJoint1Constants.d,
+      pidConfig.p(),
+      pidConfig.i(),
+      pidConfig.d(),
       new TrapezoidProfile.Constraints(
-        ArmJoint1Constants.maxVelocity,
-        ArmJoint1Constants.maxAcceleration
+        pidConfig.maxVelocity(),
+        pidConfig.maxAcceleration()
       ),
-      ArmJoint1Constants.loopTime
+      pidConfig.loopTime()
     );
 
-    pid.setTolerance(ArmJoint1Constants.tolerance);
+    pid.setTolerance(pidConfig.tolerance());
 
     ff = new ArmFeedforward(
-      ArmJoint1Constants.s,
-      ArmJoint1Constants.g, 
-      ArmJoint1Constants.v,
-      ArmJoint1Constants.loopTime
+      pidConfig.s(),
+      pidConfig.g(), 
+      pidConfig.v(),
+      pidConfig.loopTime()
     );
   }
 
-  @Override
-public Angle getAngle() {
-    return angle.mut_setMagnitude(jointEncoder.get() * 360.0);
+  public Angle getAngle() {
+    return angle;
   }
 
-  @Override
-public Angle getGoal() {
+  private void updateAngle() {
+    angle.mut_replace(jointEncoder.get() * 360.0, Degrees);
+  }
+
+  public Angle getGoal() {
     return goal;
   }
 
-  @Override
-public Angle getOffset() {
+  public Angle getOffset() {
     return offset;
   }
 
-  @Override
-public Command setPosition(ArmPosition position) {
+  public Command setPosition(ArmPosition position) {
     return runOnce(() -> {
       goal.mut_setMagnitude(angleMap.get(position));
-      pid.setGoal(angle.in(Radians) + offset.in(Radians));
+      pid.setGoal(goal.in(Radians) + offset.in(Radians));
     }).withName(position.toString());
   }
 
-  @Override
-public Command adjustOffset(DoubleSupplier offsetSupplier) {
+  public Command adjustOffset(DoubleSupplier offsetSupplier) {
     return runOnce(() -> {
       offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
-      pid.setGoal(angle.in(Radians) + offset.in(Radians));
+      pid.setGoal(goal.in(Radians) + offset.in(Radians));
     }).withName("Adjust Offset");
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateAngle();
+
     if (!pid.atGoal()) {
       jointMotor.setVoltage(
         pid.calculate(angle.in(Radians))
@@ -119,6 +111,6 @@ public Command adjustOffset(DoubleSupplier offsetSupplier) {
       );
     }
 
-    SmartDashboard.putNumber("Arm Joint 1 Position", angle.in(Degrees));
+    SmartDashboard.putNumber(this.getName() + " Position", angle.in(Degrees));
   }
 }

@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import frc.robot.subsystems.arm.ArmJointPIDConfig;
+import frc.robot.subsystems.arm.ArmPosition;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -18,28 +24,61 @@ public final class Constants {
   }
 
   public static class ArmJoint1Constants {
-    public static final double loopTime = 0.02;
-    public static final double p = 0.016;
-    public static final double i = 0.0;
-    public static final double d = 0.001;
-    public static final double s = 1.1; // PLACEHOLDER
-    public static final double g = 1.2; // PLACEHOLDER
-    public static final double v = 1.3; // PLACEHOLDER
-    public static final double maxVelocity = 80.0; // PLACEHOLDER
-    public static final double maxAcceleration = 160.0; // PLACEHOLDER
-    public static final double tolerance = 0.5; // PLACEHOLDER
+    public static final int motorPort = 41;
+    public static final int encoderPort = 0;
+
+    public static final ArmJointPIDConfig pidConfig = new ArmJointPIDConfig(
+      0.016,
+      0.0,
+      0.001, 
+      80.0, 
+      160.0, 
+      0.5, 
+      1.1, 
+      1.2, 
+      80.0, 
+      0.02
+    );
+
+    public static final Map<ArmPosition, Double> angleMap = new EnumMap<>(ArmPosition.class);
+
+    static {
+      // PLACEHOLDERS
+      angleMap.put(ArmPosition.STOW, 0.0);
+      angleMap.put(ArmPosition.INTAKE, 162.0);
+      angleMap.put(ArmPosition.LEVEL_ONE, 200.0);
+      angleMap.put(ArmPosition.LEVEL_TWO, 190.0);
+      angleMap.put(ArmPosition.LEVEL_THREE, 180.0);
+      angleMap.put(ArmPosition.LEVEL_FOUR, 170.0);
+    }
   }
 
   public static class ArmJoint2Constants {
-    public static final double loopTime = 0.02;
-    public static final double p = 0.016;
-    public static final double i = 0.0;
-    public static final double d = 0.0;
-    public static final double s = 1.1; // PLACEHOLDER
-    public static final double g = 1.2; // PLACEHOLDER
-    public static final double v = 1.3; // PLACEHOLDER
-    public static final double maxVelocity = 80.0; // PLACEHOLDER
-    public static final double maxAcceleration = 160.0; // PLACEHOLDER
-    public static final double tolerance = 0.5; // PLACEHOLDER
+    public static final int motorPort = 17;
+    public static final int encoderPort = 2;
+
+    public static final ArmJointPIDConfig pidConfig = new ArmJointPIDConfig(
+      0.016,
+      0.0,
+      0.0, 
+      80.0, 
+      160.0, 
+      0.5, 
+      1.1, 
+      1.2, 
+      80.0, 
+      0.02
+    );
+    public static final Map<ArmPosition, Double> angleMap = new EnumMap<>(ArmPosition.class);
+
+    static {
+      // PLACEHOLDERS
+      angleMap.put(ArmPosition.STOW, 0.0);
+      angleMap.put(ArmPosition.INTAKE, 306.0);
+      angleMap.put(ArmPosition.LEVEL_ONE, 160.0);
+      angleMap.put(ArmPosition.LEVEL_TWO, 170.0);
+      angleMap.put(ArmPosition.LEVEL_THREE, 180.0);
+      angleMap.put(ArmPosition.LEVEL_FOUR, 190.0);
+    }
   }
 }

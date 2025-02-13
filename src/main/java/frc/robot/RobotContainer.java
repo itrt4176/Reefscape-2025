@@ -4,13 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmJoint1Constants;
+import frc.robot.Constants.ArmJoint2Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.Joint2Position;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.arm.ArmJoint1;
-import frc.robot.subsystems.arm.ArmJoint2;
+import frc.robot.subsystems.arm.ArmJoint;
 import frc.robot.subsystems.arm.ArmPosition;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,19 +27,31 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ArmJoint1 armJoint1 = new ArmJoint1();
+  private final ArmJoint armJoint1 = new ArmJoint(
+    ArmJoint1Constants.motorPort,
+    ArmJoint1Constants.encoderPort,
+    ArmJoint1Constants.pidConfig,
+    ArmJoint1Constants.angleMap,
+    "Arm Joint 1"
+  );
 
-  private final ArmJoint2 armJoint2 = new ArmJoint2();
+  private final ArmJoint armJoint2 = new ArmJoint(
+    ArmJoint2Constants.motorPort,
+    ArmJoint2Constants.encoderPort,
+    ArmJoint2Constants.pidConfig,
+    ArmJoint2Constants.angleMap,
+    "Arm Joint 2"
+  );
 
   private final Command joint1TwoHundred = armJoint1.setPosition(ArmPosition.LEVEL_ONE);
 
   private final Command fullyErect1 = armJoint1.setPosition(ArmPosition.LEVEL_FOUR);
 
-  private final Joint2Position fullyErect2 = new Joint2Position(armJoint2, 190);
+  private final Command fullyErect2 = armJoint2.setPosition(ArmPosition.LEVEL_FOUR);
 
   private final Command intakeJoint1 = armJoint1.setPosition(ArmPosition.INTAKE);
 
-  private final Joint2Position intakeJoint2 = new Joint2Position(armJoint2, 306);
+  private final Command intakeJoint2 = armJoint2.setPosition(ArmPosition.INTAKE);
 
   private final Command stow1 = armJoint1.setPosition(ArmPosition.STOW);
 
