@@ -24,6 +24,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmJoint extends SubsystemBase {
+  public enum Position {
+    STOW,
+    INTAKE,
+    LEVEL_ONE,
+    LEVEL_TWO,
+    LEVEL_THREE,
+    LEVEL_FOUR
+  }
+
+  public record PIDConfig(
+    double p,
+    double i,
+    double d,
+    double maxVelocity,
+    double maxAcceleration,
+    double tolerance,
+    double s,
+    double g,
+    double v,
+    double loopTime
+) {}
+
   private AnalogEncoder jointEncoder;
   private SparkMax jointMotor;
 
@@ -34,10 +56,10 @@ public class ArmJoint extends SubsystemBase {
   private ProfiledPIDController pid;
   private ArmFeedforward ff;
 
-  private final Map<ArmPosition, Double> angleMap;
+  private final Map<Position, Double> angleMap;
 
   /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, ArmJointPIDConfig pidConfig, Map<ArmPosition, Double> angleMap, String name) {
+  public ArmJoint(int motorId, int encoderId, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
     super(name);
     jointEncoder = new AnalogEncoder(encoderId);
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
@@ -45,7 +67,7 @@ public class ArmJoint extends SubsystemBase {
     this.angleMap = angleMap;
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0);
-    goal = Degrees.mutable(angleMap.get(ArmPosition.STOW));
+    goal = Degrees.mutable(angleMap.get(Position.STOW));
     offset = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
@@ -85,7 +107,7 @@ public class ArmJoint extends SubsystemBase {
     return offset;
   }
 
-  public Command setPosition(ArmPosition position) {
+  public Command setPosition(Position position) {
     return runOnce(() -> {
       goal.mut_setMagnitude(angleMap.get(position));
       pid.setGoal(goal.in(Radians) + offset.in(Radians));

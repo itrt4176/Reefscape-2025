@@ -7,8 +7,7 @@ package frc.robot;
 import java.util.EnumMap;
 import java.util.Map;
 
-import frc.robot.subsystems.arm.ArmJointPIDConfig;
-import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.arm.ArmJoint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -27,7 +26,7 @@ public final class Constants {
     public static final int motorPort = 41;
     public static final int encoderPort = 0;
 
-    public static final ArmJointPIDConfig pidConfig = new ArmJointPIDConfig(
+    public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       0.016,
       0.0,
       0.001, 
@@ -40,16 +39,16 @@ public final class Constants {
       0.02
     );
 
-    public static final Map<ArmPosition, Double> angleMap = new EnumMap<>(ArmPosition.class);
+    public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmPosition.STOW, 0.0);
-      angleMap.put(ArmPosition.INTAKE, 162.0);
-      angleMap.put(ArmPosition.LEVEL_ONE, 200.0);
-      angleMap.put(ArmPosition.LEVEL_TWO, 190.0);
-      angleMap.put(ArmPosition.LEVEL_THREE, 180.0);
-      angleMap.put(ArmPosition.LEVEL_FOUR, 170.0);
+      angleMap.put(ArmJoint.Position.STOW, 0.0);
+      angleMap.put(ArmJoint.Position.INTAKE, 162.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 200.0);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 190.0);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 170.0);
     }
   }
 
@@ -57,7 +56,7 @@ public final class Constants {
     public static final int motorPort = 17;
     public static final int encoderPort = 2;
 
-    public static final ArmJointPIDConfig pidConfig = new ArmJointPIDConfig(
+    public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       0.016,
       0.0,
       0.0, 
@@ -69,16 +68,16 @@ public final class Constants {
       80.0, 
       0.02
     );
-    public static final Map<ArmPosition, Double> angleMap = new EnumMap<>(ArmPosition.class);
+    public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmPosition.STOW, 0.0);
-      angleMap.put(ArmPosition.INTAKE, 306.0);
-      angleMap.put(ArmPosition.LEVEL_ONE, 160.0);
-      angleMap.put(ArmPosition.LEVEL_TWO, 170.0);
-      angleMap.put(ArmPosition.LEVEL_THREE, 180.0);
-      angleMap.put(ArmPosition.LEVEL_FOUR, 190.0);
+      angleMap.put(ArmJoint.Position.STOW, 0.0);
+      angleMap.put(ArmJoint.Position.INTAKE, 306.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 160.0);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 170.0);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 190.0);
     }
   }
 }

@@ -11,7 +11,6 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.arm.ArmJoint;
-import frc.robot.subsystems.arm.ArmPosition;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,17 +42,17 @@ public class RobotContainer {
     "Arm Joint 2"
   );
 
-  private final Command joint1TwoHundred = armJoint1.setPosition(ArmPosition.LEVEL_ONE);
+  private final Command joint1TwoHundred = armJoint1.setPosition(ArmJoint.Position.LEVEL_ONE);
 
-  private final Command fullyErect1 = armJoint1.setPosition(ArmPosition.LEVEL_FOUR);
+  private final Command fullyErect1 = armJoint1.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command fullyErect2 = armJoint2.setPosition(ArmPosition.LEVEL_FOUR);
+  private final Command fullyErect2 = armJoint2.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command intakeJoint1 = armJoint1.setPosition(ArmPosition.INTAKE);
+  private final Command intakeJoint1 = armJoint1.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command intakeJoint2 = armJoint2.setPosition(ArmPosition.INTAKE);
+  private final Command intakeJoint2 = armJoint2.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command stow1 = armJoint1.setPosition(ArmPosition.STOW);
+  private final Command stow1 = armJoint1.setPosition(ArmJoint.Position.STOW);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
