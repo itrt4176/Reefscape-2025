@@ -58,7 +58,9 @@ public class ArmJoint extends SubsystemBase {
 
   private final Map<Position, Double> angleMap;
 
-  /** Creates a new ArmSubsystem. */
+  private boolean enabled;
+
+/** Creates a new ArmSubsystem. */
   public ArmJoint(int motorId, int encoderId, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
     super(name);
     jointEncoder = new AnalogEncoder(encoderId);
@@ -89,6 +91,8 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.v(),
       pidConfig.loopTime()
     );
+
+    enabled = true;
   }
 
   public Angle getAngle() {
@@ -121,12 +125,20 @@ public class ArmJoint extends SubsystemBase {
     }).withName("Adjust Offset");
   }
 
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateAngle();
 
-    if (!pid.atGoal()) {
+    if (enabled && !pid.atGoal()) {
       jointMotor.setVoltage(
         pid.calculate(angle.in(Radians))
           + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
