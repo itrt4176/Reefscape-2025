@@ -27,6 +27,7 @@ public final class Constants {
     public static final double v = 1.3; // PLACEHOLDER
     public static final double maxVelocity = 80.0; // PLACEHOLDER
     public static final double maxAcceleration = 160.0; // PLACEHOLDER
+    public static final double tolerance = 0.5; // PLACEHOLDER
   }
 
   public static class ArmJoint2Constants {
@@ -39,5 +40,6 @@ public final class Constants {
     public static final double v = 1.3; // PLACEHOLDER
     public static final double maxVelocity = 80.0; // PLACEHOLDER
     public static final double maxAcceleration = 160.0; // PLACEHOLDER
+    public static final double tolerance = 0.5; // PLACEHOLDER
   }
 }
