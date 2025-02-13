@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -25,6 +26,7 @@ public class ArmJoint1 extends SubsystemBase {
 
   private MutAngle angle;
   private MutAngle setpoint;
+  private MutAngle offset;
 
   private static final Map<ArmPosition, Double> angleMap;
 
@@ -45,16 +47,31 @@ public class ArmJoint1 extends SubsystemBase {
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0);
     setpoint = Degrees.mutable(angleMap.get(ArmPosition.STOW));
+    offset = Degrees.mutable(0.0);
   }
 
   public Angle getAngle() {
     return angle.mut_setMagnitude(jointEncoder.get() * 360.0);
   }
 
+  public Angle getSetpoint() {
+    return setpoint;
+  }
+
+  public Angle getOffset() {
+    return offset;
+  }
+
   public Command setPosition(ArmPosition position) {
     return runOnce(() -> {
       setpoint.mut_setMagnitude(angleMap.get(position));
     }).withName(position.toString());
+  }
+
+  public Command adjustOffset(DoubleSupplier offsetSupplier) {
+    return runOnce(() -> {
+      offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
+    }).withName("Adjust Offset");
   }
 
   @Override
