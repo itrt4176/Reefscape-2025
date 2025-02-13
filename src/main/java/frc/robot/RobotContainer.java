@@ -7,10 +7,12 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakePositioning;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -25,6 +27,10 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final Intake intake = new Intake();
+  private final IntakePositioning intakePositionCommand1 = new IntakePositioning(intake, 242, 0.05);
+  private final IntakePositioning intakePositionCommand2 = new IntakePositioning(intake, 205, 0.5);
+
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController =
@@ -55,9 +61,12 @@ public class RobotContainer {
     driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
 
-    driverController.x().onTrue(new InstantCommand(() -> intake.setSpeed(.2)));
-    driverController.y().onTrue(new InstantCommand(() -> intake.setSpeed(0)));
-    
+    // driverController.x().onTrue(new InstantCommand(() -> intake.setSpeed(.2)));
+    // driverController.y().onTrue(new InstantCommand(() -> intake.setSpeed(0)));
+
+    driverController.b().onTrue(intakePositionCommand1);
+    driverController.a().onTrue(intakePositionCommand2);
+
   }
 
   /**

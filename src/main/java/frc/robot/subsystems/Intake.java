@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+
 
 public class Intake extends SubsystemBase {
   AnalogInput sensor;
@@ -24,13 +27,13 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
 
-    sensor = new AnalogInput(0);//placeholder
+    // sensor = new AnalogInput(0);//placeholder
 
-    encoder = new AnalogEncoder(0);//placeholder
+    encoder = new AnalogEncoder(3);
 
-    pivotMotor = new TalonFX(0);//placeholder
+    pivotMotor = new TalonFX(30);//placeholder
 
-    axelRotation = new TalonFX(0);//placeholder
+    axelRotation = new TalonFX(31);//placeholder
 
   }
 
@@ -49,12 +52,15 @@ public class Intake extends SubsystemBase {
   {
     pivotMotor.set(speed);
   }
-
+  
+  public void pivotStop()
+  {
+    pivotMotor.set(0);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Pivot Postition(Degrees)", getPivotDegrees());
-
   }
 }
