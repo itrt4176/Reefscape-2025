@@ -97,6 +97,8 @@ public class ArmJoint extends SubsystemBase {
 
     atGoal = new Trigger(pid::atGoal);
 
+    setDefaultCommand(run(this::moveJoint));
+
     enabled = true;
   }
 
@@ -131,13 +133,28 @@ public class ArmJoint extends SubsystemBase {
     return runOnce(() -> {
       offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
       pid.setGoal(goal.in(Radians) + offset.in(Radians));
-    }).withName("Adjust Offset");
+    }).withName("Adjust Offset")
+      .andThen(this::moveJoint, this);
+  }
+
+  private void moveJoint() {
+    if (enabled && !pid.atGoal()) {
+      jointMotor.setVoltage(
+        pid.calculate(angle.in(Radians))
+          + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
+      );
+    }
   }
 
   public boolean isEnabled() {
     return enabled;
   }
 
+  /**
+   * Enable/disable the arm joint for tuning and debugging purposes
+   * 
+   * @param enabled Whether or not the arm joint is enabled
+   */
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
   }
@@ -146,14 +163,6 @@ public class ArmJoint extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateAngle();
-
-    if (enabled && !pid.atGoal()) {
-      jointMotor.setVoltage(
-        pid.calculate(angle.in(Radians))
-          + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
-      );
-    }
-
     SmartDashboard.putNumber(this.getName() + " Position", angle.in(Degrees));
   }
 }
