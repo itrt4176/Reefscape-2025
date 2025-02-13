@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmJoint1Constants;
 
-public class ArmJoint1 extends SubsystemBase {
+public class ArmJoint1 extends SubsystemBase implements ArmJointSubsystem {
   private AnalogEncoder jointEncoder;
   private SparkMax jointMotor;
 
@@ -78,26 +78,31 @@ public class ArmJoint1 extends SubsystemBase {
     );
   }
 
-  public Angle getAngle() {
+  @Override
+public Angle getAngle() {
     return angle.mut_setMagnitude(jointEncoder.get() * 360.0);
   }
 
-  public Angle getGoal() {
+  @Override
+public Angle getGoal() {
     return goal;
   }
 
-  public Angle getOffset() {
+  @Override
+public Angle getOffset() {
     return offset;
   }
 
-  public Command setPosition(ArmPosition position) {
+  @Override
+public Command setPosition(ArmPosition position) {
     return runOnce(() -> {
       goal.mut_setMagnitude(angleMap.get(position));
       pid.setGoal(angle.in(Radians) + offset.in(Radians));
     }).withName(position.toString());
   }
 
-  public Command adjustOffset(DoubleSupplier offsetSupplier) {
+  @Override
+public Command adjustOffset(DoubleSupplier offsetSupplier) {
     return runOnce(() -> {
       offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
       pid.setGoal(angle.in(Radians) + offset.in(Radians));
