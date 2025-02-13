@@ -7,7 +7,7 @@ package frc.robot;
 import java.util.EnumMap;
 import java.util.Map;
 
-import frc.robot.subsystems.arm.ArmJoint;
+import frc.robot.subsystems.ArmJoint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
