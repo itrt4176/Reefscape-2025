@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class ArmJoint extends SubsystemBase {
   public enum Position {
@@ -69,6 +71,9 @@ public class ArmJoint extends SubsystemBase {
 
   private final Trigger atGoal;
 
+  private final SysIdRoutine idRoutine;
+  private final MutVoltage routineVoltage = Volts.mutable(0);
+
   private boolean enabled;
 
 /** Creates a new ArmSubsystem. */
@@ -80,6 +85,9 @@ public class ArmJoint extends SubsystemBase {
     this.angleMap = angleMap;
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0);
+    velocity = DegreesPerSecond.mutable(0);
+    velocityTimestamp = Timer.getFPGATimestamp();
+
     goal = Degrees.mutable(angleMap.get(Position.STOW));
     offset = Degrees.mutable(0.0);
 
@@ -106,6 +114,24 @@ public class ArmJoint extends SubsystemBase {
     atGoal = new Trigger(pid::atGoal);
 
     setDefaultCommand(run(this::moveJoint));
+
+    idRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(
+        Volts.of(0.25).per(Second),
+        Volts.of(2),
+        null
+      ),
+      new SysIdRoutine.Mechanism(
+        jointMotor::setVoltage,
+        log -> {
+          log.motor(getName() + "joint motor")
+            .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
+            .angularPosition(angle)
+            .angularVelocity(velocity);
+        },
+        this
+      )
+    );
 
     enabled = true;
   }
@@ -158,6 +184,20 @@ public class ArmJoint extends SubsystemBase {
           + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
       );
     }
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    boolean startEnabled = enabled;
+    return runOnce(() -> { enabled = false; })
+      .andThen(idRoutine.quasistatic(direction))
+      .andThen(() -> { enabled = startEnabled; });
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    boolean startEnabled = enabled;
+    return runOnce(() -> { enabled = false; })
+      .andThen(idRoutine.dynamic(direction))
+      .andThen(() -> { enabled = startEnabled; });
   }
 
   public boolean isEnabled() {

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -60,6 +61,10 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Disable the arm joints for tuning
+    shoulderJoint.setEnabled(false);
+    elbowJoint.setEnabled(false);
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -99,9 +104,23 @@ public class RobotContainer {
     // m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
 
 
-    m_driverController.y().onTrue(intakeJoint1);
+    // m_driverController.y().onTrue(intakeJoint1);
 
-    m_driverController.a().onTrue(intakeJoint2);
+    // m_driverController.a().onTrue(intakeJoint2);
+
+    // Shoulder joint sysid routines
+    // Hold down each button to perform its routine
+    m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // Elbow joint sysid routines
+    // Hold down each button to perform its routine
+    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     m_driverController.rightBumper().onTrue(fullyErect1);
     m_driverController.leftBumper().onTrue(fullyErect2);
