@@ -43,12 +43,12 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 19.1);
+      angleMap.put(ArmJoint.Position.STOW, 266.2);
       angleMap.put(ArmJoint.Position.INTAKE, 162.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 200.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 190.0);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 170.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 170.85);
     }
   }
 
@@ -72,12 +72,12 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 19.4);
+      angleMap.put(ArmJoint.Position.STOW, 7.9);
       angleMap.put(ArmJoint.Position.INTAKE, 306.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 160.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 170.0);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 190.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 189.7);
     }
   }
 }
