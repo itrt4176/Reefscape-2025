@@ -174,7 +174,8 @@ public class ArmJoint extends SubsystemBase {
       offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
       pid.setGoal(goal.in(Radians) + offset.in(Radians));
     }).withName("Adjust Offset")
-      .andThen(this::moveJoint, this);
+      .andThen(this::moveJoint, this)
+      .repeatedly();
   }
 
   private void moveJoint() {
