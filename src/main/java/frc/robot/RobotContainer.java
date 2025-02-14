@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import frc.robot.Constants.ArmJoint1Constants;
-import frc.robot.Constants.ArmJoint2Constants;
+import frc.robot.Constants.ShoulderJointConstants;
+import frc.robot.Constants.ElbowJointConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -26,33 +26,33 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ArmJoint armJoint1 = new ArmJoint(
-    ArmJoint1Constants.motorPort,
-    ArmJoint1Constants.encoderPort,
-    ArmJoint1Constants.pidConfig,
-    ArmJoint1Constants.angleMap,
-    "Arm Joint 1"
+  private final ArmJoint shoulderJoint = new ArmJoint(
+    ShoulderJointConstants.motorPort,
+    ShoulderJointConstants.encoderPort,
+    ShoulderJointConstants.pidConfig,
+    ShoulderJointConstants.angleMap,
+    "Shoulder Joint"
   );
 
-  private final ArmJoint armJoint2 = new ArmJoint(
-    ArmJoint2Constants.motorPort,
-    ArmJoint2Constants.encoderPort,
-    ArmJoint2Constants.pidConfig,
-    ArmJoint2Constants.angleMap,
-    "Arm Joint 2"
+  private final ArmJoint elbowJoint = new ArmJoint(
+    ElbowJointConstants.motorPort,
+    ElbowJointConstants.encoderPort,
+    ElbowJointConstants.pidConfig,
+    ElbowJointConstants.angleMap,
+    "Elbow Joint"
   );
 
-  private final Command joint1TwoHundred = armJoint1.setPosition(ArmJoint.Position.LEVEL_ONE);
+  private final Command joint1TwoHundred = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_ONE);
 
-  private final Command fullyErect1 = armJoint1.setPosition(ArmJoint.Position.LEVEL_FOUR);
+  private final Command fullyErect1 = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command fullyErect2 = armJoint2.setPosition(ArmJoint.Position.LEVEL_FOUR);
+  private final Command fullyErect2 = elbowJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command intakeJoint1 = armJoint1.setPosition(ArmJoint.Position.INTAKE);
+  private final Command intakeJoint1 = shoulderJoint.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command intakeJoint2 = armJoint2.setPosition(ArmJoint.Position.INTAKE);
+  private final Command intakeJoint2 = elbowJoint.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command stow1 = armJoint1.setPosition(ArmJoint.Position.STOW);
+  private final Command stow1 = shoulderJoint.setPosition(ArmJoint.Position.STOW);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =

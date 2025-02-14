@@ -22,7 +22,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class ArmJoint1Constants {
+  public static class ShoulderJointConstants {
     public static final int motorPort = 41;
     public static final int encoderPort = 0;
 
@@ -43,7 +43,7 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 0.0);
+      angleMap.put(ArmJoint.Position.STOW, 19.1);
       angleMap.put(ArmJoint.Position.INTAKE, 162.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 200.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 190.0);
@@ -52,9 +52,9 @@ public final class Constants {
     }
   }
 
-  public static class ArmJoint2Constants {
+  public static class ElbowJointConstants {
     public static final int motorPort = 17;
-    public static final int encoderPort = 2;
+    public static final int encoderPort = 1;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       0.016,
@@ -72,7 +72,7 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 0.0);
+      angleMap.put(ArmJoint.Position.STOW, 19.4);
       angleMap.put(ArmJoint.Position.INTAKE, 306.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 160.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 170.0);

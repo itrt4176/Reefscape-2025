@@ -163,6 +163,7 @@ public class ArmJoint extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateAngle();
+    SmartDashboard.putNumber(this.getName() + " Raw Encoder", jointEncoder.get());
     SmartDashboard.putNumber(this.getName() + " Position", angle.in(Degrees));
   }
 }
