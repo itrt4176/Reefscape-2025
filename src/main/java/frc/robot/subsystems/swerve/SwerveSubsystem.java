@@ -98,10 +98,10 @@ public class SwerveSubsystem extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only
+    swerveDrive.setHeadingCorrection(true); // Heading correction should only
                                              // be used while controlling the
                                              // robot via angle.
-    swerveDrive.setCosineCompensator(false);// !SwerveDriveTelemetry.isSimulation);
+    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
                                             // // Disables cosine compensation
                                             // for simulations since it causes
                                             // discrepancies not seen in real
@@ -115,7 +115,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                  // Start with a
                                                                  // coefficient
                                                                  // of 0.1.
-    swerveDrive.setModuleEncoderAutoSynchronize(false, 1); // Enable if you want
+    swerveDrive.setModuleEncoderAutoSynchronize(true, 1); // Enable if you want
                                                            // to resynchronize
                                                            // your absolute
                                                            // encoders and motor
@@ -123,7 +123,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                            // periodically when
                                                            // they are not
                                                            // moving.
-    // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be
+    swerveDrive.useExternalFeedbackSensor(); // Set the absolute encoder to be
     // used over the internal encoder and push the offsets onto it. Throws
     // warning if not possible
     if (visionDriveTest) {
@@ -132,6 +132,7 @@ public class SwerveSubsystem extends SubsystemBase {
       // synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
+    zeroGyro();
     setupPathPlanner();
   }
 
@@ -436,15 +437,23 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command driveCommand(DoubleSupplier translationX,
       DoubleSupplier translationY, DoubleSupplier angularRotationX) {
+    // return run(() -> {
+    //   // Make the robot move
+    //   swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
+    //       translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+    //       translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
+    //       0.8),
+    //       Math.pow(angularRotationX.getAsDouble(), 3)
+    //           * swerveDrive.getMaximumChassisAngularVelocity(),
+    //       true, false);
+    // });
+
     return run(() -> {
-      // Make the robot move
-      swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-          translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-          translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-          0.8),
-          Math.pow(angularRotationX.getAsDouble(), 3)
-              * swerveDrive.getMaximumChassisAngularVelocity(),
-          true, false);
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity(),
+                                          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity()),
+                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
+                        true,
+                        false);
     });
   }
 
