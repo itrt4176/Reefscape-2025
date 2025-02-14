@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 import java.util.function.DoubleSupplier;
@@ -18,7 +20,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,6 +56,9 @@ public class ArmJoint extends SubsystemBase {
   private SparkMax jointMotor;
 
   private MutAngle angle;
+  private MutAngularVelocity velocity;
+  private double velocityTimestamp;
+  
   private MutAngle goal;
   private MutAngle offset;
 
@@ -107,7 +115,13 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void updateAngle() {
+    double newAngle = jointEncoder.get() * 360.0;
+    double newTimestamp = Timer.getFPGATimestamp();
+
+    velocity.mut_replace((newAngle - angle.in(Degrees)) / (newTimestamp - velocityTimestamp), DegreesPerSecond);
     angle.mut_replace(jointEncoder.get() * 360.0, Degrees);
+
+    velocityTimestamp = newTimestamp;
   }
 
   public Angle getGoal() {
@@ -163,7 +177,8 @@ public class ArmJoint extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateAngle();
-    SmartDashboard.putNumber(this.getName() + " Raw Encoder", jointEncoder.get());
-    SmartDashboard.putNumber(this.getName() + " Position", angle.in(Degrees));
+    SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
+    SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
+    SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
   }
 }
