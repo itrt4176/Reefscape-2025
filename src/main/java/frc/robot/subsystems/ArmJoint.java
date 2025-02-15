@@ -197,11 +197,11 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void moveJoint() {
+    double motorVoltage = pid.calculate(angle.in(Rotations))
+        + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity);
+
     if (enabled && !sysIdRunning && !pid.atGoal()) {
-      jointMotor.setVoltage(
-        pid.calculate(angle.in(Rotations))
-          + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
-      );
+      jointMotor.setVoltage(motorVoltage);
     }
   }
 
