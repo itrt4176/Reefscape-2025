@@ -200,16 +200,18 @@ public class ArmJoint extends SubsystemBase {
     }
   }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  private Command sysIdCommand(Command command) {
     return runOnce(() -> { sysIdRunning = true; })
-      .andThen(idRoutine.quasistatic(direction))
+      .andThen(command)
       .andThen(() -> { sysIdRunning = false; });
   }
 
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysIdCommand(idRoutine.quasistatic(direction));
+  }
+
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return runOnce(() -> { sysIdRunning = true; })
-      .andThen(idRoutine.dynamic(direction))
-      .andThen(() -> { sysIdRunning = false; });
+    return sysIdCommand(idRoutine.dynamic(direction));
   }
 
   public boolean isEnabled() {
