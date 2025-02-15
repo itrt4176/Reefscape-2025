@@ -235,6 +235,7 @@ public class ArmJoint extends SubsystemBase {
     SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
     SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
     SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
+    SmartDashboard.putNumber(getName() + " Acceleration", acceleration.in(DegreesPerSecondPerSecond));
     SmartDashboard.putNumber(getName() + " Motor Bus Voltage", jointMotor.getBusVoltage());
     SmartDashboard.putNumber(getName() + " Motor get()", jointMotor.get());
     SmartDashboard.putNumber(getName() + " Motor Voltage", jointMotor.get() * jointMotor.getBusVoltage());
