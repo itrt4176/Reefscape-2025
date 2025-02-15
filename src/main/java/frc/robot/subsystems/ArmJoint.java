@@ -131,7 +131,7 @@ public class ArmJoint extends SubsystemBase {
         log -> {
           updateAngle();
 
-          log.motor(getName() + " joint motor")
+          log.motor(getName() + " motor")
             .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
             .angularPosition(angle)
             .angularVelocity(velocity)
