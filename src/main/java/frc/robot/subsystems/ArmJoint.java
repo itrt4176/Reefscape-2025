@@ -6,9 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -104,7 +102,7 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.loopTime()
     );
 
-    pid.setTolerance(pidConfig.tolerance());
+    pid.setTolerance(pidConfig.tolerance() / 360.0);
 
     ff = new ArmFeedforward(
       pidConfig.s(),
@@ -143,11 +141,11 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void updateAngle() {
-    double newAngle = jointEncoder.get(); //* 360.0;
+    double newAngle = jointEncoder.get() * 360.0;
     double newTimestamp = Timer.getFPGATimestamp();
 
-    velocity.mut_replace((newAngle - angle.in(Rotations)) / (newTimestamp - velocityTimestamp), RotationsPerSecond);
-    angle.mut_replace(jointEncoder.get(), Rotations); //* 360.0, Degrees);
+    velocity.mut_replace((newAngle - angle.in(Degrees)) / (newTimestamp - velocityTimestamp), DegreesPerSecond);
+    angle.mut_replace(jointEncoder.get() * 360.0, Degrees);
 
     velocityTimestamp = newTimestamp;
   }
@@ -166,15 +164,15 @@ public class ArmJoint extends SubsystemBase {
 
   public Command setPosition(Position position) {
     return runOnce(() -> {
-      goal.mut_setMagnitude(angleMap.get(position));
-      pid.setGoal(goal.in(Radians) + offset.in(Radians));
+      goal.mut_replace(angleMap.get(position), Degrees);
+      pid.setGoal(goal.in(Rotations) + offset.in(Rotations));
     }).withName(position.toString());
   }
 
   public Command adjustOffset(DoubleSupplier offsetSupplier) {
     return runOnce(() -> {
       offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
-      pid.setGoal(goal.in(Radians) + offset.in(Radians));
+      pid.setGoal(goal.in(Rotations) + offset.in(Rotations));
     }).withName("Adjust Offset")
       .andThen(this::moveJoint, this)
       .repeatedly();
@@ -183,7 +181,7 @@ public class ArmJoint extends SubsystemBase {
   private void moveJoint() {
     if (enabled && !pid.atGoal()) {
       jointMotor.setVoltage(
-        pid.calculate(angle.in(Radians))
+        pid.calculate(angle.in(Rotations))
           + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
       );
     }
