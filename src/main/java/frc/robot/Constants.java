@@ -36,7 +36,8 @@ public final class Constants {
       0.5, 
       1.1, 
       1.2, 
-      80.0, 
+      1.3,
+      1.4, 
       0.02
     );
 
@@ -67,7 +68,8 @@ public final class Constants {
       0.5, 
       1.1, 
       1.2, 
-      80.0, 
+      1.3,
+      1.4, 
       0.02
     );
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);

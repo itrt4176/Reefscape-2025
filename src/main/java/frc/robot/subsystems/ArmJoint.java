@@ -53,6 +53,7 @@ public class ArmJoint extends SubsystemBase {
     double s,
     double g,
     double v,
+    double a,
     double loopTime
   ) {}
 
@@ -116,6 +117,7 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.s(),
       pidConfig.g(), 
       pidConfig.v(),
+      pidConfig.a(),
       pidConfig.loopTime()
     );
 
