@@ -105,8 +105,8 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.i(),
       pidConfig.d(),
       new TrapezoidProfile.Constraints(
-        pidConfig.maxVelocity(),
-        pidConfig.maxAcceleration()
+        pidConfig.maxVelocity() / 360.0,
+        pidConfig.maxAcceleration() / 360.0
       ),
       pidConfig.loopTime()
     );
