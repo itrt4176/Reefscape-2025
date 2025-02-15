@@ -23,7 +23,7 @@ public final class Constants {
   }
 
   public static class ShoulderJointConstants {
-    public static final int motorPort = 41;
+    public static final int motorPort = 17;
     public static final int encoderPort = 0;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
@@ -53,7 +53,7 @@ public final class Constants {
   }
 
   public static class ElbowJointConstants {
-    public static final int motorPort = 17;
+    public static final int motorPort = 41;
     public static final int encoderPort = 1;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(

@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -117,12 +119,12 @@ public class ArmJoint extends SubsystemBase {
 
     idRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
-        Volts.of(0.25).per(Second),
-        Volts.of(2),
+        Volts.of(2).per(Second),
+        Volts.of(8),
         null
       ),
       new SysIdRoutine.Mechanism(
-        jointMotor::setVoltage,
+        volts -> { jointMotor.set(volts.magnitude() / jointMotor.getBusVoltage()); },
         log -> {
           log.motor(getName() + "joint motor")
             .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
@@ -141,11 +143,11 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void updateAngle() {
-    double newAngle = jointEncoder.get() * 360.0;
+    double newAngle = jointEncoder.get(); //* 360.0;
     double newTimestamp = Timer.getFPGATimestamp();
 
-    velocity.mut_replace((newAngle - angle.in(Degrees)) / (newTimestamp - velocityTimestamp), DegreesPerSecond);
-    angle.mut_replace(jointEncoder.get() * 360.0, Degrees);
+    velocity.mut_replace((newAngle - angle.in(Rotations)) / (newTimestamp - velocityTimestamp), RotationsPerSecond);
+    angle.mut_replace(jointEncoder.get(), Rotations); //* 360.0, Degrees);
 
     velocityTimestamp = newTimestamp;
   }
@@ -221,5 +223,8 @@ public class ArmJoint extends SubsystemBase {
     SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
     SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
     SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
+    SmartDashboard.putNumber(getName() + " Motor Bus Voltage", jointMotor.getBusVoltage());
+    SmartDashboard.putNumber(getName() + " Motor get()", jointMotor.get());
+    SmartDashboard.putNumber(getName() + " Motor Voltage", jointMotor.get() * jointMotor.getBusVoltage());
   }
 }

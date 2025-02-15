@@ -35,23 +35,23 @@ public class RobotContainer {
     "Shoulder Joint"
   );
 
-  private final ArmJoint elbowJoint = new ArmJoint(
-    ElbowJointConstants.motorPort,
-    ElbowJointConstants.encoderPort,
-    ElbowJointConstants.pidConfig,
-    ElbowJointConstants.angleMap,
-    "Elbow Joint"
-  );
+  // private final ArmJoint elbowJoint = new ArmJoint(
+  //   ElbowJointConstants.motorPort,
+  //   ElbowJointConstants.encoderPort,
+  //   ElbowJointConstants.pidConfig,
+  //   ElbowJointConstants.angleMap,
+  //   "Elbow Joint"
+  // );
 
   private final Command joint1TwoHundred = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_ONE);
 
   private final Command fullyErect1 = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command fullyErect2 = elbowJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
+  // private final Command fullyErect2 = elbowJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
   private final Command intakeJoint1 = shoulderJoint.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command intakeJoint2 = elbowJoint.setPosition(ArmJoint.Position.INTAKE);
+  // private final Command intakeJoint2 = elbowJoint.setPosition(ArmJoint.Position.INTAKE);
 
   private final Command stow1 = shoulderJoint.setPosition(ArmJoint.Position.STOW);
 
@@ -63,7 +63,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Disable the arm joints for tuning
     shoulderJoint.setEnabled(false);
-    elbowJoint.setEnabled(false);
+    // elbowJoint.setEnabled(false);
 
     // Configure the trigger bindings
     configureBindings();
@@ -123,7 +123,7 @@ public class RobotContainer {
     // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     m_driverController.rightBumper().onTrue(fullyErect1);
-    m_driverController.leftBumper().onTrue(fullyErect2);
+    // m_driverController.leftBumper().onTrue(fullyErect2);
 
   }
 
