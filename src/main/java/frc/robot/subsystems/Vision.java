@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -26,6 +28,8 @@ public class Vision extends SubsystemBase {
   private PhotonCamera camera;
   private PhotonPoseEstimator photonPoseEstimator;
 
+  private List<PhotonPipelineResult> latestResults;
+
   private final static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   private final static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
@@ -35,42 +39,54 @@ public class Vision extends SubsystemBase {
     
     //Name the camera
     camera = new PhotonCamera(VisionConstants.kCamName1);
+
     photonPoseEstimator = new PhotonPoseEstimator(
-      aprilTagFieldLayout,poseStrategy,VisionConstants.kRobotToCam);
+      aprilTagFieldLayout,
+      poseStrategy,
+      VisionConstants.kRobotToCam);
+
+    photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
   }
 
-  public Optional<PhotonPipelineResult> getResult() {
-    var results = camera.getAllUnreadResults();
-    PhotonPipelineResult result = null;
-    if (!results.isEmpty()) {
-        result = results.get(results.size() - 1);
+  /**
+   * 
+   * @return A list of poses from the latest results
+   */
+  public Optional<ArrayList<EstimatedRobotPose>> getEstimatedPoses() {
+    ArrayList<EstimatedRobotPose> optList = new ArrayList<EstimatedRobotPose>();
+    for(PhotonPipelineResult result : latestResults) {
+      Optional<EstimatedRobotPose> optPose = photonPoseEstimator.update(result);
+      if (optPose.isPresent()) {
+        optList.add(optPose.get());
+      }
     }
-    return Optional.of(result);
+    return Optional.of(optList);
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedPose(PhotonPipelineResult result) {
-    return photonPoseEstimator.update(result);
-  }
-
-  public Optional<PhotonTrackedTarget> getTarget(PhotonPipelineResult result) {
-    return Optional.of(result.getBestTarget());
+  //Returns the best target of the latest result (if it exists)
+  public Optional<PhotonTrackedTarget> getTarget() {
+    Optional<PhotonTrackedTarget> optTarget = null;
+    if (latestResults.size() > 0) {
+      optTarget = Optional.of(latestResults.get(latestResults.size() - 1).getBestTarget());
+    }
+    return optTarget;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Optional<PhotonPipelineResult> optResult = getResult();
-    EstimatedRobotPose estimatedPose = null;
+    latestResults = camera.getAllUnreadResults();
 
-    if (optResult.isPresent()) {
-      PhotonPipelineResult result = optResult.get();
-      Optional<EstimatedRobotPose> optEstimatedPose = photonPoseEstimator.update(result);
-      if (optEstimatedPose.isPresent()) {
-        estimatedPose = optEstimatedPose.get();
-      }
-    }
 
-    
+    // Optional<PhotonPipelineResult> optResult = getResult();
+    // EstimatedRobotPose estimatedPose = null;
 
+    // if (optResult.isPresent()) {
+    //   PhotonPipelineResult result = optResult.get();
+    //   Optional<EstimatedRobotPose> optEstimatedPose = photonPoseEstimator.update(result);
+    //   if (optEstimatedPose.isPresent()) {
+    //     estimatedPose = optEstimatedPose.get();
+    //   }
+    // }
   }
 }
