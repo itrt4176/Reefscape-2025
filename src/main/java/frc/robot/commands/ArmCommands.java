@@ -24,8 +24,8 @@ public class ArmCommands {
   }
 
   public Command adjustOffset(DoubleSupplier joint1Adjuster, DoubleSupplier joint2Adjuster) {
-    return joint1.adjustOffset(joint1Adjuster)
-      .alongWith(joint2.adjustOffset(joint2Adjuster));
+    return joint1.adjustGoal(joint1Adjuster)
+      .alongWith(joint2.adjustGoal(joint2Adjuster));
   }
 
   public Trigger atGoal() {

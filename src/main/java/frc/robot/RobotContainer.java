@@ -30,6 +30,7 @@ public class RobotContainer {
   private final ArmJoint shoulderJoint = new ArmJoint(
     ShoulderJointConstants.motorPort,
     ShoulderJointConstants.encoderPort,
+    ShoulderJointConstants.encoderOffset,
     ShoulderJointConstants.pidConfig,
     ShoulderJointConstants.angleMap,
     "Shoulder Joint"
@@ -38,6 +39,7 @@ public class RobotContainer {
   // private final ArmJoint elbowJoint = new ArmJoint(
   //   ElbowJointConstants.motorPort,
   //   ElbowJointConstants.encoderPort,
+  //   ElbowJointConstants.encoderOffset,
   //   ElbowJointConstants.pidConfig,
   //   ElbowJointConstants.angleMap,
   //   "Elbow Joint"

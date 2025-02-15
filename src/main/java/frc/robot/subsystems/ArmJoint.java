@@ -56,8 +56,9 @@ public class ArmJoint extends SubsystemBase {
     double loopTime
   ) {}
 
-  private AnalogEncoder jointEncoder;
   private SparkMax jointMotor;
+  private AnalogEncoder jointEncoder;
+  private double encoderOffset;
 
   private MutAngle angle;
   private MutAngularVelocity velocity;
@@ -65,7 +66,7 @@ public class ArmJoint extends SubsystemBase {
   private double timestamp;
   
   private MutAngle goal;
-  private MutAngle offset;
+  private MutAngle goalAdjustment;
 
   private ProfiledPIDController pid;
   private ArmFeedforward ff;
@@ -81,20 +82,22 @@ public class ArmJoint extends SubsystemBase {
   private boolean sysIdRunning;
 
 /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
+  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
     super(name);
-    jointEncoder = new AnalogEncoder(encoderId);
+
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
+    jointEncoder = new AnalogEncoder(encoderId);
+    this.encoderOffset = encoderOffset;
 
     this.angleMap = angleMap;
 
-    angle = Degrees.mutable(jointEncoder.get() * 360.0);
+    angle = Degrees.mutable(jointEncoder.get() * 360.0 - encoderOffset);
     velocity = DegreesPerSecond.mutable(0);
     acceleration = DegreesPerSecondPerSecond.mutable(0);
     timestamp = Timer.getFPGATimestamp();
 
     goal = Degrees.mutable(angleMap.get(Position.STOW));
-    offset = Degrees.mutable(0.0);
+    goalAdjustment = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
       pidConfig.p(),
@@ -152,7 +155,7 @@ public class ArmJoint extends SubsystemBase {
   private void updateAngle() {
     double newTimestamp = Timer.getFPGATimestamp();
     double period = newTimestamp - timestamp;
-    double newAngle = jointEncoder.get() * 360.0;
+    double newAngle = jointEncoder.get() * 360.0 - encoderOffset;
     double newVelocity = (newAngle - angle.in(Degrees)) / period;
     double newAcceleration = (newVelocity - velocity.in(DegreesPerSecond)) / period;
 
@@ -171,21 +174,21 @@ public class ArmJoint extends SubsystemBase {
     return atGoal;
   }
 
-  public Angle getOffset() {
-    return offset;
+  public Angle getGoalAdjustment() {
+    return goalAdjustment;
   }
 
   public Command setPosition(Position position) {
     return runOnce(() -> {
       goal.mut_replace(angleMap.get(position), Degrees);
-      pid.setGoal(goal.in(Rotations) + offset.in(Rotations));
+      pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
     }).withName(position.toString());
   }
 
-  public Command adjustOffset(DoubleSupplier offsetSupplier) {
+  public Command adjustGoal(DoubleSupplier offsetSupplier) {
     return runOnce(() -> {
-      offset.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
-      pid.setGoal(goal.in(Rotations) + offset.in(Rotations));
+      goalAdjustment.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
+      pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
     }).withName("Adjust Offset")
       .andThen(this::moveJoint, this)
       .repeatedly();
