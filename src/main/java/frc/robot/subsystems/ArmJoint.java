@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularAcceleration;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.AnalogEncoder;
@@ -59,7 +61,8 @@ public class ArmJoint extends SubsystemBase {
 
   private MutAngle angle;
   private MutAngularVelocity velocity;
-  private double velocityTimestamp;
+  private MutAngularAcceleration acceleration;
+  private double timestamp;
   
   private MutAngle goal;
   private MutAngle offset;
@@ -86,7 +89,8 @@ public class ArmJoint extends SubsystemBase {
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0);
     velocity = DegreesPerSecond.mutable(0);
-    velocityTimestamp = Timer.getFPGATimestamp();
+    acceleration = DegreesPerSecondPerSecond.mutable(0);
+    timestamp = Timer.getFPGATimestamp();
 
     goal = Degrees.mutable(angleMap.get(Position.STOW));
     offset = Degrees.mutable(0.0);
@@ -127,7 +131,8 @@ public class ArmJoint extends SubsystemBase {
           log.motor(getName() + "joint motor")
             .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
             .angularPosition(angle)
-            .angularVelocity(velocity);
+            .angularVelocity(velocity)
+            .angularAcceleration(acceleration);
         },
         this
       )
@@ -141,13 +146,17 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void updateAngle() {
-    double newAngle = jointEncoder.get() * 360.0;
     double newTimestamp = Timer.getFPGATimestamp();
+    double period = newTimestamp - timestamp;
+    double newAngle = jointEncoder.get() * 360.0;
+    double newVelocity = (newAngle - angle.in(Degrees)) / period;
+    double newAcceleration = (newVelocity - velocity.in(DegreesPerSecond)) / period;
 
-    velocity.mut_replace((newAngle - angle.in(Degrees)) / (newTimestamp - velocityTimestamp), DegreesPerSecond);
-    angle.mut_replace(jointEncoder.get() * 360.0, Degrees);
+    acceleration.mut_replace(newAcceleration, DegreesPerSecondPerSecond);
+    velocity.mut_replace(newVelocity, DegreesPerSecond);
+    angle.mut_replace(newAngle, Degrees);
 
-    velocityTimestamp = newTimestamp;
+    timestamp = newTimestamp;
   }
 
   public Angle getGoal() {
