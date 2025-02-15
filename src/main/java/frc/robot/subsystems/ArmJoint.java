@@ -78,6 +78,7 @@ public class ArmJoint extends SubsystemBase {
   private final MutVoltage routineVoltage = Volts.mutable(0);
 
   private boolean enabled;
+  private boolean sysIdRunning;
 
 /** Creates a new ArmSubsystem. */
   public ArmJoint(int motorId, int encoderId, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
@@ -128,6 +129,8 @@ public class ArmJoint extends SubsystemBase {
       new SysIdRoutine.Mechanism(
         volts -> { jointMotor.set(volts.magnitude() / jointMotor.getBusVoltage()); },
         log -> {
+          updateAngle();
+
           log.motor(getName() + "joint motor")
             .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
             .angularPosition(angle)
@@ -139,6 +142,7 @@ public class ArmJoint extends SubsystemBase {
     );
 
     enabled = true;
+    sysIdRunning = false;
   }
 
   public Angle getAngle() {
@@ -188,7 +192,7 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void moveJoint() {
-    if (enabled && !pid.atGoal()) {
+    if (enabled && !sysIdRunning && !pid.atGoal()) {
       jointMotor.setVoltage(
         pid.calculate(angle.in(Rotations))
           + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity)
@@ -197,17 +201,15 @@ public class ArmJoint extends SubsystemBase {
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    boolean startEnabled = enabled;
-    return runOnce(() -> { enabled = false; })
+    return runOnce(() -> { sysIdRunning = true; })
       .andThen(idRoutine.quasistatic(direction))
-      .andThen(() -> { enabled = startEnabled; });
+      .andThen(() -> { sysIdRunning = false; });
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    boolean startEnabled = enabled;
-    return runOnce(() -> { enabled = false; })
+    return runOnce(() -> { sysIdRunning = true; })
       .andThen(idRoutine.dynamic(direction))
-      .andThen(() -> { enabled = startEnabled; });
+      .andThen(() -> { sysIdRunning = false; });
   }
 
   public boolean isEnabled() {
@@ -226,7 +228,10 @@ public class ArmJoint extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateAngle();
+    if (!sysIdRunning) {
+      updateAngle();
+    }
+
     SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
     SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
     SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
