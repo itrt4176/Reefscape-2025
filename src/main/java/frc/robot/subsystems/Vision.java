@@ -21,6 +21,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision extends SubsystemBase {
 
@@ -28,10 +30,14 @@ public class Vision extends SubsystemBase {
   private PhotonPoseEstimator photonPoseEstimator;
 
   private List<PhotonPipelineResult> latestResults;
+  private ArrayList<EstimatedRobotPose> latestPoses;
 
   private final static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   private final static PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+
+  private final boolean visionFieldEnabled = true;
+  private final Field2d visionField = new Field2d();
 
   /** Creates a new Vision. */
   public Vision() {
@@ -45,23 +51,27 @@ public class Vision extends SubsystemBase {
       VisionConstants.kRobotToCam);
 
     photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+
+    latestPoses = new ArrayList<EstimatedRobotPose>(20);
+
+    SmartDashboard.putData("Vision_Field",visionField);
   }
 
-  /**
-   * 
-   * @return A list of poses from the latest results
-   */
-  public ArrayList<EstimatedRobotPose> getEstimatedPoses() {
-    ArrayList<EstimatedRobotPose> list = new ArrayList<EstimatedRobotPose>(20);
-    for(PhotonPipelineResult result : latestResults) {
-      //Add matrices
-      Optional<EstimatedRobotPose> optPose = photonPoseEstimator.update(result);
-      if (optPose.isPresent()) {
-        list.add(optPose.get());
-      }
-    }
-    return list;
+  public ArrayList<EstimatedRobotPose> getLatestPoses() {
+    return latestPoses;
   }
+
+  // public ArrayList<EstimatedRobotPose> getEstimatedPoses() {
+  //   ArrayList<EstimatedRobotPose> list = new ArrayList<EstimatedRobotPose>(20);
+  //   for(PhotonPipelineResult result : latestResults) {
+  //     //Add matrices
+  //     Optional<EstimatedRobotPose> optPose = photonPoseEstimator.update(result);
+  //     if (optPose.isPresent()) {
+  //       list.add(optPose.get());
+  //     }
+  //   }
+  //   return list;
+  // }
 
   //Returns the best target of the latest result (if it exists)
   public Optional<PhotonTrackedTarget> getTarget() {
@@ -84,5 +94,28 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     latestResults = camera.getAllUnreadResults();
+
+    ArrayList<EstimatedRobotPose> list = new ArrayList<EstimatedRobotPose>(20);
+    for(PhotonPipelineResult result : latestResults) {
+      //Add matrices
+      Optional<EstimatedRobotPose> optPose = photonPoseEstimator.update(result);
+      if (optPose.isPresent()) {
+        list.add(optPose.get());
+      }
+    }
+    //Does this work?
+    latestPoses = new ArrayList<EstimatedRobotPose>(list);
+
+    if(visionFieldEnabled) {
+      if(latestPoses.size() > 0) {
+        EstimatedRobotPose newestPose = latestPoses.get(0);
+        for(EstimatedRobotPose pose : latestPoses) {
+          if(pose.timestampSeconds > newestPose.timestampSeconds) {
+            newestPose = pose;
+          }
+        }
+        visionField.setRobotPose(newestPose.estimatedPose.toPose2d());
+      }
+    }
   }
 }
