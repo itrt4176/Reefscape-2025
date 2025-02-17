@@ -27,35 +27,37 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ArmJoint shoulderJoint = new ArmJoint(
-    ShoulderJointConstants.motorPort,
-    ShoulderJointConstants.encoderPort,
-    ShoulderJointConstants.encoderOffset,
-    ShoulderJointConstants.pidConfig,
-    ShoulderJointConstants.angleMap,
-    "Shoulder Joint"
-  );
-
-  // private final ArmJoint elbowJoint = new ArmJoint(
-  //   ElbowJointConstants.motorPort,
-  //   ElbowJointConstants.encoderPort,
-  //   ElbowJointConstants.encoderOffset,
-  //   ElbowJointConstants.pidConfig,
-  //   ElbowJointConstants.angleMap,
-  //   "Elbow Joint"
+  // private final ArmJoint shoulderJoint = new ArmJoint(
+  //   ShoulderJointConstants.motorPort,
+  //   ShoulderJointConstants.encoderPort,
+  //   ShoulderJointConstants.encoderOffset,
+  //   ShoulderJointConstants.pidConfig,
+  //   ShoulderJointConstants.angleMap,
+  //   "Shoulder Joint",
+  //   false
   // );
 
-  private final Command joint1TwoHundred = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_ONE);
+  private final ArmJoint elbowJoint = new ArmJoint(
+    ElbowJointConstants.motorPort,
+    ElbowJointConstants.encoderPort,
+    ElbowJointConstants.encoderOffset,
+    ElbowJointConstants.pidConfig,
+    ElbowJointConstants.angleMap,
+    "Elbow Joint",
+    false
+  );
 
-  private final Command fullyErect1 = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
+  // private final Command joint1TwoHundred = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_ONE);
+
+  // private final Command fullyErect1 = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
   // private final Command fullyErect2 = elbowJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
 
-  private final Command intakeJoint1 = shoulderJoint.setPosition(ArmJoint.Position.INTAKE);
+  // private final Command intakeJoint1 = shoulderJoint.setPosition(ArmJoint.Position.INTAKE);
 
   // private final Command intakeJoint2 = elbowJoint.setPosition(ArmJoint.Position.INTAKE);
 
-  private final Command stow1 = shoulderJoint.setPosition(ArmJoint.Position.STOW);
+  // private final Command stow1 = shoulderJoint.setPosition(ArmJoint.Position.STOW);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -64,8 +66,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
-    shoulderJoint.setEnabled(false);
-    // elbowJoint.setEnabled(false);
+    // shoulderJoint.setEnabled(true);
+    elbowJoint.setEnabled(true);
 
     // Configure the trigger bindings
     configureBindings();
@@ -112,19 +114,19 @@ public class RobotContainer {
 
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
-    m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    m_driverController.rightBumper().onTrue(fullyErect1);
+    // m_driverController.rightBumper().onTrue(fullyErect1);
     // m_driverController.leftBumper().onTrue(fullyErect2);
 
   }
@@ -136,6 +138,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    // return Autos.exampleAuto(m_exampleSubsystem);
+    return elbowJoint.setPosition(ArmJoint.Position.STOW);
   }
 }

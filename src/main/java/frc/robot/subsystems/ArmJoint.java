@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -16,6 +17,7 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -83,12 +85,18 @@ public class ArmJoint extends SubsystemBase {
   private boolean sysIdRunning;
 
 /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name) {
+  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
     super(name);
 
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
     jointEncoder = new AnalogEncoder(encoderId);
     this.encoderOffset = encoderOffset;
+
+    SparkMaxConfig jointConfig = new SparkMaxConfig(); 
+
+    jointConfig.inverted(isInverted);
+
+    jointMotor.configure(jointConfig, null, null);
 
     this.angleMap = angleMap;
 
@@ -127,7 +135,7 @@ public class ArmJoint extends SubsystemBase {
 
     idRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(
-        Volts.of(2).per(Second),
+        Volts.of(1).per(Second),
         Volts.of(8),
         null
       ),
@@ -166,6 +174,8 @@ public class ArmJoint extends SubsystemBase {
     angle.mut_replace(newAngle, Degrees);
 
     timestamp = newTimestamp;
+
+
   }
 
   public Angle getGoal() {
@@ -184,6 +194,7 @@ public class ArmJoint extends SubsystemBase {
     return runOnce(() -> {
       goal.mut_replace(angleMap.get(position), Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+      pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
     }).withName(position.toString());
   }
 
@@ -199,6 +210,10 @@ public class ArmJoint extends SubsystemBase {
   private void moveJoint() {
     double motorVoltage = pid.calculate(angle.in(Rotations))
         + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity);
+
+        SmartDashboard.putNumber(getName() + " Goal", goal.in(Degrees));
+        SmartDashboard.putNumber(getName() + " Position Setpoint", pid.getSetpoint().position * 360.0);
+        SmartDashboard.putNumber(getName() + " Velocity Setpoint", pid.getSetpoint().velocity * 360.0);
 
     if (enabled && !sysIdRunning && !pid.atGoal()) {
       jointMotor.setVoltage(motorVoltage);

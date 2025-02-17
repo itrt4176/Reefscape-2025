@@ -25,19 +25,19 @@ public final class Constants {
   public static class ShoulderJointConstants {
     public static final int motorPort = 17;
     public static final int encoderPort = 0;
-    public static final double encoderOffset = 0.0;
+    public static final double encoderOffset = 81.0;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
-      0.016,
+      42.0,
       0.0,
-      0.001, 
-      80.0, 
+      7.265, 
       160.0, 
+      320.0, 
       0.5, 
-      1.1, 
-      1.2, 
-      1.3,
-      1.4, 
+      0.60459, 
+      0.016192, 
+      13.975,
+      5.1899, 
       0.02
     );
 
@@ -45,43 +45,43 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 266.2);
-      angleMap.put(ArmJoint.Position.INTAKE, 162.0);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 200.0);
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 190.0);
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 170.85);
+      angleMap.put(ArmJoint.Position.STOW, 185.2);
+      angleMap.put(ArmJoint.Position.INTAKE, 81.0);//maybe
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 119.0);//placeholder
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 137.5);//placeholder for testing
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 99.0);//placeholder
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 89.85);
     }
   }
 
   public static class ElbowJointConstants {
     public static final int motorPort = 41;
     public static final int encoderPort = 1;
-    public static final double encoderOffset = 0.0;
+    public static final double encoderOffset = 99.0;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
-      0.016,
+      54.392,
       0.0,
-      0.0, 
-      80.0, 
+      0.45087, 
       160.0, 
+      320.0, 
       0.5, 
-      1.1, 
-      1.2, 
-      1.3,
-      1.4, 
+      0.18808, 
+      .025588, 
+      23.908,
+      2.5362, 
       0.02
     );
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 7.9);
+      angleMap.put(ArmJoint.Position.STOW, 0.0);
       angleMap.put(ArmJoint.Position.INTAKE, 306.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 160.0);
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 170.0);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 90.0);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 180.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 189.7);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 180.0);
     }
   }
 }
