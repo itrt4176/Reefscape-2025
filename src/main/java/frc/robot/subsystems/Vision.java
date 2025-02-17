@@ -21,7 +21,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.VisionConstants.*;
 
 public class Vision extends SubsystemBase {
 
@@ -71,6 +70,14 @@ public class Vision extends SubsystemBase {
       optTarget = Optional.of(latestResults.get(latestResults.size() - 1).getBestTarget());
     }
     return optTarget;
+  }
+
+  /**
+   * Sets the reference pose for use in the fallback strategy.
+   * @param pose Pose2d
+   */
+  public void setReferencePose(Pose2d pose) {
+    photonPoseEstimator.setReferencePose(pose);
   }
 
   @Override
