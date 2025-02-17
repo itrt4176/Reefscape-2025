@@ -52,15 +52,16 @@ public class Vision extends SubsystemBase {
    * 
    * @return A list of poses from the latest results
    */
-  public Optional<ArrayList<EstimatedRobotPose>> getEstimatedPoses() {
-    ArrayList<EstimatedRobotPose> optList = new ArrayList<EstimatedRobotPose>();
+  public ArrayList<EstimatedRobotPose> getEstimatedPoses() {
+    ArrayList<EstimatedRobotPose> list = new ArrayList<EstimatedRobotPose>(20);
     for(PhotonPipelineResult result : latestResults) {
+      //Add matrices
       Optional<EstimatedRobotPose> optPose = photonPoseEstimator.update(result);
       if (optPose.isPresent()) {
-        optList.add(optPose.get());
+        list.add(optPose.get());
       }
     }
-    return Optional.of(optList);
+    return list;
   }
 
   //Returns the best target of the latest result (if it exists)
@@ -76,17 +77,5 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     latestResults = camera.getAllUnreadResults();
-
-
-    // Optional<PhotonPipelineResult> optResult = getResult();
-    // EstimatedRobotPose estimatedPose = null;
-
-    // if (optResult.isPresent()) {
-    //   PhotonPipelineResult result = optResult.get();
-    //   Optional<EstimatedRobotPose> optEstimatedPose = photonPoseEstimator.update(result);
-    //   if (optEstimatedPose.isPresent()) {
-    //     estimatedPose = optEstimatedPose.get();
-    //   }
-    // }
   }
 }
