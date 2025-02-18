@@ -30,9 +30,9 @@ public final class Constants {
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       42.0,
       0.0,
-      7.265, 
-      160.0, 
-      320.0, 
+      8.165, 
+      120.0, 
+      180.0, 
       0.5, 
       0.60459, 
       0.016192, 
@@ -45,7 +45,7 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 185.2);
+      angleMap.put(ArmJoint.Position.STOW, 165.0);
       angleMap.put(ArmJoint.Position.INTAKE, 81.0);//maybe
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);//placeholder
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);//placeholder for testing
@@ -62,9 +62,9 @@ public final class Constants {
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       54.392,
       0.0,
-      0.45087, 
-      160.0, 
-      320.0, 
+      1.45087, 
+      120.0, 
+      180.0, 
       0.5, 
       0.18808, 
       .025588, 
@@ -76,7 +76,7 @@ public final class Constants {
 
     static {
       // PLACEHOLDERS
-      angleMap.put(ArmJoint.Position.STOW, 0.0);
+      angleMap.put(ArmJoint.Position.STOW, 20.0);
       angleMap.put(ArmJoint.Position.INTAKE, 306.0);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 14.3);

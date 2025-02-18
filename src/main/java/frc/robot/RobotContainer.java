@@ -11,6 +11,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmJoint;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ArmJoint.Position;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -122,14 +123,33 @@ public class RobotContainer {
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // m_driverController.rightBumper().onTrue(fullyErect1);
     // m_driverController.leftBumper().onTrue(fullyErect2);
 
+    m_driverController.a().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_ONE)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
+    );
+
+    m_driverController.b().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_TWO)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+    );
+
+    m_driverController.x().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_THREE)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
+    );
+
+    m_driverController.y().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_FOUR)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+    );
   }
 
   /**

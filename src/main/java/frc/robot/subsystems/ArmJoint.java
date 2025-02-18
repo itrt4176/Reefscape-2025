@@ -132,6 +132,8 @@ public class ArmJoint extends SubsystemBase {
       pidConfig.loopTime()
     );
 
+    pid.setGoal(goal.in(Rotations));
+
     atGoal = new Trigger(pid::atGoal);
 
     setDefaultCommand(run(this::moveJoint));
