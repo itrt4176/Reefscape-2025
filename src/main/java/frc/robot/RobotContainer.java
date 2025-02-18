@@ -27,20 +27,21 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  // private final ArmJoint shoulderJoint = new ArmJoint(
-  //   ShoulderJointConstants.motorPort,
-  //   ShoulderJointConstants.encoderPort,
-  //   ShoulderJointConstants.encoderOffset,
-  //   ShoulderJointConstants.pidConfig,
-  //   ShoulderJointConstants.angleMap,
-  //   "Shoulder Joint",
-  //   false
-  // );
+  private final ArmJoint shoulderJoint = new ArmJoint(
+    ShoulderJointConstants.motorPort,
+    ShoulderJointConstants.encoderPort,
+    ShoulderJointConstants.encoderOffset,
+    ShoulderJointConstants.pidConfig,
+    ShoulderJointConstants.angleMap,
+    "Shoulder Joint",
+    false
+  );
 
   private final ArmJoint elbowJoint = new ArmJoint(
     ElbowJointConstants.motorPort,
     ElbowJointConstants.encoderPort,
     ElbowJointConstants.encoderOffset,
+    () -> shoulderJoint.getAngle().magnitude(),
     ElbowJointConstants.pidConfig,
     ElbowJointConstants.angleMap,
     "Elbow Joint",

@@ -14,6 +14,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -64,6 +65,7 @@ public class ArmJoint extends SubsystemBase {
   private double encoderOffset;
 
   private MutAngle angle;
+  private DoubleSupplier relativeToAngle;
   private MutAngularVelocity velocity;
   private MutAngularAcceleration acceleration;
   private double timestamp;
@@ -85,12 +87,13 @@ public class ArmJoint extends SubsystemBase {
   private boolean sysIdRunning;
 
 /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
+  public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
     super(name);
 
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
     jointEncoder = new AnalogEncoder(encoderId);
     this.encoderOffset = encoderOffset;
+    this.relativeToAngle = relativeToAngle;
 
     SparkMaxConfig jointConfig = new SparkMaxConfig(); 
 
@@ -158,6 +161,10 @@ public class ArmJoint extends SubsystemBase {
     sysIdRunning = false;
   }
 
+  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
+    this(motorId, encoderId, encoderOffset, () -> 0, pidConfig, angleMap, name, isInverted);
+  }
+
   public Angle getAngle() {
     return angle;
   }
@@ -165,7 +172,7 @@ public class ArmJoint extends SubsystemBase {
   private void updateAngle() {
     double newTimestamp = Timer.getFPGATimestamp();
     double period = newTimestamp - timestamp;
-    double newAngle = jointEncoder.get() * 360.0 - encoderOffset;
+    double newAngle = jointEncoder.get() * 360.0 - encoderOffset + relativeToAngle.getAsDouble();
     double newVelocity = (newAngle - angle.in(Degrees)) / period;
     double newAcceleration = (newVelocity - velocity.in(DegreesPerSecond)) / period;
 
