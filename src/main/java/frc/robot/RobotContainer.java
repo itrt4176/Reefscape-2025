@@ -68,7 +68,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
-    // shoulderJoint.setEnabled(true);
+    shoulderJoint.setEnabled(true);
     elbowJoint.setEnabled(true);
 
     // Configure the trigger bindings
@@ -137,8 +137,8 @@ public class RobotContainer {
     );
 
     m_driverController.b().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_TWO)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+      shoulderJoint.setPosition(Position.INTAKE)
+        .alongWith(elbowJoint.setPosition(Position.INTAKE))
     );
 
     m_driverController.x().onTrue(
@@ -159,7 +159,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
-    return elbowJoint.setPosition(ArmJoint.Position.STOW);
+    return Autos.exampleAuto(m_exampleSubsystem);
+    // return elbowJoint.setPosition(ArmJoint.Position.STOW);
   }
 }
