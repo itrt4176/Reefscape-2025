@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +57,7 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveSubsystem extends SubsystemBase {
 
@@ -76,6 +78,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * PhotonVision class to keep an accurate odometry.
    */
   // private Vision vision;
+
+  private final Field2d d_field = new Field2d();
+
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -135,6 +140,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     zeroGyro();
     setupPathPlanner();
+    SmartDashboard.putData("drive_field",d_field);
   }
 
   /**
@@ -168,6 +174,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Swerve Heading", getHeading().getDegrees());
+    d_field.setRobotPose(getPose());
   }
 
   @Override
