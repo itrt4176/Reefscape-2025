@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Claw;
 
@@ -17,7 +19,8 @@ public class ClawSetArcAngle extends Command {
 
   private double speed;
 
-  private PIDController pid = new PIDController(0.03, 0.000, 0.0028); //test for vals
+  private PIDController pid = new PIDController(0.012, 0.000, 0.00); //test for vals
+
 
   /** Creates a new ArmSetArcAngle. */
   public ClawSetArcAngle(Claw claw, double angle) {
@@ -37,7 +40,7 @@ public class ClawSetArcAngle extends Command {
   public void execute() {
     speed = pid.calculate(claw.getArcDegrees(), angle);
 
-    claw.setArcingSpeed(-speed);
+    // claw.setArcingSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcingSpeed;
 import frc.robot.commands.ClawSetArcAngle;
@@ -89,11 +90,13 @@ public class RobotContainer {
 
     // driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
 
-    driverController.rightBumper().onTrue(reverseArc);
-    driverController.leftBumper().onTrue(arcing);
+    // driverController.rightBumper().onTrue(reverseArc);
+    // driverController.leftBumper().onTrue(arcing);
     // driverController.a().onTrue(rotate);
 
-    // driverController.x().onTrue(twoThirty);
+    driverController.x().onTrue(claw.setNewAngle(ClawConstants.STOW));
+
+    driverController.a().onTrue(claw.setNewAngle(ClawConstants.INTAKE));
 
     // driverController.y().onTrue(ninetyRot);
 
