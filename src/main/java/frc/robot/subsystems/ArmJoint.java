@@ -224,8 +224,12 @@ public class ArmJoint extends SubsystemBase {
         SmartDashboard.putNumber(getName() + " Position Setpoint", pid.getSetpoint().position * 360.0);
         SmartDashboard.putNumber(getName() + " Velocity Setpoint", pid.getSetpoint().velocity * 360.0);
 
-    if (enabled && !sysIdRunning && !pid.atGoal()) {
-      jointMotor.setVoltage(motorVoltage);
+    if (!sysIdRunning) {
+      if (enabled && !pid.atGoal()) {
+        jointMotor.setVoltage(motorVoltage);
+      } else {
+        jointMotor.set(0.0);
+      }
     }
   }
 
