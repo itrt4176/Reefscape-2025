@@ -17,6 +17,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +32,7 @@ public class Vision extends SubsystemBase {
 
   private List<PhotonPipelineResult> latestResults;
   private ArrayList<EstimatedRobotPose> latestPoses;
+  private int closestId = 0;
 
   private final static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
@@ -73,13 +75,19 @@ public class Vision extends SubsystemBase {
   //   return list;
   // }
 
-  //Returns the best target of the latest result (if it exists)
+  /**Returns the best target of the latest result (if it exists)
+   * 
+  */
   public Optional<PhotonTrackedTarget> getTarget() {
     Optional<PhotonTrackedTarget> optTarget = null;
     if (latestResults.size() > 0) {
       optTarget = Optional.of(latestResults.get(latestResults.size() - 1).getBestTarget());
     }
     return optTarget;
+  }
+
+  public int getClosestId() {
+    return closestId;
   }
 
   /**
@@ -94,6 +102,23 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     latestResults = camera.getAllUnreadResults();
+
+    if(latestResults.size() > 0) {
+      List<PhotonTrackedTarget> targets = latestResults.get(latestResults.size() - 1).getTargets();
+      if(targets.size() > 0) {
+        PhotonTrackedTarget closestTarget = targets.get(0);
+        for(PhotonTrackedTarget target : targets) {
+          if(target.getBestCameraToTarget().getTranslation().getNorm() < closestTarget.getBestCameraToTarget().getTranslation().getNorm()) {
+            closestTarget = target;
+          }
+        }
+        closestId = closestTarget.getFiducialId();
+      } else {
+        closestId = 0;
+      }
+    } else {
+      closestId = 0;
+    }
 
     ArrayList<EstimatedRobotPose> list = new ArrayList<EstimatedRobotPose>(20);
     for(PhotonPipelineResult result : latestResults) {
