@@ -17,8 +17,8 @@ public class ArcingSpeed extends Command {
 
   double speed;
 
-  PIDController leftPid = new PIDController(0.01, 0.0, 0.0);
-  PIDController rightPid = new PIDController(0.01, 0.0, 0.0);
+  PIDController leftPid = new PIDController(0.001, 0.0, 0.0);
+  PIDController rightPid = new PIDController(0.001, 0.0, 0.0);
 
   /** Creates a new ArcingSpeed. */
   public ArcingSpeed(Claw claw, double speed) {

@@ -32,9 +32,9 @@ public class RobotContainer {
 
   private final Claw claw = new Claw();
 
-  private final ArcingSpeed arcing = new ArcingSpeed(claw, 0.1);
+  private final ArcingSpeed arcing = new ArcingSpeed(claw, 0.05);
 
-  private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.1);
+  private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.05);
 
   private final RotationSpeed rotate = new RotationSpeed(claw, .3);
 
@@ -85,17 +85,17 @@ public class RobotContainer {
 
   // driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.3)));
     
-    driverController.a().onTrue(homeWrist);
+    // driverController.a().onTrue(homeWrist);
 
-    driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
+    // driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
 
     driverController.rightBumper().onTrue(reverseArc);
     driverController.leftBumper().onTrue(arcing);
     // driverController.a().onTrue(rotate);
 
-    driverController.x().onTrue(twoThirty);
+    // driverController.x().onTrue(twoThirty);
 
-    driverController.y().onTrue(ninetyRot);
+    // driverController.y().onTrue(ninetyRot);
 
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));
