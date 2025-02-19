@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -18,8 +19,8 @@ public class RotationSetpoint extends Command {
   double leftSpeed;
   double rightSpeed;
 
-  PIDController leftpid = new PIDController(0.035, 0.0, 0.0065);
-  PIDController rightpid = new PIDController(0.035, 0.0, 0.0065);
+  PIDController leftpid = new PIDController(0.02, 0.0, 0.00);
+  PIDController rightpid = new PIDController(0.02, 0.0, 0.00);
 
   
   /** Creates a new RotationSetpoint. */
@@ -40,7 +41,7 @@ public class RotationSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double setpoint = angle - 10.0;
+    double setpoint = (angle/2.0);
 
     leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees(), setpoint);
     claw.setLeftSpeed(leftSpeed);

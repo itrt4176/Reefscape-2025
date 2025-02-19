@@ -5,10 +5,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,11 +47,11 @@ public class Claw extends SubsystemBase {
     rightConfig.inverted(true);
 
 
-    leftMotor.configure(leftConfig, null, null);
-    rightMotor.configure(rightConfig, null, null);
+    leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
 
-    arcThrift = new AnalogEncoder(0);
+    arcThrift = new AnalogEncoder(2);
 
     rotationInput = new DigitalInput(0);
   }
@@ -79,13 +82,13 @@ public class Claw extends SubsystemBase {
 
   public double getLeftRotationDegrees()
   {
-    return leftMotor.getEncoder().getPosition();
+    return leftMotor.getEncoder().getPosition() * 2;
 
   }
 
   public double getRightRotationDegrees()
   {
-    return rightMotor.getEncoder().getPosition();
+    return rightMotor.getEncoder().getPosition() * 2;
   }
 
   public double getLeftRotationSpeed()
@@ -98,6 +101,8 @@ public class Claw extends SubsystemBase {
   {
     return rightMotor.getEncoder().getVelocity() / 11000.0;
   }
+
+  
 
   public void setRightSpeed(double speed)
   {

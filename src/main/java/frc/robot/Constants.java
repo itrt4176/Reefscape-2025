@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+
+  public static class ClawConstants {
+    public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
+  }
 }
