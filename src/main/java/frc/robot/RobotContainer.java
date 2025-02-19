@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcingSpeed;
 import frc.robot.commands.ClawSetArcAngle;
+import frc.robot.commands.CrazyShit;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HomeWrist;
@@ -38,9 +39,11 @@ public class RobotContainer {
 
   private final RotationSpeed rotate = new RotationSpeed(claw, .3);
 
-  private final ClawSetArcAngle twoThirty = new ClawSetArcAngle(claw, 205);
+  private final ClawSetArcAngle twoThirty = new ClawSetArcAngle(claw, 190);
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
+
+  private final CrazyShit wth = new CrazyShit(claw, 90, 180);
 
   private final HomeWrist homeWrist = new HomeWrist(claw);
 
@@ -93,9 +96,9 @@ public class RobotContainer {
     // driverController.leftBumper().onTrue(arcing);
     // driverController.a().onTrue(rotate);
 
-    // driverController.x().onTrue(twoThirty);
+    driverController.x().onTrue(twoThirty);
 
-    driverController.y().onTrue(ninetyRot);
+    driverController.y().onTrue(wth);
 
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));

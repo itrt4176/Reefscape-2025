@@ -37,7 +37,7 @@ public class ClawSetArcAngle extends Command {
   public void execute() {
     speed = pid.calculate(claw.getArcDegrees(), angle);
 
-    claw.setArcingSpeed(-speed);
+    claw.setArcingSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
