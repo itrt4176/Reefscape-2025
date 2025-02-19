@@ -96,9 +96,16 @@ public class RobotContainer {
     // driverController.leftBumper().onTrue(arcing);
     // driverController.a().onTrue(rotate);
 
-    driverController.x().onTrue(twoThirty);
+    driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+
+    // driverController.x().onTrue(twoThirty);
 
     driverController.y().onTrue(wth);
+
+    // driverController.x().onTrue(new InstantCommand(() -> claw.setGripSpeed(0.2)));
+    // driverController.y().onTrue(new InstantCommand(() -> claw.setGripSpeed(-0.2)));
+
+
 
     // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
     // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));

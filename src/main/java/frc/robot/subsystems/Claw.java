@@ -29,6 +29,8 @@ public class Claw extends SubsystemBase {
    * */ 
   SparkMax rightMotor;
 
+  private SparkMax gripMotor;
+
   AnalogEncoder arcThrift;
 
   SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -40,6 +42,8 @@ public class Claw extends SubsystemBase {
   public Claw() {
     rightMotor = new SparkMax(3, MotorType.kBrushless);
     leftMotor = new SparkMax(4, MotorType.kBrushless);
+
+    gripMotor = new SparkMax(5, MotorType.kBrushless);
 
     leftConfig.idleMode(IdleMode.kBrake);
     rightConfig.idleMode(IdleMode.kBrake);
@@ -61,6 +65,11 @@ public class Claw extends SubsystemBase {
     return arcThrift.get() * 360.0;
 
     
+  }
+
+  public void setGripSpeed(double speed)
+  {
+    gripMotor.set(speed);
   }
 
   public void setArcingSpeed(double speed)

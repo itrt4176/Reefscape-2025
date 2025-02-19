@@ -16,7 +16,7 @@ public class CrazyShit extends Command {
   double angleRot; 
   double angleArc;
 
-  double leftSpeed;
+  double rotSpeed;
   double rightSpeed;
 
   double arcSpeed;
@@ -26,7 +26,7 @@ public class CrazyShit extends Command {
   PIDController leftpid = new PIDController(0.02, 0.0, 0.00);
   PIDController rightpid = new PIDController(0.02, 0.0, 0.00);
 
-  private PIDController pid = new PIDController(0.012, 0.000, 0.0);
+  private PIDController pid = new PIDController(0.014, 0.000, 0.0);
 
 
   /** Creates a new CrazyShit. */
@@ -56,16 +56,10 @@ public class CrazyShit extends Command {
 
     if(rotationTime)
     {
-      double setpoint = (angleRot/2.0);
+      rotSpeed = leftpid.calculate(claw.getLeftRotationDegrees() - claw.getRightRotationDegrees(), angleRot);
 
-    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees(), setpoint);
-    claw.setLeftSpeed(leftSpeed);
-
-
-    rightSpeed = rightpid.calculate(claw.getRightRotationDegrees(), -setpoint);
-    claw.setRightSpeed(rightSpeed);
-
-    rotationTime = false;
+      claw.setLeftSpeed(rotSpeed);
+      claw.setRightSpeed(-rotSpeed);
     }
     else
     {

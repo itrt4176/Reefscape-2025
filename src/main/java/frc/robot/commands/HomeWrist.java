@@ -15,7 +15,6 @@ public class HomeWrist extends Command {
   double leftSpeed;
   double rightSpeed;
 
-
   PIDController leftPid = new PIDController(0.01, 0.0, 0.0);
   PIDController rightPid = new PIDController(0.01, 0.0, 0.0);
 
@@ -35,12 +34,16 @@ public class HomeWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), -.4);
-    claw.setLeftSpeed(-(.4 + leftSpeed));
 
-    rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), .4);
+
+    // leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), -.4);
+    claw.setLeftSpeed(-(.4));
+
+    // rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), .4);
     
-    claw.setRightSpeed((.4 + rightSpeed));
+    claw.setRightSpeed((.4));
+
+
 
   }
   // Called once the command ends or is interrupted.
