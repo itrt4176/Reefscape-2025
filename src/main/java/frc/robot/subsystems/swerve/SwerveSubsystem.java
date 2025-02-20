@@ -174,6 +174,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Swerve Heading", getHeading().getDegrees());
+    
     d_field.setRobotPose(getPose());
   }
 
