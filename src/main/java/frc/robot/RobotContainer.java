@@ -49,18 +49,6 @@ public class RobotContainer {
     false
   );
 
-  // private final Command joint1TwoHundred = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_ONE);
-
-  // private final Command fullyErect1 = shoulderJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
-
-  // private final Command fullyErect2 = elbowJoint.setPosition(ArmJoint.Position.LEVEL_FOUR);
-
-  // private final Command intakeJoint1 = shoulderJoint.setPosition(ArmJoint.Position.INTAKE);
-
-  // private final Command intakeJoint2 = elbowJoint.setPosition(ArmJoint.Position.INTAKE);
-
-  // private final Command stow1 = shoulderJoint.setPosition(ArmJoint.Position.STOW);
-
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -91,29 +79,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
-    // m_driverController.a().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(0.3)));
-
-    // m_driverController.y().whileTrue(new InstantCommand(() -> arm.setJoint2Speed(-0.3)));
-
-    // m_driverController.rightBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(.05)));
-    // m_driverController.leftBumper().whileTrue(new InstantCommand(() -> arm.setJoint1Speed(-0.05)));
-
-    // m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
-    // m_driverController.x().onTrue(new InstantCommand(() -> arm.setJoint2Speed(0)));
-
-
-
-
-    // m_driverController.a().onTrue(joint1TwoHundred);
-    // m_driverController.b().onTrue(new InstantCommand(() -> arm.setJoint1Speed(0)));
-
-
-    // m_driverController.y().onTrue(intakeJoint1);
-
-    // m_driverController.a().onTrue(intakeJoint2);
-
+    
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
     // m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -128,8 +94,6 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // m_driverController.rightBumper().onTrue(fullyErect1);
-    // m_driverController.leftBumper().onTrue(fullyErect2);
 
     m_driverController.a().onTrue(
       shoulderJoint.setPosition(Position.LEVEL_ONE)
