@@ -112,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                             // for simulations since it causes
                                             // discrepancies not seen in real
                                             // life.
-    swerveDrive.setAngularVelocityCompensation(true, true, 0.1); // Correct for
+    swerveDrive.setAngularVelocityCompensation(false, true, 0.15); // Correct for
                                                                  // skew that
                                                                  // gets worse
                                                                  // as angular
