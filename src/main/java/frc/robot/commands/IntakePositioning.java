@@ -17,16 +17,14 @@ public class IntakePositioning extends Command {
 
   double angle;
 
-  double intakeSpeed;
 
-  PIDController pid = new PIDController(0.008, 0.0, 0.0);
+  PIDController pid = new PIDController(0.01, 0.0, 0.0);
 
   /** Creates a new IntakePositioning. */
-  public IntakePositioning(Intake intake, double angle, double intakeSpeed) {
+  public IntakePositioning(Intake intake, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angle = angle;
     this.intake = intake;
-    this.intakeSpeed = intakeSpeed;
 
     addRequirements(intake);
 
@@ -42,7 +40,6 @@ public class IntakePositioning extends Command {
     speed = pid.calculate(intake.getPivotDegrees(), angle);
 
     intake.setPivotSpeed(speed);
-    intake.setSpeed(intakeSpeed);
   }
 
   // Called once the command ends or is interrupted.

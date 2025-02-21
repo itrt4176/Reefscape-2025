@@ -11,6 +11,7 @@ import frc.robot.commands.IntakePositioning;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,8 +28,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final Intake intake = new Intake();
-  private final IntakePositioning intakePositionCommand1 = new IntakePositioning(intake, 242, 0.05);
-  private final IntakePositioning intakePositionCommand2 = new IntakePositioning(intake, 205, 0.5);
+  private final IntakePositioning intakePositionCommand1 = new IntakePositioning(intake, 185);
+  private final IntakePositioning intakePositionCommand2 = new IntakePositioning(intake, 205);
 
 
 
@@ -66,6 +67,9 @@ public class RobotContainer {
 
     driverController.b().onTrue(intakePositionCommand1);
     driverController.a().onTrue(intakePositionCommand2);
+
+    driverController.x().whileTrue(Commands.startEnd(() -> intake.setSpeed(0.2), () -> intake.setSpeed(0.0), intake));
+
 
   }
 
