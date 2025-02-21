@@ -116,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                             // for simulations since it causes
                                             // discrepancies not seen in real
                                             // life.
-    swerveDrive.setAngularVelocityCompensation(false, true, 0.15); // Correct for
+    swerveDrive.setAngularVelocityCompensation(false, false, 0.15); // Correct for
                                                                  // skew that
                                                                  // gets worse
                                                                  // as angular
@@ -282,12 +282,9 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param pathName PathPlanner path name.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
-
-  /*
-   * public Command getAutonomousCommand(String pathName) { // Create a path
-   * following command using AutoBuilder. This will also trigger event markers.
-   * return new PathPlannerAuto(pathName); }
-   */
+  public Command getAutonomousCommand(String pathName) {
+    return new PathPlannerAuto(pathName); 
+  }
 
   /**
    * Use PathPlanner Path finding to go to a point on the field.
@@ -372,33 +369,19 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return SysId Drive Command
    */
+  
   public Command sysIdDriveMotorCommand() {
     return SwerveDriveTest.generateSysIdCommand(
       SwerveDriveTest.setDriveSysIdRoutine(
         new Config(),
         this,
         swerveDrive,
-        6,
+        12,
         false
       ),
       3.0,
       5.0,
-      2.25
-    );
-  }
-
-  public Command sysIdDriveSpinCommand() {
-    return SwerveDriveTest.generateSysIdCommand(
-      SwerveDriveTest.setDriveSysIdRoutine(
-        new Config(),
-        this,
-        swerveDrive,
-        3,
-        true
-      ),
-      3.0,
-      3.0,
-      2.0
+      3.0
     );
   }
 

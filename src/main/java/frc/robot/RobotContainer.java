@@ -230,7 +230,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return drivebase.getAutonomousCommand("Testing Auto");
   }
 
   private static double applyAllianceInversion(double joystickInput) {
