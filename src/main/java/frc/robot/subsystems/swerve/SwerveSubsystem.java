@@ -378,12 +378,27 @@ public class SwerveSubsystem extends SubsystemBase {
         new Config(),
         this,
         swerveDrive,
-        12,
+        6,
         false
       ),
       3.0,
       5.0,
-      3.0
+      2.25
+    );
+  }
+
+  public Command sysIdDriveSpinCommand() {
+    return SwerveDriveTest.generateSysIdCommand(
+      SwerveDriveTest.setDriveSysIdRoutine(
+        new Config(),
+        this,
+        swerveDrive,
+        3,
+        true
+      ),
+      3.0,
+      3.0,
+      2.0
     );
   }
 
