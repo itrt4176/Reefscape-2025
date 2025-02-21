@@ -98,12 +98,12 @@ public class RobotContainer {
 
     driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
 
-    // driverController.x().onTrue(twoThirty);
+    driverController.x().onTrue(twoThirty);
 
     driverController.y().onTrue(wth);
 
-    // driverController.x().onTrue(new InstantCommand(() -> claw.setGripSpeed(0.2)));
-    // driverController.y().onTrue(new InstantCommand(() -> claw.setGripSpeed(-0.2)));
+    // driverController.x().onTrue(new InstantCommand(() -> claw.setGripSpeed(0.4)));
+    // driverController.y().onTrue(new InstantCommand(() -> claw.setGripSpeed(-0.4)));
 
 
 
