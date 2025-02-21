@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ShoulderJointConstants;
+import frc.robot.Constants.ElbowJointConstants;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,12 +23,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ArmJoint;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -38,6 +44,27 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
+  private final ArmJoint shoulderJoint = new ArmJoint(
+    ShoulderJointConstants.motorPort,
+    ShoulderJointConstants.encoderPort,
+    ShoulderJointConstants.encoderOffset,
+    ShoulderJointConstants.pidConfig,
+    ShoulderJointConstants.angleMap,
+    "Shoulder Joint",
+    false
+  );
+
+  private final ArmJoint elbowJoint = new ArmJoint(
+    ElbowJointConstants.motorPort,
+    ElbowJointConstants.encoderPort,
+    ElbowJointConstants.encoderOffset,
+    () -> shoulderJoint.getAngle().magnitude(),
+    ElbowJointConstants.pidConfig,
+    ElbowJointConstants.angleMap,
+    "Elbow Joint",
+    false
+  );
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -89,6 +116,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // Disable the arm joints for tuning
+    shoulderJoint.setEnabled(true);
+    elbowJoint.setEnabled(true);
+
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -122,31 +153,42 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
+    
+    // Shoulder joint sysid routines
+    // Hold down each button to perform its routine
+    // m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-   
-    // Command driveFieldOrientedDirectAngle = drivebase
-    //     .driveFieldOriented(driveDirectAngle);
-    // Command driveFieldOrientedAnglularVelocity = drivebase
-    //     .driveFieldOriented(driveAngularVelocity);
-    // Command driveRobotOrientedAngularVelocity = drivebase
-    //     .driveFieldOriented(driveRobotOriented);
-    // Command driveSetpointGen = drivebase
-    //     .driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
-    // Command driveFieldOrientedDirectAngleKeyboard = drivebase
-    //     .driveFieldOriented(driveDirectAngleKeyboard);
-    // Command driveFieldOrientedAnglularVelocityKeyboard = drivebase
-    //     .driveFieldOriented(driveAngularVelocityKeyboard);
-    // Command driveSetpointGenKeyboard = drivebase
-    //     .driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
+    // Elbow joint sysid routines
+    // Hold down each button to perform its routine
+    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 
+    m_driverController.a().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_ONE)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
+    );
 
-        
+    m_driverController.b().onTrue(
+      shoulderJoint.setPosition(Position.INTAKE)
+        .alongWith(elbowJoint.setPosition(Position.INTAKE))
+    );
 
+    m_driverController.x().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_THREE)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
+    );
 
-    }
-
-  
+    m_driverController.y().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_FOUR)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+    );
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -156,6 +198,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
+    // return elbowJoint.setPosition(ArmJoint.Position.STOW);
   }
 
   public void setMotorBrake(boolean brake) { drivebase.setMotorBrake(brake); }
