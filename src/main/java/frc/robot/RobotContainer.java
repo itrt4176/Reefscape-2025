@@ -131,8 +131,8 @@ public class RobotContainer {
     //Apply inversion for inversion later
     Command joystickDrive = drivebase.driveCommand(
                     () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1));
+                    () -> MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), 
+                    () -> MathUtil.applyDeadband(m_driverController.getRightX(), 0.1));
 
 
     drivebase.setDefaultCommand(joystickDrive);
@@ -178,15 +178,15 @@ public class RobotContainer {
   //       .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
   //   );
 
-  //   m_driverController.b().onTrue(
-  //     shoulderJoint.setPosition(Position.INTAKE)
-  //       .alongWith(elbowJoint.setPosition(Position.INTAKE))
-  //   );
+    // m_driverController.b().onTrue(
+    //   shoulderJoint.setPosition(Position.INTAKE)
+    //     .alongWith(elbowJoint.setPosition(Position.INTAKE))
+    // );
 
-  //   m_driverController.x().onTrue(
-  //     shoulderJoint.setPosition(Position.LEVEL_THREE)
-  //       .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
-  //   );
+    m_driverController.x().onTrue(
+      shoulderJoint.setPosition(Position.CLIMB)
+        .alongWith(elbowJoint.setPosition(Position.CLIMB))
+    );
 
   //   m_driverController.y().onTrue(
   //     shoulderJoint.setPosition(Position.LEVEL_FOUR)
@@ -194,6 +194,8 @@ public class RobotContainer {
   //   );
 
     m_driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(0.1), () -> climber.setWinchSpeed(0), climber));
+    m_driverController.y().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-0.1), () -> climber.setWinchSpeed(0), climber));
+
 
   }
 
