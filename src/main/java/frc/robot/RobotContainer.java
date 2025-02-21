@@ -24,12 +24,14 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmJoint;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -65,6 +67,8 @@ public class RobotContainer {
     "Elbow Joint",
     false
   );
+
+  private Climber climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -169,26 +173,31 @@ public class RobotContainer {
     // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 
-    m_driverController.a().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_ONE)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
-    );
+  //   m_driverController.a().onTrue(
+  //     shoulderJoint.setPosition(Position.LEVEL_ONE)
+  //       .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
+  //   );
 
-    m_driverController.b().onTrue(
-      shoulderJoint.setPosition(Position.INTAKE)
-        .alongWith(elbowJoint.setPosition(Position.INTAKE))
-    );
+  //   m_driverController.b().onTrue(
+  //     shoulderJoint.setPosition(Position.INTAKE)
+  //       .alongWith(elbowJoint.setPosition(Position.INTAKE))
+  //   );
 
-    m_driverController.x().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_THREE)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
-    );
+  //   m_driverController.x().onTrue(
+  //     shoulderJoint.setPosition(Position.LEVEL_THREE)
+  //       .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
+  //   );
 
-    m_driverController.y().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_FOUR)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
-    );
+  //   m_driverController.y().onTrue(
+  //     shoulderJoint.setPosition(Position.LEVEL_FOUR)
+  //       .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+  //   );
+
+    m_driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(0.1), () -> climber.setWinchSpeed(0), climber));
+
   }
+
+    
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
