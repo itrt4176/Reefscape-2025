@@ -8,19 +8,26 @@ import frc.robot.Constants.ShoulderJointConstants;
 import frc.robot.Constants.ElbowJointConstants;
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmCommands;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ArmJoint;
@@ -65,6 +72,8 @@ public class RobotContainer {
     "Elbow Joint",
     false
   );
+
+  private final ArmCommands armCommands = new ArmCommands(shoulderJoint, elbowJoint);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -112,6 +121,10 @@ public class RobotContainer {
               * (Math.PI * 2))
       .headingWhile(true);
 
+
+
+    private final SendableChooser<Command> autoChooser;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -126,12 +139,31 @@ public class RobotContainer {
 
     //Apply inversion for inversion later
     Command joystickDrive = drivebase.driveCommand(
-                    () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1));
+        () -> applyAllianceInversion(MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1)), 
+        () -> applyAllianceInversion(MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1)), 
+        () -> applyAllianceInversion(MathUtil.applyDeadband(m_driverController.getRightX(), 0.1)));
 
 
     drivebase.setDefaultCommand(joystickDrive);
+
+    NamedCommands.registerCommand("Level One Place",
+        armCommands.setPosition(Position.LEVEL_ONE));  
+
+    NamedCommands.registerCommand("Level Two Place",
+        armCommands.setPosition(Position.LEVEL_TWO));  
+
+    NamedCommands.registerCommand("Level Three Place",
+        armCommands.setPosition(Position.LEVEL_THREE));  
+
+    NamedCommands.registerCommand("Level Four Place",
+        armCommands.setPosition(Position.LEVEL_FOUR)); 
+        
+    NamedCommands.registerCommand("Intake Setpoint", 
+        armCommands.setPosition(Position.INTAKE));
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData("Auto", autoChooser);
   }
 
   /**
@@ -197,8 +229,17 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-    // return elbowJoint.setPosition(ArmJoint.Position.STOW);
+    
+    return autoChooser.getSelected();
+  }
+
+  private static double applyAllianceInversion(double joystickInput) {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      return (alliance.get() == Alliance.Red) ? 1.0 * joystickInput : -1.0 * joystickInput;
+    } else {
+      return -1.0 * joystickInput;
+    }
   }
 
   public void setMotorBrake(boolean brake) { drivebase.setMotorBrake(brake); }
