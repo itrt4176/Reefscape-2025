@@ -116,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                             // for simulations since it causes
                                             // discrepancies not seen in real
                                             // life.
-    swerveDrive.setAngularVelocityCompensation(false, false, 0.15); // Correct for
+    swerveDrive.setAngularVelocityCompensation(false, true, 0.15); // Correct for
                                                                  // skew that
                                                                  // gets worse
                                                                  // as angular
@@ -175,9 +175,11 @@ public class SwerveSubsystem extends SubsystemBase {
     if (visionDriveTest) {
       swerveDrive.updateOdometry();
       // vision.updatePoseEstimation(swerveDrive);
+
     }
 
     SmartDashboard.putNumber("Swerve Heading", getHeading().getDegrees());
+    
     
     d_field.setRobotPose(getPose());
   }
@@ -194,6 +196,13 @@ public class SwerveSubsystem extends SubsystemBase {
     RobotConfig config;
     try {
       config = RobotConfig.fromGUISettings();
+
+      var moduleConfig = swerveDrive.getModules()[0].configuration;
+      var modDrivePIDF = moduleConfig.velocityPIDF;
+      var modAnglePIDF = moduleConfig.anglePIDF;
+
+      var ppDrivePID = new PIDConstants(modDrivePIDF.p, modDrivePIDF.i, modDrivePIDF.d);
+      var ppAnglePID = new PIDConstants(modAnglePIDF.p, modAnglePIDF.i, modAnglePIDF.d);
 
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
@@ -220,10 +229,10 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller
               // for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              ppDrivePID,
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-          // Rotation PID constants
+              ppAnglePID
+              // Rotation PID constants
           ), config,
           // The robot configuration
           () -> {
