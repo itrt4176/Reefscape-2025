@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.nio.file.attribute.AclEntryPermission;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -75,11 +76,12 @@ public final class Constants {
     static {
       // PLACEHOLDERS
       angleMap.put(ArmJoint.Position.STOW, 165.0);
-      angleMap.put(ArmJoint.Position.INTAKE, 82.9);//maybe
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);//placeholder
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);//placeholder for testing
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 168.6);//placeholder
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 89.85);
+      angleMap.put(ArmJoint.Position.INTAKE, 82.9);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 170.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
+      angleMap.put(ArmJoint.Position.LOW_BALL, 140.0);
     }
   }
 
@@ -108,9 +110,10 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.STOW, 20.0);
       angleMap.put(ArmJoint.Position.INTAKE, 192.6);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 14.3);
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 27.5);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 54.3);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
+      angleMap.put(ArmJoint.Position.LOW_BALL, -20.0);
     }
   }
 

@@ -61,7 +61,17 @@ public class RobotContainer {
   private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.05);
   private final RotationSpeed rotate = new RotationSpeed(claw, .3);
 
-  private final ClawSetArcAngle twoThirty = new ClawSetArcAngle(claw, 190);
+  private final ClawSetArcAngle levelFour = new ClawSetArcAngle(claw, 250);
+
+  private final ClawSetArcAngle intakeClaw = new ClawSetArcAngle(claw, 220);
+
+  private final ClawSetArcAngle levelOneClaw = new ClawSetArcAngle(claw, 160);
+
+  private final ClawSetArcAngle levelTwoClaw = new ClawSetArcAngle(claw, 206.0);
+
+
+  private final ClawSetArcAngle levelThreeClaw = new ClawSetArcAngle(claw, 225.0);
+
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
 
@@ -183,18 +193,18 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    driverController.a().onTrue(homeWrist);
+    driverController.x().onTrue(homeWrist);
 
 
 
-    driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+    // driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
 
-    // driverController.x().onTrue(twoThirty);
+    // driverController.x().onTrue(wth);
 
-    driverController.y().onTrue(ninetyRot);
+    // driverController.y().onTrue(ninetyRot);
 
-    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
-    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
+    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.16), () -> claw.setGripSpeed(0), claw));
+    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.16), () -> claw.setGripSpeed(0), claw));
 
     
     // Shoulder joint sysid routines
@@ -213,24 +223,35 @@ public class RobotContainer {
 
 
     m_driverController.a().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_ONE)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
+      shoulderJoint.setPosition(Position.LOW_BALL)
+        .alongWith(elbowJoint.setPosition(Position.LOW_BALL))
     );
+    m_driverController.a().onTrue(levelOneClaw
+      .alongWith(new InstantCommand(() -> claw.setGripSpeed(.4))));
 
     m_driverController.b().onTrue(
       shoulderJoint.setPosition(Position.INTAKE)
         .alongWith(elbowJoint.setPosition(Position.INTAKE))
     );
-
-    m_driverController.x().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_THREE)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
+    m_driverController.b().onTrue(
+      ninetyRot
+      .andThen(intakeClaw)
     );
 
-    m_driverController.y().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_FOUR)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
-    );
+    // m_driverController.x().onTrue(
+    //   shoulderJoint.setPosition(Position.LEVEL_TWO)
+    //     .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+    // );
+    // m_driverController.x().onTrue(
+    //   levelTwoClaw
+    // );
+
+    // m_driverController.y().onTrue(
+    //   shoulderJoint.setPosition(Position.LEVEL_FOUR)
+    //     .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+    // );
+
+    // m_driverController.y().onTrue(levelFour);
   }
 
   /**

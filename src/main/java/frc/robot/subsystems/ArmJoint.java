@@ -43,7 +43,8 @@ public class ArmJoint extends SubsystemBase {
     LEVEL_ONE,
     LEVEL_TWO,
     LEVEL_THREE,
-    LEVEL_FOUR
+    LEVEL_FOUR,
+    LOW_BALL
   }
 
   public record PIDConfig(
@@ -134,6 +135,7 @@ public class ArmJoint extends SubsystemBase {
 
     pid.setGoal(goal.in(Rotations));
 
+    
     atGoal = new Trigger(pid::atGoal);
 
     setDefaultCommand(run(this::moveJoint));
@@ -211,9 +213,16 @@ public class ArmJoint extends SubsystemBase {
     return runOnce(() -> {
       goalAdjustment.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+      pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
     }).withName("Adjust Offset")
       .andThen(this::moveJoint, this)
       .repeatedly();
+  }
+
+  public void setOffset(DoubleSupplier offsetSupplier) {
+    goalAdjustment.mut_plus(offsetSupplier.getAsDouble(), Degrees);
+    pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+    pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
   }
 
   private void moveJoint() {
