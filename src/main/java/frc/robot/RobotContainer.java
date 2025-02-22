@@ -10,6 +10,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -79,8 +80,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(
-      new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+  private final SwerveSubsystem drivebase;
 
 //   SwerveInputStream driveAngularVelocity = SwerveInputStream
 //       .of(drivebase.getSwerveDrive(), () -> m_driverController.getLeftY() * -1,
@@ -105,33 +105,59 @@ public class RobotContainer {
 //   SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
 //       .robotRelative(true).allianceRelativeControl(false);
 
-  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream
-      .of(drivebase.getSwerveDrive(), () -> -m_driverController.getLeftY(),
-          () -> -m_driverController.getLeftX())
-      .withControllerRotationAxis(() -> m_driverController.getRawAxis(2))
-      .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
-      .allianceRelativeControl(true);
-  // Derive the heading axis with math!
-  SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard
-      .copy()
-      .withControllerHeadingAxis(
-          () -> Math.sin(m_driverController.getRawAxis(2) * Math.PI)
-              * (Math.PI * 2),
-          () -> Math.cos(m_driverController.getRawAxis(2) * Math.PI)
-              * (Math.PI * 2))
-      .headingWhile(true);
+  // SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream
+  //     .of(drivebase.getSwerveDrive(), () -> -m_driverController.getLeftY(),
+  //         () -> -m_driverController.getLeftX())
+  //     .withControllerRotationAxis(() -> m_driverController.getRawAxis(2))
+  //     .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
+  //     .allianceRelativeControl(true);
+  // // Derive the heading axis with math!
+  // SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard
+  //     .copy()
+  //     .withControllerHeadingAxis(
+  //         () -> Math.sin(m_driverController.getRawAxis(2) * Math.PI)
+  //             * (Math.PI * 2),
+  //         () -> Math.cos(m_driverController.getRawAxis(2) * Math.PI)
+  //             * (Math.PI * 2))
+  //     .headingWhile(true);
 
 
 
     private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<String> autoArmChooser;
+
+    private final EventTrigger autoArmEvent;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    autoArmEvent = new EventTrigger("arm_position");
+
     // Disable the arm joints for tuning
     shoulderJoint.setEnabled(true);
     elbowJoint.setEnabled(true);
+
+    // NamedCommands.registerCommand("Level One Place",
+    //     armCommands.setPosition(Position.LEVEL_ONE));  
+
+    // NamedCommands.registerCommand("Level Two Place",
+    //     armCommands.setPosition(Position.LEVEL_TWO));  
+
+    // NamedCommands.registerCommand("Level Three Place",
+    //     armCommands.setPosition(Position.LEVEL_THREE));  
+
+    // NamedCommands.registerCommand("Level Four Place",
+    //     armCommands.setPosition(Position.LEVEL_FOUR)); 
+        
+    // NamedCommands.registerCommand("Intake Setpoint", 
+    //     armCommands.setPosition(Position.INTAKE));
+
+    // NamedCommands.registerCommand("Start/Climb", 
+    //     armCommands.setPosition(Position.CLIMB).andThen(Commands.waitUntil(armCommands.atGoal())));
+
+    drivebase = new SwerveSubsystem(
+      new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
     // Configure the trigger bindings
     configureBindings();
@@ -145,25 +171,22 @@ public class RobotContainer {
 
 
     drivebase.setDefaultCommand(joystickDrive);
-
-    NamedCommands.registerCommand("Level One Place",
-        armCommands.setPosition(Position.LEVEL_ONE));  
-
-    NamedCommands.registerCommand("Level Two Place",
-        armCommands.setPosition(Position.LEVEL_TWO));  
-
-    NamedCommands.registerCommand("Level Three Place",
-        armCommands.setPosition(Position.LEVEL_THREE));  
-
-    NamedCommands.registerCommand("Level Four Place",
-        armCommands.setPosition(Position.LEVEL_FOUR)); 
-        
-    NamedCommands.registerCommand("Intake Setpoint", 
-        armCommands.setPosition(Position.INTAKE));
+      
+    
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto", autoChooser);
+
+    autoArmChooser = new SendableChooser<>();
+
+    for (Position position : Position.values()) {
+      autoArmChooser.addOption(position.toString(), position.name());
+    }
+
+    autoArmChooser.setDefaultOption(Position.LEVEL_FOUR.toString(), Position.LEVEL_FOUR.name());
+
+    SmartDashboard.putData(autoArmChooser);
   }
 
   /**
@@ -229,9 +252,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+
+    var position = Position.valueOf(autoArmChooser.getSelected());
+
+    autoArmEvent.onTrue(armCommands.setPosition(position));
     
     // return autoChooser.getSelected();
-    return drivebase.getAutonomousCommand("Testing Auto");
+    return drivebase.getAutonomousCommand("New Auto");
+    // return armCommands.setPosition(Position.LEVEL_FOUR);
   }
 
   private static double applyAllianceInversion(double joystickInput) {

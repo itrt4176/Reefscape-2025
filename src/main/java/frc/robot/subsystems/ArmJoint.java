@@ -43,7 +43,8 @@ public class ArmJoint extends SubsystemBase {
     LEVEL_ONE,
     LEVEL_TWO,
     LEVEL_THREE,
-    LEVEL_FOUR
+    LEVEL_FOUR,
+    CLIMB
   }
 
   public record PIDConfig(

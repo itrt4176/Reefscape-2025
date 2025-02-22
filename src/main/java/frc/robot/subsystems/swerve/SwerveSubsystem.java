@@ -126,7 +126,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                  // coefficient
                                                                  // of 0.1.
 
-    swerveDrive.setChassisDiscretization(true, true, 0.02);
+    swerveDrive.setChassisDiscretization(true, false, 0.02);
 
     swerveDrive.setModuleEncoderAutoSynchronize(true, 1); // Enable if you want
                                                            // to resynchronize
@@ -198,8 +198,8 @@ public class SwerveSubsystem extends SubsystemBase {
       var modDrivePIDF = moduleConfig.velocityPIDF;
       var modAnglePIDF = moduleConfig.anglePIDF;
 
-      var ppDrivePID = new PIDConstants(modDrivePIDF.p, modDrivePIDF.i, modDrivePIDF.d);
-      var ppAnglePID = new PIDConstants(modAnglePIDF.p, modAnglePIDF.i, modAnglePIDF.d);
+      var ppDrivePID  = new PIDConstants(1.5,0.0,0.07);
+      var ppAnglePID = new PIDConstants(2.0, 0.0,0.0);
 
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last

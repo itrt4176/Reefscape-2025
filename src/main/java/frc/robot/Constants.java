@@ -80,6 +80,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);//placeholder for testing
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 168.6);//placeholder
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 89.85);
+      angleMap.put(ArmJoint.Position.CLIMB, 180.0);
     }
   }
 
@@ -111,6 +112,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 14.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 27.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
+      angleMap.put(ArmJoint.Position.CLIMB, 90.0);
     }
   }
 }
