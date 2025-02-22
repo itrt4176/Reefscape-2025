@@ -29,7 +29,13 @@ public class HomeWrist extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if(claw.isRotationHomed())
+    {
+      end(true);
+    }
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -37,11 +43,11 @@ public class HomeWrist extends Command {
 
 
     // leftSpeed = leftPid.calculate(claw.getLeftRotationSpeed(), -.4);
-    claw.setLeftSpeed(-(.4));
+    claw.setLeftSpeed(-(.2));
 
     // rightSpeed = rightPid.calculate(claw.getRightRotationSpeed(), .4);
     
-    claw.setRightSpeed((.4));
+    claw.setRightSpeed((.2));
 
 
 

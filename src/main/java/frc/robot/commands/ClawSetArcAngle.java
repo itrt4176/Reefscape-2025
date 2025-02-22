@@ -17,7 +17,7 @@ public class ClawSetArcAngle extends Command {
 
   private double speed;
 
-  private PIDController pid = new PIDController(0.012, 0.000, 0.0); //test for vals
+  private PIDController pid = new PIDController(0.015, 0.000, 0.0); //test for vals
 
   /** Creates a new ArmSetArcAngle. */
   public ClawSetArcAngle(Claw claw, double angle) {

@@ -18,6 +18,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -75,40 +76,19 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    // driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
-    // driverController.x().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.05)));
-    // driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(-.05)));
-    // driverController.b().onTrue(new InstantCommand(() -> claw.setArcingSpeed(0)));
-
-    // driverController.x().onTrue(fourtyFive);
-
-    // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.05)));
-    // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.05)));
-
-  // driverController.y().onTrue(new InstantCommand(() -> claw.setRotationSpeed(.3)));
-    
     driverController.a().onTrue(homeWrist);
 
-    // driverController.b().onTrue(new InstantCommand(() -> claw.setRotationSpeed(0)));
 
-    // driverController.rightBumper().onTrue(reverseArc);
-    // driverController.leftBumper().onTrue(arcing);
-    // driverController.a().onTrue(rotate);
 
     driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
 
-    driverController.x().onTrue(twoThirty);
+    // driverController.x().onTrue(twoThirty);
 
-    driverController.y().onTrue(wth);
+    driverController.y().onTrue(ninetyRot);
 
-    // driverController.x().onTrue(new InstantCommand(() -> claw.setGripSpeed(0.4)));
-    // driverController.y().onTrue(new InstantCommand(() -> claw.setGripSpeed(-0.4)));
+    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
+    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
 
-
-
-    // driverController.rightBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(-.1)));
-    // driverController.leftBumper().onTrue(new InstantCommand(() -> claw.setArcingSpeed(.1)));
   }
 
   /**
