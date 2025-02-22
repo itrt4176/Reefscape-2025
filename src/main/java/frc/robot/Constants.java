@@ -113,4 +113,9 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
     }
   }
+
+
+  public static class ClawConstants {
+    public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
+  }
 }
