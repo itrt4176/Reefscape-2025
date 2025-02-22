@@ -89,6 +89,7 @@ public class RobotContainer {
     ElbowJointConstants.motorPort,
     ElbowJointConstants.encoderPort,
     ElbowJointConstants.encoderOffset,
+    () -> shoulderJoint.getAngle().magnitude(),
     ElbowJointConstants.pidConfig,
     ElbowJointConstants.angleMap,
     "Elbow Joint",
