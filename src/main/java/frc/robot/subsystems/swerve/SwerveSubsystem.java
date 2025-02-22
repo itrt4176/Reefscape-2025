@@ -125,6 +125,9 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                  // Start with a
                                                                  // coefficient
                                                                  // of 0.1.
+
+    swerveDrive.setChassisDiscretization(true, true, 0.02);
+
     swerveDrive.setModuleEncoderAutoSynchronize(true, 1); // Enable if you want
                                                            // to resynchronize
                                                            // your absolute
@@ -136,6 +139,7 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.useExternalFeedbackSensor(); // Set the absolute encoder to be
     // used over the internal encoder and push the offsets onto it. Throws
     // warning if not possible
+
     if (visionDriveTest) {
       // setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can
@@ -161,13 +165,6 @@ public class SwerveSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(0)));
   }
 
-  // /**
-  // * Setup the photon vision class.
-  // */
-  // public void setupPhotonVision()
-  // {
-  // vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-  // }
 
   @Override
   public void periodic() {
@@ -261,29 +258,7 @@ public class SwerveSubsystem extends SubsystemBase {
     PathfindingCommand.warmupCommand().schedule();
   }
 
-  // /**
-  // * Aim the robot at the target returned by PhotonVision.
-  // *
-  // * @return A {@link Command} which will run the alignment.
-  // */
-  // public Command aimAtTarget(Cameras camera)
-  // {
-  //
-  // return run(() -> {
-  // Optional<PhotonPipelineResult> resultO = camera.getBestResult();
-  // if (resultO.isPresent())
-  // {
-  // var result = resultO.get();
-  // if (result.hasTargets())
-  // {
-  // drive(getTargetSpeeds(0,
-  // 0,
-  // Rotation2d.fromDegrees(result.getBestTarget()
-  // .getYaw()))); // Not sure if this will work, more math may be required.
-  // }
-  // }
-  // });
-  // }
+  
 
   /**
    * Get the path follower with events.
