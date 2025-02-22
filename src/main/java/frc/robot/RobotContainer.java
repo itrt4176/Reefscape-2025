@@ -193,8 +193,8 @@ public class RobotContainer {
   //       .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
   //   );
 
-    m_driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(0.1), () -> climber.setWinchSpeed(0), climber));
-    m_driverController.y().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-0.1), () -> climber.setWinchSpeed(0), climber));
+    m_driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
+    m_driverController.y().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
 
 
   }
