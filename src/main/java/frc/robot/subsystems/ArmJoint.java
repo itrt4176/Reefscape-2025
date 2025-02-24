@@ -86,9 +86,13 @@ public class ArmJoint extends SubsystemBase {
   private boolean enabled;
   private boolean sysIdRunning;
 
+  private boolean firstRun;
+
 /** Creates a new ArmSubsystem. */
   public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
     super(name);
+
+    firstRun = true;
 
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
     jointEncoder = new AnalogEncoder(encoderId);
@@ -183,8 +187,6 @@ public class ArmJoint extends SubsystemBase {
     angle.mut_replace(newAngle, Degrees);
 
     timestamp = newTimestamp;
-
-
   }
 
   public Angle getGoal() {
@@ -217,12 +219,23 @@ public class ArmJoint extends SubsystemBase {
   }
 
   private void moveJoint() {
+    // Move joint only runs for the first time after the robot is enabled
+    // for the first time. The ProfiledPIDController considers time since
+    // the last reset. This caused the "fist bump". To fix, reset the PID
+    // the first time moveJoint() is called.
+    if (firstRun) {
+      pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
+      firstRun = false;
+    }
+
+    var setpoint = pid.getSetpoint();
+
     double motorVoltage = pid.calculate(angle.in(Rotations))
-        + ff.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity);
+        + ff.calculate(setpoint.position, setpoint.velocity);
 
         SmartDashboard.putNumber(getName() + " Goal", goal.in(Degrees));
-        SmartDashboard.putNumber(getName() + " Position Setpoint", pid.getSetpoint().position * 360.0);
-        SmartDashboard.putNumber(getName() + " Velocity Setpoint", pid.getSetpoint().velocity * 360.0);
+        SmartDashboard.putNumber(getName() + " Position Setpoint", setpoint.position * 360.0);
+        SmartDashboard.putNumber(getName() + " Velocity Setpoint", setpoint.velocity * 360.0);
 
     if (!sysIdRunning) {
       if (enabled && !pid.atGoal()) {
