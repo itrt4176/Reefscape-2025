@@ -6,6 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.ShoulderJointConstants;
 import frc.robot.Constants.ElbowJointConstants;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -92,6 +95,7 @@ public class RobotContainer {
     ElbowJointConstants.motorPort,
     ElbowJointConstants.encoderPort,
     ElbowJointConstants.encoderOffset,
+    () -> shoulderJoint.getAngle().magnitude(),
     ElbowJointConstants.pidConfig,
     ElbowJointConstants.angleMap,
     "Elbow Joint",
@@ -153,13 +157,13 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //Apply inversion for inversion later
-    Command joystickDrive = drivebase.driveCommand(
-                    () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1), 
-                    () -> MathUtil.applyDeadband(0.0, 0.1));
+    // Command joystickDrive = drivebase.driveCommand(
+    //                 () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(driverController.getRightX(), 0.1));
 
 
-    drivebase.setDefaultCommand(joystickDrive);
+    // drivebase.setDefaultCommand(joystickDrive);
   }
 
   /**
@@ -180,15 +184,15 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    driverController.a().onTrue(homeWrist);
+    // driverController.a().onTrue(homeWrist);
 
 
 
-    driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+    // driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
 
     // driverController.x().onTrue(twoThirty);
 
-    driverController.y().onTrue(ninetyRot);
+    // driverController.y().onTrue(ninetyRot);
 
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
@@ -214,9 +218,17 @@ public class RobotContainer {
         .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
     );
 
+    // driverController.b().onTrue(
+    //   elbowJoint.setPosition(Position.INTAKE)
+    //   .alongWith(shoulderJoint.setPosition(Position.LEVEL_THREE)
+    //   .andThen(Commands.waitUntil(shoulderJoint.atGoal()))
+    //   .andThen(shoulderJoint.setPosition(Position.INTAKE)))
+    // );
+
     driverController.b().onTrue(
-      shoulderJoint.setPosition(Position.INTAKE)
-        .alongWith(elbowJoint.setPosition(Position.INTAKE))
+      elbowJoint.setPosition(Position.INTAKE).asProxy()
+        .andThen(Commands.waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 45))
+        .andThen(shoulderJoint.setPosition(Position.INTAKE))
     );
 
     driverController.x().onTrue(
