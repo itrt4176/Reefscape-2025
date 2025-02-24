@@ -38,13 +38,12 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.CommandTigerPad;
+import frc.robot.utils.TigerPad.LEDMode;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
@@ -76,8 +75,11 @@ public class RobotContainer {
   // private final SequentialCommandGroup homing = new SequentialCommandGroup(twoThirty, homeWrist);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController driverController = new CommandXboxController(
+      OperatorConstants.DRIVE_CONTROLLER_PORT);
+
+  private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
+      OperatorConstants.ARM_CONTROL_PANEL_PORT);
 
   private final ArmJoint shoulderJoint = new ArmJoint(
     ShoulderJointConstants.motorPort,
@@ -100,17 +102,13 @@ public class RobotContainer {
     false
   );
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
 //   SwerveInputStream driveAngularVelocity = SwerveInputStream
-//       .of(drivebase.getSwerveDrive(), () -> m_driverController.getLeftY() * -1,
-//           () -> m_driverController.getLeftX() * -1)
-//       .withControllerRotationAxis(m_driverController::getRightX)
+//       .of(drivebase.getSwerveDrive(), () -> driverController.getLeftY() * -1,
+//           () -> driverController.getLeftX() * -1)
+//       .withControllerRotationAxis(driverController::getRightX)
 //       .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
 //       .allianceRelativeControl(true);
 
@@ -119,8 +117,8 @@ public class RobotContainer {
    * fieldRelative input stream.
    */
 //   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-//       .withControllerHeadingAxis(m_driverController::getRightX,
-//           m_driverController::getRightY)
+//       .withControllerHeadingAxis(driverController::getRightX,
+//           driverController::getRightY)
 //       .headingWhile(true);
 
   /**
@@ -131,18 +129,18 @@ public class RobotContainer {
 //       .robotRelative(true).allianceRelativeControl(false);
 
   SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream
-      .of(drivebase.getSwerveDrive(), () -> -m_driverController.getLeftY(),
-          () -> -m_driverController.getLeftX())
-      .withControllerRotationAxis(() -> m_driverController.getRawAxis(2))
+      .of(drivebase.getSwerveDrive(), () -> -driverController.getLeftY(),
+          () -> -driverController.getLeftX())
+      .withControllerRotationAxis(() -> driverController.getRawAxis(2))
       .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
       .allianceRelativeControl(true);
   // Derive the heading axis with math!
   SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard
       .copy()
       .withControllerHeadingAxis(
-          () -> Math.sin(m_driverController.getRawAxis(2) * Math.PI)
+          () -> Math.sin(driverController.getRawAxis(2) * Math.PI)
               * (Math.PI * 2),
-          () -> Math.cos(m_driverController.getRawAxis(2) * Math.PI)
+          () -> Math.cos(driverController.getRawAxis(2) * Math.PI)
               * (Math.PI * 2))
       .headingWhile(true);
 
@@ -160,9 +158,9 @@ public class RobotContainer {
 
     //Apply inversion for inversion later
     // Command joystickDrive = drivebase.driveCommand(
-    //                 () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
-    //                 () -> MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), 
-    //                 () -> MathUtil.applyDeadband(m_driverController.getRightX(), 0.1));
+    //                 () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(driverController.getRightX(), 0.1));
 
 
     // drivebase.setDefaultCommand(joystickDrive);
@@ -184,8 +182,7 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // driverController.a().onTrue(homeWrist);
 
@@ -203,43 +200,43 @@ public class RobotContainer {
     
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
-    // m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 
-    m_driverController.a().onTrue(
+    driverController.a().onTrue(
       shoulderJoint.setPosition(Position.LEVEL_ONE)
         .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
     );
 
-    // m_driverController.b().onTrue(
+    // driverController.b().onTrue(
     //   elbowJoint.setPosition(Position.INTAKE)
     //   .alongWith(shoulderJoint.setPosition(Position.LEVEL_THREE)
     //   .andThen(Commands.waitUntil(shoulderJoint.atGoal()))
     //   .andThen(shoulderJoint.setPosition(Position.INTAKE)))
     // );
 
-    m_driverController.b().onTrue(
+    driverController.b().onTrue(
       elbowJoint.setPosition(Position.INTAKE).asProxy()
         .andThen(Commands.waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 45))
         .andThen(shoulderJoint.setPosition(Position.INTAKE))
     );
 
-    m_driverController.x().onTrue(
+    driverController.x().onTrue(
       shoulderJoint.setPosition(Position.LEVEL_THREE)
         .alongWith(elbowJoint.setPosition(Position.LEVEL_THREE))
     );
 
-    m_driverController.y().onTrue(
+    driverController.y().onTrue(
       shoulderJoint.setPosition(Position.LEVEL_FOUR)
         .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
     );
