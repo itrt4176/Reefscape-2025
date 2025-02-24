@@ -73,12 +73,11 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      // PLACEHOLDERS
       angleMap.put(ArmJoint.Position.STOW, 165.0);
-      angleMap.put(ArmJoint.Position.INTAKE, 82.9);//maybe
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);//placeholder
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);//placeholder for testing
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 168.6);//placeholder
+      angleMap.put(ArmJoint.Position.INTAKE, 82.9);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 168.6);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 89.85);
     }
   }
@@ -104,7 +103,6 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      // PLACEHOLDERS
       angleMap.put(ArmJoint.Position.STOW, 20.0);
       angleMap.put(ArmJoint.Position.INTAKE, 192.6);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);

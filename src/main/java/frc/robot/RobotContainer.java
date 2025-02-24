@@ -6,6 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.ShoulderJointConstants;
 import frc.robot.Constants.ElbowJointConstants;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -39,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -155,13 +159,13 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //Apply inversion for inversion later
-    Command joystickDrive = drivebase.driveCommand(
-                    () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), 
-                    () -> MathUtil.applyDeadband(m_driverController.getRightX(), 0.1));
+    // Command joystickDrive = drivebase.driveCommand(
+    //                 () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), 
+    //                 () -> MathUtil.applyDeadband(m_driverController.getRightX(), 0.1));
 
 
-    drivebase.setDefaultCommand(joystickDrive);
+    // drivebase.setDefaultCommand(joystickDrive);
   }
 
   /**
@@ -183,15 +187,15 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    driverController.a().onTrue(homeWrist);
+    // driverController.a().onTrue(homeWrist);
 
 
 
-    driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+    // driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
 
     // driverController.x().onTrue(twoThirty);
 
-    driverController.y().onTrue(ninetyRot);
+    // driverController.y().onTrue(ninetyRot);
 
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
@@ -217,9 +221,17 @@ public class RobotContainer {
         .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
     );
 
+    // m_driverController.b().onTrue(
+    //   elbowJoint.setPosition(Position.INTAKE)
+    //   .alongWith(shoulderJoint.setPosition(Position.LEVEL_THREE)
+    //   .andThen(Commands.waitUntil(shoulderJoint.atGoal()))
+    //   .andThen(shoulderJoint.setPosition(Position.INTAKE)))
+    // );
+
     m_driverController.b().onTrue(
-      shoulderJoint.setPosition(Position.INTAKE)
-        .alongWith(elbowJoint.setPosition(Position.INTAKE))
+      elbowJoint.setPosition(Position.INTAKE).asProxy()
+        .andThen(Commands.waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 45))
+        .andThen(shoulderJoint.setPosition(Position.INTAKE))
     );
 
     m_driverController.x().onTrue(
