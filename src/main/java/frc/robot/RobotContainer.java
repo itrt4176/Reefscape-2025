@@ -30,10 +30,10 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(
-      OperatorConstants.driverControllerPort);
+      OperatorConstants.DRIVE_CONTROLLER_PORT);
 
   private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
-      OperatorConstants.armControlPanelPort);
+      OperatorConstants.ARM_CONTROL_PANEL_PORT);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
