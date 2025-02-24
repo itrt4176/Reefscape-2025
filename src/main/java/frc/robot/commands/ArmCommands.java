@@ -1,31 +1,42 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ArmJoint;
 import frc.robot.subsystems.ArmJoint.Position;
+import frc.robot.utils.TigerPad.LEDMode;
 
 public class ArmCommands {
-  private final ArmJoint joint1;
-  private final ArmJoint joint2;
+  private final ArmJoint shoulderJoint;
+  private final ArmJoint elbowJoint;
   private final Trigger atGoal;
 
-  public ArmCommands(ArmJoint joint1, ArmJoint joint2) {
-    this.joint1 = joint1;
-    this.joint2 = joint2;
-    atGoal = joint1.atGoal().and(joint2.atGoal());
+  public ArmCommands(ArmJoint shoulderJoint, ArmJoint elbowJoint) {
+    this.shoulderJoint = shoulderJoint;
+    this.elbowJoint = elbowJoint;
+    atGoal = shoulderJoint.atGoal().and(elbowJoint.atGoal());
   }
 
   public Command setPosition(Position position) {
-    return joint1.setPosition(position)
-      .alongWith(joint2.setPosition(position));
+    return shoulderJoint.setPosition(position)
+      .alongWith(elbowJoint.setPosition(position));
   }
 
-  public Command adjustOffset(DoubleSupplier joint1Adjuster, DoubleSupplier joint2Adjuster) {
-    return joint1.adjustGoal(joint1Adjuster)
-      .alongWith(joint2.adjustGoal(joint2Adjuster));
+  public Command setPosition(Position position, Function<LEDMode, Command> setAllLEDs, Function<LEDMode, Command> setLED) {
+    return setAllLEDs.apply(LEDMode.Off)
+      .andThen(setPosition(position).asProxy())
+      .andThen(setLED.apply(LEDMode.Blink))
+      .andThen(Commands.waitUntil(atGoal))
+      .andThen(setLED.apply(LEDMode.On));
+  }
+
+  public Command adjustOffset(DoubleSupplier shoulderJointAdjuster, DoubleSupplier elbowJointAdjuster) {
+    return shoulderJoint.adjustGoal(shoulderJointAdjuster)
+      .alongWith(elbowJoint.adjustGoal(elbowJointAdjuster));
   }
 
   public Trigger atGoal() {

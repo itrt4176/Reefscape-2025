@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcingSpeed;
+import frc.robot.commands.ArmCommands;
 import frc.robot.commands.ClawSetArcAngle;
 import frc.robot.commands.CrazyShit;
 import frc.robot.commands.Autos;
@@ -97,6 +98,8 @@ public class RobotContainer {
     "Elbow Joint",
     false
   );
+
+  private final ArmCommands armCommands = new ArmCommands(shoulderJoint, elbowJoint);
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
@@ -227,6 +230,33 @@ public class RobotContainer {
     driverController.y().onTrue(
       shoulderJoint.setPosition(Position.LEVEL_FOUR)
         .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+    );
+
+    armControlPanel.armOverride().whileTrue(
+      armCommands.adjustOffset(
+        armControlPanel::getShoulderJoint,
+        armControlPanel::getElbowJoint
+      )
+    );
+
+    armControlPanel.intake().onTrue(
+      armCommands.setPosition(Position.INTAKE, armControlPanel::setAllLEDs, armControlPanel::setIntakeLED)
+    );
+
+    armControlPanel.level1().onTrue(
+      armCommands.setPosition(Position.LEVEL_ONE, armControlPanel::setAllLEDs, armControlPanel::setLevel1LED)
+    );
+
+    armControlPanel.level2().onTrue(
+      armCommands.setPosition(Position.LEVEL_TWO, armControlPanel::setAllLEDs, armControlPanel::setLevel2LED)
+    );
+
+    armControlPanel.level3().onTrue(
+      armCommands.setPosition(Position.LEVEL_THREE, armControlPanel::setAllLEDs, armControlPanel::setLevel3LED)
+    );
+
+    armControlPanel.level4().onTrue(
+      armCommands.setPosition(Position.LEVEL_FOUR, armControlPanel::setAllLEDs, armControlPanel::setLevel4LED)
     );
   }
 
