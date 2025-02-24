@@ -33,7 +33,7 @@ public class RobotContainer {
       OperatorConstants.driverControllerPort);
 
   private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
-      OperatorConstants.armControlPanel);
+      OperatorConstants.armControlPanelPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
