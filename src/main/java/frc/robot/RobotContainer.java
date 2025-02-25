@@ -156,7 +156,7 @@ public class RobotContainer {
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
-    driverController.leftTrigger(0.5).onTrue(
+    driverController.leftTrigger(0.5).whileTrue(
       startEnd(
         () -> drivebase.enableSlowMode(true),
         () -> drivebase.enableSlowMode(false)
@@ -205,12 +205,17 @@ public class RobotContainer {
     );
 
     armControlPanel.level3().or(driverController.povRight()).onTrue(
-      setWristAndArm(
-        ClawConstants.L3_ARC,
-        ClawConstants.L3_ROT,
-        Position.LEVEL_THREE,
-        armControlPanel::setLevel3LED
-      )
+      armControlPanel.setAllLEDs(LEDMode.Off).andThen(
+        armControlPanel.setLevel3LED(LEDMode.Blink),
+        parallel(
+          elbowJoint.setPosition(Position.LEVEL_THREE).andThen(
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) <= 150),
+            shoulderJoint.setPosition(Position.LEVEL_THREE)
+          ),
+          setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
+        ),
+        armControlPanel.setLevel3LED(LEDMode.On)
+      )  
     );
 
     armControlPanel.lowAlgae().onTrue(
@@ -222,7 +227,7 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.level4().or(driverController.povDown()).onTrue(
+    armControlPanel.level4().or(driverController.povUp()).onTrue(
       setWristAndArm(
         ClawConstants.L4_ARC,
         ClawConstants.L4_ROT,
@@ -277,7 +282,7 @@ public class RobotContainer {
         armCommands.setPosition(armPosition),
         setWrist(arcAngle, rotationAngle)
       ),
-      setLEDCommand.apply(LEDMode.Off)
+      setLEDCommand.apply(LEDMode.On)
     );
   }
 
