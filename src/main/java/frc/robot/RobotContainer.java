@@ -124,6 +124,7 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    // configureSysIdBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //Apply inversion for inversion later
@@ -148,8 +149,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
-    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
+    driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
+    driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
+
+    driverController.leftTrigger(0.5).onTrue(
+      startEnd(
+        () -> drivebase.enableSlowMode(true),
+        () -> drivebase.enableSlowMode(false)
+      )
+    );
 
     armControlPanel.intake().or(driverController.povLeft()).onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
