@@ -82,13 +82,14 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.STOW, 165.0);
+      angleMap.put(ArmJoint.Position.FLAT, 165.0);
       angleMap.put(ArmJoint.Position.INTAKE, 82.9);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 170.0);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
-      angleMap.put(ArmJoint.Position.LOW_BALL, 140.0);
+      angleMap.put(ArmJoint.Position.LOW_ALGAE, 140.0);
+      angleMap.put(ArmJoint.Position.HIGH_ALGAE, 140.0);
     }
   }
 
@@ -113,13 +114,14 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.STOW, 20.0);
+      angleMap.put(ArmJoint.Position.FLAT, 20.0);
       angleMap.put(ArmJoint.Position.INTAKE, 202.8);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 54.3);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
-      angleMap.put(ArmJoint.Position.LOW_BALL, -20.0);
+      angleMap.put(ArmJoint.Position.LOW_ALGAE, -20.0);
+      angleMap.put(ArmJoint.Position.HIGH_ALGAE, -20.0);
     }
   }
 
@@ -127,5 +129,29 @@ public final class Constants {
   public static class ClawConstants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ENCODER_OFFSET = 206.0;
+
+    public static final double INTAKE_ARC = 50.0;
+    public static final double INTAKE_ROT = 90.0;
+
+    public static final double L1_ARC = 0.0;
+    public static final double L1_ROT = 0.0;
+
+    public static final double L2_ARC = 0.0;
+    public static final double L2_ROT = 0.0;
+
+    public static final double L3_ARC = 0.0;
+    public static final double L3_ROT = 0.0;
+
+    public static final double L4_ARC = 0.0;
+    public static final double L4_ROT = 0.0;
+
+    public static final double LOW_ALGAE_ARC = 0.0;
+    public static final double LOW_ALGAE_ROT = 0.0;
+
+    public static final double HIGH_ALGAE_ARC = 0.0;
+    public static final double HIGH_ALGAE_ROT = 0.0;
+
+    public static final double FLAT_ARC = 0.0;
+    public static final double FLAT_ROT = 0.0;
   }
 }

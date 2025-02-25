@@ -38,13 +38,14 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class ArmJoint extends SubsystemBase {
   public enum Position {
-    STOW,
+    FLAT,
     INTAKE,
     LEVEL_ONE,
     LEVEL_TWO,
     LEVEL_THREE,
     LEVEL_FOUR,
-    LOW_BALL
+    LOW_ALGAE,
+    HIGH_ALGAE
   }
 
   public record PIDConfig(
@@ -113,7 +114,7 @@ public class ArmJoint extends SubsystemBase {
     acceleration = DegreesPerSecondPerSecond.mutable(0);
     timestamp = Timer.getFPGATimestamp();
 
-    goal = Degrees.mutable(angleMap.get(Position.STOW));
+    goal = Degrees.mutable(angleMap.get(Position.FLAT));
     goalAdjustment = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
