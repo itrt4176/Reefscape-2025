@@ -169,7 +169,7 @@ public class RobotContainer {
                     () -> MathUtil.applyDeadband(-driverController.getRightX(), 0.1));
 
 
-    // drivebase.setDefaultCommand(joystickDrive);
+    drivebase.setDefaultCommand(joystickDrive);
   }
 
   /**
@@ -200,8 +200,8 @@ public class RobotContainer {
 
     // driverController.y().onTrue(ninetyRot);
 
-    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
-    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
+    // driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
+    // driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
 
     
     // Shoulder joint sysid routines
