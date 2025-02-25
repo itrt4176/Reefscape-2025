@@ -5,11 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.ShoulderJointConstants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ElbowJointConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.File;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -52,6 +56,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
   private final Claw claw = new Claw();
 
   private final ArcingSpeed arcing = new ArcingSpeed(claw, 0.05);
@@ -146,33 +151,86 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
-
-    driverController.a().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_ONE)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_ONE))
+    armControlPanel.intake().or(driverController.povLeft()).onTrue(
+      armControlPanel.setAllLEDs(LEDMode.Off).andThen(
+        armControlPanel.setIntakeLED(LEDMode.Blink),
+        parallel(
+          elbowJoint.setPosition(Position.INTAKE).andThen(
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 50),
+            shoulderJoint.setPosition(Position.INTAKE)
+          ),
+          setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
+        ),
+        armControlPanel.setIntakeLED(LEDMode.On)
+      )  
     );
 
-
-    driverController.b().onTrue(
-      elbowJoint.setPosition(Position.INTAKE).asProxy()
-        .andThen(Commands.waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 45))
-        .andThen(shoulderJoint.setPosition(Position.INTAKE))
-        .alongWith(ninetyRot.andThen(intakeClaw))
+    armControlPanel.level1().or(driverController.povDown()).onTrue(
+      setWristAndArm(
+        ClawConstants.L1_ARC,
+        ClawConstants.L1_ROT,
+        Position.LEVEL_ONE,
+        armControlPanel::setLevel1LED
+      )
     );
 
-    driverController.x().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_TWO)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+    armControlPanel.level2().onTrue(
+      setWristAndArm(
+        ClawConstants.L2_ARC,
+        ClawConstants.L2_ROT,
+        Position.LEVEL_TWO,
+        armControlPanel::setLevel2LED
+      )
     );
 
-    driverController.y().onTrue(
-      shoulderJoint.setPosition(Position.LEVEL_FOUR)
-        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR), levelFour)
+    armControlPanel.armFlat().onTrue(
+      setWristAndArm(
+        ClawConstants.FLAT_ARC,
+        ClawConstants.FLAT_ROT,
+        Position.FLAT,
+        armControlPanel::setArmFlatLED
+      )
+    );
+
+    armControlPanel.level3().or(driverController.povRight()).onTrue(
+      setWristAndArm(
+        ClawConstants.L3_ARC,
+        ClawConstants.L3_ROT,
+        Position.LEVEL_THREE,
+        armControlPanel::setLevel3LED
+      )
+    );
+
+    armControlPanel.lowAlgae().onTrue(
+      setWristAndArm(
+        ClawConstants.LOW_ALGAE_ARC,
+        ClawConstants.LOW_ALGAE_ROT,
+        Position.LOW_ALGAE,
+        armControlPanel::setLowAlgaeLED
+      )
+    );
+
+    armControlPanel.level4().or(driverController.povDown()).onTrue(
+      setWristAndArm(
+        ClawConstants.L4_ARC,
+        ClawConstants.L4_ROT,
+        Position.LEVEL_FOUR,
+        armControlPanel::setLevel4LED
+      )
+    );
+
+    armControlPanel.highAlgae().onTrue(
+      setWristAndArm(
+        ClawConstants.HIGH_ALGAE_ARC,
+        ClawConstants.HIGH_ALGAE_ROT,
+        Position.HIGH_ALGAE,
+        armControlPanel::setHighAlgaeLED
+      )
     );
 
     driverController.start().onTrue(homeWrist);
 
-    claw.homed().onTrue(Commands.runOnce(claw::zeroRotation));
+    claw.homed().onTrue(runOnce(claw::zeroRotation));
   }
 
   private void configureSysIdBindings() {
@@ -189,6 +247,26 @@ public class RobotContainer {
     driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
     driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  }
+
+  private Command setWrist(double arcAngle, double rotationAngle) {
+    return new RotationSetpoint(claw, rotationAngle).andThen(new ClawSetArcAngle(claw, arcAngle));
+  }
+
+  private Command setWristAndArm(
+    double arcAngle,
+    double rotationAngle,
+    Position armPosition,
+    Function<LEDMode, Command> setLEDCommand
+  ) {
+    return armControlPanel.setAllLEDs(LEDMode.Off).andThen(
+      setLEDCommand.apply(LEDMode.Blink),
+      parallel(
+        armCommands.setPosition(armPosition),
+        setWrist(arcAngle, rotationAngle)
+      ),
+      setLEDCommand.apply(LEDMode.Off)
+    );
   }
 
   /**
