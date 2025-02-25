@@ -257,7 +257,9 @@ public class RobotContainer {
         .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
     );
 
-    // driverController.y().onTrue(levelFour);
+    // driverController.start().onTrue(homeWrist);
+
+    claw.homed().onTrue(Commands.runOnce(claw::zeroRotation, null));
   }
 
   /**

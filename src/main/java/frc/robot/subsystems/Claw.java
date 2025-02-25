@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
@@ -39,6 +40,8 @@ public class Claw extends SubsystemBase {
 
   DigitalInput rotationInput;
 
+  private final Trigger atHome = new Trigger(this::isRotationHomed);
+
   /** Creates a new Claw. */
   public Claw() {
     rightMotor = new SparkMax(3, MotorType.kBrushless);
@@ -59,8 +62,6 @@ public class Claw extends SubsystemBase {
     arcThrift = new AnalogEncoder(2);
 
     rotationInput = new DigitalInput(0);
-
-    zeroRotation();
   }
 
   public double getArcDegrees()
@@ -90,6 +91,13 @@ public class Claw extends SubsystemBase {
   public boolean isRotationHomed()
   {
     return !rotationInput.get();
+  }
+
+    /**
+   * @return the atHome
+   */
+  public Trigger homed() {
+    return atHome;
   }
 
   public double getLeftRotationDegrees()
