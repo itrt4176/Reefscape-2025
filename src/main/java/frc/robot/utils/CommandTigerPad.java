@@ -109,63 +109,63 @@ public class CommandTigerPad extends CommandGenericHID {
   }
 
   /**
-   * Sets the LED mode for the level 2 left LED.
+   * Sets the LED mode for the level 2 LED.
    * 
-   * @param mode The mode to set the level 2 left LED to.
-   * @return A command that sets the level 2 left LED mode.
+   * @param mode The mode to set the level 2 LED to.
+   * @return A command that sets the level 2 LED mode.
    */
-  public Command setLevel2LeftLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level2Left, mode);
+  public Command setLevel2LED(LEDMode mode) {
+    return setLED(TigerPad.LED.Level2, mode);
   }
 
   /**
-   * Sets the LED mode for the level 2 right LED.
+   * Sets the LED mode for the arm flat LED.
    * 
-   * @param mode The mode to set the level 2 right LED to.
-   * @return A command that sets the level 2 right LED mode.
+   * @param mode The mode to set the arm flat LED to.
+   * @return A command that sets the arm flat LED mode.
    */
-  public Command setLevel2RightLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level2Right, mode);
+  public Command setArmFlatLED(LEDMode mode) {
+    return setLED(TigerPad.LED.FlatArm, mode);
   }
 
   /**
-   * Sets the LED mode for the level 3 left LED.
+   * Sets the LED mode for the level 3 LED.
    * 
-   * @param mode The mode to set the level 3 left LED to.
-   * @return A command that sets the level 3 left LED mode.
+   * @param mode The mode to set the level 3 LED to.
+   * @return A command that sets the level 3 LED mode.
    */
-  public Command setLevel3LeftLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level3Left, mode);
+  public Command setLevel3LED(LEDMode mode) {
+    return setLED(TigerPad.LED.Level3, mode);
   }
 
   /**
-   * Sets the LED mode for the level 3 right LED.
+   * Sets the LED mode for the low algae LED.
    * 
-   * @param mode The mode to set the level 3 right LED to.
-   * @return A command that sets the level 3 right LED mode.
+   * @param mode The mode to set the low algae LED to.
+   * @return A command that sets the low algae LED mode.
    */
-  public Command setLevel3RightLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level3Right, mode);
+  public Command setLowAlgaeLED(LEDMode mode) {
+    return setLED(TigerPad.LED.LowAlgae, mode);
   }
 
   /**
-   * Sets the LED mode for the level 4 left LED.
+   * Sets the LED mode for the level 4 LED.
    * 
-   * @param mode The mode to set the level 4 left LED to.
-   * @return A command that sets the level 4 left LED mode.
+   * @param mode The mode to set the level 4 LED to.
+   * @return A command that sets the level 4 LED mode.
    */
-  public Command setLevel4LeftLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level4Left, mode);
+  public Command setLevel4LED(LEDMode mode) {
+    return setLED(TigerPad.LED.Level4, mode);
   }
 
   /**
-   * Sets the LED mode for the level 4 right LED.
+   * Sets the LED mode for the high algae LED.
    * 
-   * @param mode The mode to set the level 4 right LED to.
-   * @return A command that sets the level 4 right LED mode.
+   * @param mode The mode to set the high algae LED to.
+   * @return A command that sets the high algae LED mode.
    */
-  public Command setLevel4RightLED(LEDMode mode) {
-    return setLED(TigerPad.LED.Level4Right, mode);
+  public Command setHighAlgaeLED(LEDMode mode) {
+    return setLED(TigerPad.LED.HighAlgae, mode);
   }
 
   /**
@@ -217,165 +217,165 @@ public class CommandTigerPad extends CommandGenericHID {
   }
 
   /**
-   * Constructs a Trigger instance around the level 2 left button's digital
+   * Constructs a Trigger instance around the level 2 button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 2 left button's digital
+   * @return a Trigger instance representing the level 2 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level2Left(EventLoop loop) {
-    return button(TigerPad.Button.Level2Left.value, loop);
+  public Trigger level2(EventLoop loop) {
+    return button(TigerPad.Button.Level2.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 2 left button's digital
+   * Constructs a Trigger instance around the level 2 button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 2 left button's digital
+   * @return a Trigger instance representing the level 2 button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level2Left(EventLoop)
+   * @see #level2(EventLoop)
    */
-  public Trigger level2Left() {
-    return level2Left(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger level2() {
+    return level2(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
-   * Constructs a Trigger instance around the level 2 right button's digital
+   * Constructs a Trigger instance around the arm flat button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 2 right button's digital
+   * @return a Trigger instance representing the arm flat button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level2Right(EventLoop loop) {
-    return button(TigerPad.Button.Level2Right.value, loop);
+  public Trigger armFlat(EventLoop loop) {
+    return button(TigerPad.Button.ArmFlat.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 2 right button's digital
+   * Constructs a Trigger instance around the arm flat button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 2 right button's digital
+   * @return a Trigger instance representing the arm flat button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level2Right(EventLoop)
+   * @see #armFlat(EventLoop)
    */
-  public Trigger level2Right() {
-    return level2Right(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger armFlat() {
+    return armFlat(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
-   * Constructs a Trigger instance around the level 3 left button's digital
+   * Constructs a Trigger instance around the level 3 button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 3 left button's digital
+   * @return a Trigger instance representing the level 3 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level3Left(EventLoop loop) {
-    return button(TigerPad.Button.Level3Left.value, loop);
+  public Trigger level3(EventLoop loop) {
+    return button(TigerPad.Button.Level3.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 3 left button's digital
+   * Constructs a Trigger instance around the level 3 button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 3 left button's digital
+   * @return a Trigger instance representing the level 3 button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level3Left(EventLoop)
+   * @see #level3(EventLoop)
    */
-  public Trigger level3Left() {
-    return level3Left(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger level3() {
+    return level3(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
-   * Constructs a Trigger instance around the level 3 right button's digital
+   * Constructs a Trigger instance around the low algae button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 3 right button's digital
+   * @return a Trigger instance representing the low algae button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level3Right(EventLoop loop) {
-    return button(TigerPad.Button.Level3Right.value, loop);
+  public Trigger lowAlgae(EventLoop loop) {
+    return button(TigerPad.Button.LowAlgae.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 3 right button's digital
+   * Constructs a Trigger instance around the low algae button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 3 right button's digital
+   * @return a Trigger instance representing the low algae button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level3Right(EventLoop)
+   * @see #lowAlgae(EventLoop)
    */
-  public Trigger level3Right() {
-    return level3Right(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger lowAlgae() {
+    return lowAlgae(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
-   * Constructs a Trigger instance around the level 4 left button's digital
+   * Constructs a Trigger instance around the level 4 button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 4 left button's digital
+   * @return a Trigger instance representing the level 4 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level4Left(EventLoop loop) {
-    return button(TigerPad.Button.Level4Left.value, loop);
+  public Trigger level4(EventLoop loop) {
+    return button(TigerPad.Button.Level4.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 4 left button's digital
+   * Constructs a Trigger instance around the level 4 button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 4 left button's digital
+   * @return a Trigger instance representing the level 4 button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level4Left(EventLoop)
+   * @see #level4(EventLoop)
    */
-  public Trigger level4Left() {
-    return level4Left(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger level4() {
+    return level4(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
-   * Constructs a Trigger instance around the level 4 right button's digital
+   * Constructs a Trigger instance around the high algae button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return a Trigger instance representing the level 4 right button's digital
+   * @return a Trigger instance representing the high algae button's digital
    *         signal
    *         attached to the given loop.
    */
-  public Trigger level4Right(EventLoop loop) {
-    return button(TigerPad.Button.Level4Right.value, loop);
+  public Trigger highAlgae(EventLoop loop) {
+    return button(TigerPad.Button.HighAlgae.value, loop);
   }
 
   /**
-   * Constructs a Trigger instance around the level 4 right button's digital
+   * Constructs a Trigger instance around the high algae button's digital
    * signal.
    *
-   * @return a Trigger instance representing the level 4 right button's digital
+   * @return a Trigger instance representing the high algae button's digital
    *         signal attached
    *         to the {@link CommandScheduler#getDefaultButtonLoop() default
    *         scheduler button loop}.
-   * @see #level4Right(EventLoop)
+   * @see #highAlgae(EventLoop)
    */
-  public Trigger level4Right() {
-    return level4Right(CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger highAlgae() {
+    return highAlgae(CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
@@ -433,30 +433,30 @@ public class CommandTigerPad extends CommandGenericHID {
   }
 
   /**
-   * Get the lower arm axis value of the controller.
+   * Get the shoulder joint axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getLowerArm() {
-    return tigerPad.getLowerArm();
+  public double getShoulderJoint() {
+    return tigerPad.getShoulderJoint();
   }
 
   /**
-   * Get the upper arm axis value of the controller.
+   * Get the elbow joint axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getUpperArm() {
-    return tigerPad.getUpperArm();
+  public double getElbowJoint() {
+    return tigerPad.getElbowJoint();
   }
 
   /**
-   * Get the wrist pivot axis value of the controller.
+   * Get the wrist arc axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getWristPivot() {
-    return tigerPad.getWristPivot();
+  public double getWristArc() {
+    return tigerPad.getWristArc();
   }
 
   /**
