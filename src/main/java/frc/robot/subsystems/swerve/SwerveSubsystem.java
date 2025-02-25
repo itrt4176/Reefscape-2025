@@ -69,7 +69,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * AprilTag field layout.
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-      .loadField(AprilTagFields.k2024Crescendo);
+      .loadField(AprilTagFields.k2025ReefscapeWelded);
   /**
    * Enable vision odometry updates while driving.
    */
@@ -80,6 +80,8 @@ public class SwerveSubsystem extends SubsystemBase {
   // private Vision vision;
 
   private final Field2d d_field = new Field2d();
+
+  private boolean slowMode = false;
 
 
   /**
@@ -360,7 +362,6 @@ public class SwerveSubsystem extends SubsystemBase {
       DriverStation.reportError(e.toString(), true);
     }
     return Commands.none();
-
   }
 
   /**
@@ -434,6 +435,10 @@ public class SwerveSubsystem extends SubsystemBase {
         .replaceSwerveModuleFeedforward(new SimpleMotorFeedforward(kS, kV, kA));
   }
 
+  public void enableSlowMode(boolean enable) {
+    slowMode = true;
+  }
+
   /**
    * Command to drive the robot using translative values and heading as angular
    * velocity.
@@ -449,12 +454,14 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveCommand(DoubleSupplier translationX,
       DoubleSupplier translationY, DoubleSupplier angularRotationX) {
     return run(() -> {
+      var slowScale = slowMode ? 0.3 : 1.0;
+
       // Make the robot move
       swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
           translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
           translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-          0.8),
-          Math.pow(angularRotationX.getAsDouble(), 3)
+          0.8 * slowScale),
+          Math.pow(angularRotationX.getAsDouble() * slowScale, 3)
               * swerveDrive.getMaximumChassisAngularVelocity(),
           true, false);
     });
