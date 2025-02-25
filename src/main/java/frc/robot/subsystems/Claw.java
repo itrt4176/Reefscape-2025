@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
   
@@ -64,7 +65,7 @@ public class Claw extends SubsystemBase {
 
   public double getArcDegrees()
   {
-    return arcThrift.get() * 360.0;
+    return arcThrift.get() * 360.0 - Constants.ClawConstants.ENCODER_OFFSET;
 
     
   }
@@ -135,7 +136,6 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
     SmartDashboard.putNumber("Arc Degrees", getArcDegrees());
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());

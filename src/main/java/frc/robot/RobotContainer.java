@@ -64,17 +64,16 @@ public class RobotContainer {
   private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.05);
   private final RotationSpeed rotate = new RotationSpeed(claw, .3);
 
-  private final ClawSetArcAngle levelFour = new ClawSetArcAngle(claw, 250);
+  private final ClawSetArcAngle levelFour = new ClawSetArcAngle(claw, 50);
 
-  private final ClawSetArcAngle intakeClaw = new ClawSetArcAngle(claw, 220);
+  // private final ClawSetArcAngle intakeClaw = new ClawSetArcAngle(claw, 220);
 
-  private final ClawSetArcAngle levelOneClaw = new ClawSetArcAngle(claw, 160);
+  // private final ClawSetArcAngle levelOneClaw = new ClawSetArcAngle(claw, 160);
 
-  private final ClawSetArcAngle levelTwoClaw = new ClawSetArcAngle(claw, 206.0);
+  // private final ClawSetArcAngle levelTwoClaw = new ClawSetArcAngle(claw, 206.0);
 
 
-  private final ClawSetArcAngle levelThreeClaw = new ClawSetArcAngle(claw, 225.0);
-
+  // private final ClawSetArcAngle levelThreeClaw = new ClawSetArcAngle(claw, 225.0);
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
 
@@ -240,23 +239,23 @@ public class RobotContainer {
         .andThen(Commands.waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 45))
         .andThen(shoulderJoint.setPosition(Position.INTAKE))
     );
-    driverController.b().onTrue(
-      ninetyRot
-      .andThen(intakeClaw)
-    );
-
-    // driverController.x().onTrue(
-    //   shoulderJoint.setPosition(Position.LEVEL_TWO)
-    //     .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+    // driverController.b().onTrue(
+    //   ninetyRot
+    //   .andThen(intakeClaw)
     // );
+
+    driverController.x().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_TWO)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_TWO))
+    );
     // driverController.x().onTrue(
     //   levelTwoClaw
     // );
 
-    // driverController.y().onTrue(
-    //   shoulderJoint.setPosition(Position.LEVEL_FOUR)
-    //     .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
-    // );
+    driverController.y().onTrue(
+      shoulderJoint.setPosition(Position.LEVEL_FOUR)
+        .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
+    );
 
     // driverController.y().onTrue(levelFour);
   }
