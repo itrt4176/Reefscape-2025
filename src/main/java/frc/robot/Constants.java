@@ -16,4 +16,10 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+
+  public static class IntakeConstants {
+    public static final double STORE_ANGLE = 294.2;
+    public static final double INTAKE_DOWN = 230.6;
+  }
 }

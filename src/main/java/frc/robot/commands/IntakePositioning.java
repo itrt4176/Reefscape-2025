@@ -18,7 +18,7 @@ public class IntakePositioning extends Command {
   double angle;
 
 
-  PIDController pid = new PIDController(0.01, 0.0, 0.0);
+  PIDController pid = new PIDController(0.02, 0.0, 0.0);
 
   /** Creates a new IntakePositioning. */
   public IntakePositioning(Intake intake, double angle) {
@@ -39,7 +39,7 @@ public class IntakePositioning extends Command {
   public void execute() {
     speed = pid.calculate(intake.getPivotDegrees(), angle);
 
-    intake.setPivotSpeed(speed);
+    intake.setPivotSpeed(speed * .3);
   }
 
   // Called once the command ends or is interrupted.

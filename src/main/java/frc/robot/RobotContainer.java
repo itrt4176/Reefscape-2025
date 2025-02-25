@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -28,8 +29,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final Intake intake = new Intake();
-  private final IntakePositioning intakePositionCommand1 = new IntakePositioning(intake, 185);
-  private final IntakePositioning intakePositionCommand2 = new IntakePositioning(intake, 205);
+  private final IntakePositioning storeIntake = new IntakePositioning(intake, IntakeConstants.STORE_ANGLE);
+  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN);
 
 
 
@@ -59,14 +60,14 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
 
     // driverController.x().onTrue(new InstantCommand(() -> intake.setSpeed(.2)));
     // driverController.y().onTrue(new InstantCommand(() -> intake.setSpeed(0)));
 
-    driverController.b().onTrue(intakePositionCommand1);
-    driverController.a().onTrue(intakePositionCommand2);
+    driverController.b().onTrue(storeIntake);
+    driverController.a().onTrue(intakeDown);
 
     driverController.x().whileTrue(Commands.startEnd(() -> intake.setSpeed(0.2), () -> intake.setSpeed(0.0), intake));
 
