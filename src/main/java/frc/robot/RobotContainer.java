@@ -114,12 +114,12 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
-//   SwerveInputStream driveAngularVelocity = SwerveInputStream
-//       .of(drivebase.getSwerveDrive(), () -> driverController.getLeftY() * -1,
-//           () -> driverController.getLeftX() * -1)
-//       .withControllerRotationAxis(driverController::getRightX)
-//       .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
-//       .allianceRelativeControl(true);
+  // SwerveInputStream driveAngularVelocity = SwerveInputStream
+  //     .of(drivebase.getSwerveDrive(), () -> driverController.getLeftY() * -1,
+  //         () -> driverController.getLeftX() * -1)
+  //     .withControllerRotationAxis(driverController::getRightX)
+  //     .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
+  //     .allianceRelativeControl(true);
 
   /**
    * Clone's the angular velocity input stream and converts it to a
@@ -166,10 +166,10 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //Apply inversion for inversion later
-    // Command joystickDrive = drivebase.driveCommand(
-    //                 () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
-    //                 () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
-    //                 () -> MathUtil.applyDeadband(driverController.getRightX(), 0.1));
+    Command joystickDrive = drivebase.driveCommand(
+                    () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
+                    () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
+                    () -> MathUtil.applyDeadband(driverController.getRightX(), 0.1));
 
 
     // drivebase.setDefaultCommand(joystickDrive);
