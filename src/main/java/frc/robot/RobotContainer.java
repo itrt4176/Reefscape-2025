@@ -6,6 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.ShoulderJointConstants;
 import frc.robot.Constants.ElbowJointConstants;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,19 +24,30 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcingSpeed;
+import frc.robot.commands.ClawSetArcAngle;
+import frc.robot.commands.CrazyShit;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.HomeWrist;
+import frc.robot.commands.RotationSetpoint;
+import frc.robot.commands.RotationSpeed;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.ArmJoint;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.CommandTigerPad;
+import frc.robot.utils.TigerPad.LEDMode;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
@@ -46,6 +60,30 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
+  private final Claw claw = new Claw();
+
+  private final ArcingSpeed arcing = new ArcingSpeed(claw, 0.05);
+
+  private final ArcingSpeed reverseArc = new ArcingSpeed(claw, -0.05);
+  private final RotationSpeed rotate = new RotationSpeed(claw, .3);
+
+  private final ClawSetArcAngle twoThirty = new ClawSetArcAngle(claw, 190);
+
+  private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
+
+  private final CrazyShit wth = new CrazyShit(claw, 90, 180);
+
+  private final HomeWrist homeWrist = new HomeWrist(claw);
+
+  // private final SequentialCommandGroup homing = new SequentialCommandGroup(twoThirty, homeWrist);
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController driverController = new CommandXboxController(
+      OperatorConstants.DRIVE_CONTROLLER_PORT);
+
+  private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
+      OperatorConstants.ARM_CONTROL_PANEL_PORT);
 
   // private final ArmJoint shoulderJoint = new ArmJoint(
   //   ShoulderJointConstants.motorPort,
@@ -70,17 +108,13 @@ public class RobotContainer {
 
   private Climber climber = new Climber();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
       new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
 //   SwerveInputStream driveAngularVelocity = SwerveInputStream
-//       .of(drivebase.getSwerveDrive(), () -> m_driverController.getLeftY() * -1,
-//           () -> m_driverController.getLeftX() * -1)
-//       .withControllerRotationAxis(m_driverController::getRightX)
+//       .of(drivebase.getSwerveDrive(), () -> driverController.getLeftY() * -1,
+//           () -> driverController.getLeftX() * -1)
+//       .withControllerRotationAxis(driverController::getRightX)
 //       .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
 //       .allianceRelativeControl(true);
 
@@ -89,8 +123,8 @@ public class RobotContainer {
    * fieldRelative input stream.
    */
 //   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-//       .withControllerHeadingAxis(m_driverController::getRightX,
-//           m_driverController::getRightY)
+//       .withControllerHeadingAxis(driverController::getRightX,
+//           driverController::getRightY)
 //       .headingWhile(true);
 
   /**
@@ -130,12 +164,12 @@ public class RobotContainer {
 
     //Apply inversion for inversion later
     Command joystickDrive = drivebase.driveCommand(
-                    () -> MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), 
-                    () -> MathUtil.applyDeadband(m_driverController.getRightX(), 0.1));
+                    () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
+                    () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
+                    () -> MathUtil.applyDeadband(-driverController.getRightX(), 0.1));
 
 
-    drivebase.setDefaultCommand(joystickDrive);
+    // drivebase.setDefaultCommand(joystickDrive);
   }
 
   /**
@@ -154,23 +188,35 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    // driverController.a().onTrue(homeWrist);
+
+
+
+    // driverController.b().onTrue(new InstantCommand(() -> claw.zeroRotation()));
+
+    // driverController.x().onTrue(twoThirty);
+
+    // driverController.y().onTrue(ninetyRot);
+
+    driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(0.2), () -> claw.setGripSpeed(0), claw));
+    driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setGripSpeed(-0.2), () -> claw.setGripSpeed(0), claw));
+
     
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
-    // m_driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // m_driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // m_driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // m_driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(shoulderJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    // m_driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // m_driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // m_driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // m_driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 
   //   m_driverController.a().onTrue(
@@ -193,10 +239,8 @@ public class RobotContainer {
   //       .alongWith(elbowJoint.setPosition(Position.LEVEL_FOUR))
   //   );
 
-    m_driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
-    m_driverController.y().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
-
-
+    driverController.a().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
+    driverController.y().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
   }
 
     
