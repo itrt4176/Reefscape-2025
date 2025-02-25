@@ -114,7 +114,7 @@ public final class Constants {
 
     static {
       angleMap.put(ArmJoint.Position.STOW, 20.0);
-      angleMap.put(ArmJoint.Position.INTAKE, 192.6);
+      angleMap.put(ArmJoint.Position.INTAKE, 202.8);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 54.3);
