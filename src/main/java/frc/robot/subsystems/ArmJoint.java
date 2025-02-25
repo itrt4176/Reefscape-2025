@@ -91,7 +91,7 @@ public class ArmJoint extends SubsystemBase {
   private boolean firstRun;
 
 /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
+  public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted, double minAngle, double maxAngle) {
     super(name);
 
     firstRun = true;
@@ -170,8 +170,8 @@ public class ArmJoint extends SubsystemBase {
     sysIdRunning = false;
   }
 
-  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
-    this(motorId, encoderId, encoderOffset, () -> 0, pidConfig, angleMap, name, isInverted);
+  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted, double minAngle, double maxAngle) {
+    this(motorId, encoderId, encoderOffset, () -> 0, pidConfig, angleMap, name, isInverted, minAngle, maxAngle);
   }
 
   public Angle getAngle() {

@@ -93,7 +93,9 @@ public class RobotContainer {
     ShoulderJointConstants.pidConfig,
     ShoulderJointConstants.angleMap,
     "Shoulder Joint",
-    false
+    false,
+    0.0,
+    180.0
   );
 
   private final ArmJoint elbowJoint = new ArmJoint(
@@ -104,7 +106,9 @@ public class RobotContainer {
     ElbowJointConstants.pidConfig,
     ElbowJointConstants.angleMap,
     "Elbow Joint",
-    false
+    false,
+    -35.0,
+    180.0
   );
 
   private final ArmCommands armCommands = new ArmCommands(shoulderJoint, elbowJoint);
