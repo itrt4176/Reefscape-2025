@@ -47,26 +47,26 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ArmJoint shoulderJoint = new ArmJoint(
-    ShoulderJointConstants.motorPort,
-    ShoulderJointConstants.encoderPort,
-    ShoulderJointConstants.encoderOffset,
-    ShoulderJointConstants.pidConfig,
-    ShoulderJointConstants.angleMap,
-    "Shoulder Joint",
-    false
-  );
+  // private final ArmJoint shoulderJoint = new ArmJoint(
+  //   ShoulderJointConstants.motorPort,
+  //   ShoulderJointConstants.encoderPort,
+  //   ShoulderJointConstants.encoderOffset,
+  //   ShoulderJointConstants.pidConfig,
+  //   ShoulderJointConstants.angleMap,
+  //   "Shoulder Joint",
+  //   false
+  // );
 
-  private final ArmJoint elbowJoint = new ArmJoint(
-    ElbowJointConstants.motorPort,
-    ElbowJointConstants.encoderPort,
-    ElbowJointConstants.encoderOffset,
-    () -> shoulderJoint.getAngle().magnitude(),
-    ElbowJointConstants.pidConfig,
-    ElbowJointConstants.angleMap,
-    "Elbow Joint",
-    false
-  );
+  // private final ArmJoint elbowJoint = new ArmJoint(
+  //   ElbowJointConstants.motorPort,
+  //   ElbowJointConstants.encoderPort,
+  //   ElbowJointConstants.encoderOffset,
+  //   () -> shoulderJoint.getAngle().magnitude(),
+  //   ElbowJointConstants.pidConfig,
+  //   ElbowJointConstants.angleMap,
+  //   "Elbow Joint",
+  //   false
+  // );
 
   private Climber climber = new Climber();
 
@@ -100,29 +100,29 @@ public class RobotContainer {
 //   SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
 //       .robotRelative(true).allianceRelativeControl(false);
 
-  SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream
-      .of(drivebase.getSwerveDrive(), () -> -m_driverController.getLeftY(),
-          () -> -m_driverController.getLeftX())
-      .withControllerRotationAxis(() -> m_driverController.getRawAxis(2))
-      .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
-      .allianceRelativeControl(true);
-  // Derive the heading axis with math!
-  SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard
-      .copy()
-      .withControllerHeadingAxis(
-          () -> Math.sin(m_driverController.getRawAxis(2) * Math.PI)
-              * (Math.PI * 2),
-          () -> Math.cos(m_driverController.getRawAxis(2) * Math.PI)
-              * (Math.PI * 2))
-      .headingWhile(true);
+  // SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream
+  //     .of(drivebase.getSwerveDrive(), () -> -m_driverController.getLeftY(),
+  //         () -> -m_driverController.getLeftX())
+  //     .withControllerRotationAxis(() -> m_driverController.getRawAxis(2))
+  //     .deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8)
+  //     .allianceRelativeControl(true);
+  // // Derive the heading axis with math!
+  // SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard
+  //     .copy()
+  //     .withControllerHeadingAxis(
+  //         () -> Math.sin(m_driverController.getRawAxis(2) * Math.PI)
+  //             * (Math.PI * 2),
+  //         () -> Math.cos(m_driverController.getRawAxis(2) * Math.PI)
+  //             * (Math.PI * 2))
+  //     .headingWhile(true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Disable the arm joints for tuning
-    shoulderJoint.setEnabled(true);
-    elbowJoint.setEnabled(true);
+    // shoulderJoint.setEnabled(true);
+    // elbowJoint.setEnabled(true);
 
     // Configure the trigger bindings
     configureBindings();
@@ -149,7 +149,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+    private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -183,10 +183,10 @@ public class RobotContainer {
     //     .alongWith(elbowJoint.setPosition(Position.INTAKE))
     // );
 
-    m_driverController.x().onTrue(
-      shoulderJoint.setPosition(Position.CLIMB)
-        .alongWith(elbowJoint.setPosition(Position.CLIMB))
-    );
+    // m_driverController.x().onTrue(
+    //   shoulderJoint.setPosition(Position.CLIMB)
+    //     .alongWith(elbowJoint.setPosition(Position.CLIMB))
+    // );
 
   //   m_driverController.y().onTrue(
   //     shoulderJoint.setPosition(Position.LEVEL_FOUR)
