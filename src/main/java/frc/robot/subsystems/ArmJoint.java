@@ -208,7 +208,7 @@ public class ArmJoint extends SubsystemBase {
       goal.mut_replace(angleMap.get(position), Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
       pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
-    }).withName(position.toString());
+    }).asProxy().withName(position.toString());
   }
 
   public Command adjustGoal(DoubleSupplier offsetSupplier) {
