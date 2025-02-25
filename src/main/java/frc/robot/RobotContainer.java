@@ -102,7 +102,7 @@ public class RobotContainer {
     false
   );
 
-  // private final ArmCommands armCommands
+  private final ArmCommands armCommands = new ArmCommands(shoulderJoint, elbowJoint);
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
     new File(Filesystem.getDeployDirectory(), "swerve/neo")
