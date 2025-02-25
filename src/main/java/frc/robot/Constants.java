@@ -87,7 +87,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 170.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 98.0);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 140.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 140.0);
     }
@@ -96,7 +96,7 @@ public final class Constants {
   public static class ElbowJointConstants {
     public static final int motorPort = 41;
     public static final int encoderPort = 1;
-    public static final double encoderOffset = 188.6;
+    public static final double encoderOffset = 251.2;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       54.392,

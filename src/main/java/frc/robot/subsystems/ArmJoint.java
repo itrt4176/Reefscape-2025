@@ -18,7 +18,9 @@ import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.utils.AccumulatingAnalogEncoder;
 
 public class ArmJoint extends SubsystemBase {
   public enum Position {
@@ -63,7 +66,7 @@ public class ArmJoint extends SubsystemBase {
   ) {}
 
   private SparkMax jointMotor;
-  private AnalogEncoder jointEncoder;
+  private AccumulatingAnalogEncoder jointEncoder;
   private double encoderOffset;
 
   private MutAngle angle;
@@ -97,13 +100,13 @@ public class ArmJoint extends SubsystemBase {
     firstRun = true;
 
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
-    jointEncoder = new AnalogEncoder(encoderId);
+    jointEncoder = new AccumulatingAnalogEncoder(encoderId, 5);
     this.encoderOffset = encoderOffset;
     this.relativeToAngle = relativeToAngle;
 
-    SparkMaxConfig jointConfig = new SparkMaxConfig(); 
-
-    jointConfig.inverted(isInverted);
+    SparkBaseConfig jointConfig = new SparkMaxConfig()
+      .inverted(isInverted)
+      .idleMode(IdleMode.kBrake);
 
     jointMotor.configure(jointConfig, null, null);
 
@@ -291,6 +294,7 @@ public class ArmJoint extends SubsystemBase {
     }
 
     SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
+    SmartDashboard.putNumber(getName() + " Unwrapped Encoder", jointEncoder.getRaw());
     SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
     SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
     SmartDashboard.putNumber(getName() + " Acceleration", acceleration.in(DegreesPerSecondPerSecond));
