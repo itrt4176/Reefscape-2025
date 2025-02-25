@@ -14,7 +14,7 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -66,11 +66,15 @@ public class RobotContainer {
     // driverController.x().onTrue(new InstantCommand(() -> intake.setSpeed(.2)));
     // driverController.y().onTrue(new InstantCommand(() -> intake.setSpeed(0)));
 
-    driverController.b().onTrue(storeIntake);
-    driverController.a().onTrue(intakeDown);
 
-    driverController.x().whileTrue(Commands.startEnd(() -> intake.setSpeed(0.2), () -> intake.setSpeed(0.0), intake));
+    
+    
+    driverController.x().onTrue(new StartEndCommand(
+      () -> intakeDown.alongWith(new InstantCommand(() -> intake.setSpeed(1.0))).schedule(), 
+      () -> storeIntake.alongWith(new InstantCommand(() -> intake.setSpeed(0))).schedule(), 
+      intake));
 
+  
 
   }
 
