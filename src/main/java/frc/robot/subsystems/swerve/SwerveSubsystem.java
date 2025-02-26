@@ -436,7 +436,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void enableSlowMode(boolean enable) {
-    slowMode = true;
+    slowMode = enable;
   }
 
   /**

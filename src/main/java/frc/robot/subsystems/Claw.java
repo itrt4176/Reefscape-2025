@@ -62,6 +62,8 @@ public class Claw extends SubsystemBase {
     arcThrift = new AnalogEncoder(2);
 
     rotationInput = new DigitalInput(0);
+
+    zeroRotation();
   }
 
   public double getArcDegrees()
