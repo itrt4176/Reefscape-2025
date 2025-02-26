@@ -172,6 +172,16 @@ public class RobotContainer {
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
+    driverController.x().toggleOnTrue(new StartEndCommand(
+      () -> intakeDown.alongWith(new InstantCommand(() -> intake.setSpeed(1.0))).schedule(), 
+      () -> storeIntake.alongWith(new InstantCommand(() -> intake.setSpeed(0))).schedule(), 
+      intake));
+
+    driverController.y().toggleOnTrue(new StartEndCommand(
+      () -> intake.setSpeed(-1.0), 
+      () -> intake.setSpeed(0), 
+      intake));
+
     driverController.leftTrigger(0.5).whileTrue(
       startEnd(
         () -> drivebase.enableSlowMode(true),
