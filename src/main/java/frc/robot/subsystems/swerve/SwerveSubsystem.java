@@ -453,26 +453,28 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public Command driveCommand(DoubleSupplier translationX,
       DoubleSupplier translationY, DoubleSupplier angularRotationX) {
+    // return run(() -> {
+    //   var slowScale = slowMode ? 0.3 : 1.0;
+
+      // Make the robot move
+    //   swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
+    //       translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+    //       translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
+    //       0.8 * slowScale),
+    //       Math.pow(angularRotationX.getAsDouble() * slowScale, 3)
+    //           * swerveDrive.getMaximumChassisAngularVelocity(),
+    //       true, false);
+    // });
+
     return run(() -> {
       var slowScale = slowMode ? 0.3 : 1.0;
 
-      // Make the robot move
-      swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-          translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-          translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-          0.8 * slowScale),
-          Math.pow(angularRotationX.getAsDouble() * slowScale, 3)
-              * swerveDrive.getMaximumChassisAngularVelocity(),
-          true, false);
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity(),
+                                          Math.pow(translationY.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity()),
+                        Math.pow(angularRotationX.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisAngularVelocity(),
+                        true,
+                        false);
     });
-
-    // return run(() -> {
-    //   swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity(),
-    //                                       Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity()),
-    //                     Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
-    //                     true,
-    //                     false);
-    // });
   }
 
   /**
