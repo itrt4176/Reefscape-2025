@@ -48,7 +48,8 @@ public class ArmJoint extends SubsystemBase {
     LEVEL_THREE,
     LEVEL_FOUR,
     LOW_ALGAE,
-    HIGH_ALGAE
+    HIGH_ALGAE,
+    START
   }
 
   public record PIDConfig(
@@ -117,7 +118,7 @@ public class ArmJoint extends SubsystemBase {
     acceleration = DegreesPerSecondPerSecond.mutable(0);
     timestamp = Timer.getFPGATimestamp();
 
-    goal = Degrees.mutable(angleMap.get(Position.FLAT));
+    goal = Degrees.mutable(angleMap.get(Position.START));
     goalAdjustment = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
