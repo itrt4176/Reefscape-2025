@@ -270,6 +270,8 @@ public class RobotContainer {
     return new RotationSetpoint(claw, rotationAngle).andThen(new ClawSetArcAngle(claw, arcAngle));
   }
 
+ 
+
   private Command setWristAndArm(
     double arcAngle,
     double rotationAngle,
