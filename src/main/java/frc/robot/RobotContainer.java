@@ -88,10 +88,12 @@ public class RobotContainer {
   private final HomeWrist homeWrist = new HomeWrist(claw);
 
   private final CommandXboxController driverController = new CommandXboxController(
-      OperatorConstants.DRIVE_CONTROLLER_PORT);
+    OperatorConstants.DRIVE_CONTROLLER_PORT
+  );
 
   private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
-      OperatorConstants.ARM_CONTROL_PANEL_PORT);
+    OperatorConstants.ARM_CONTROL_PANEL_PORT
+  );
 
   private final ArmJoint shoulderJoint = new ArmJoint(
     ShoulderJointConstants.motorPort,
@@ -132,9 +134,7 @@ public class RobotContainer {
 
   private final Intake intake = new Intake();
   private final IntakePositioning storeIntake = new IntakePositioning(intake, IntakeConstants.STORE_ANGLE);
-  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN);
-
-
+  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN); 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -170,12 +170,16 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
+    
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
-    driverController.x().toggleOnTrue(new StartEndCommand(
-      () -> intakeDown.alongWith(new InstantCommand(() -> intake.setSpeed(1.0))).schedule(), 
-      () -> storeIntake.alongWith(new InstantCommand(() -> intake.setSpeed(0))).schedule(), 
-      intake));
+    driverController.x().onTrue(
+      either(
+        intakeDown.alongWith(runOnce(() -> intake.setSpeed(1.0))),
+        storeIntake.alongWith(runOnce(() -> intake.setSpeed(0.0))),
+        () -> Math.abs(intake.getPivotDegrees() - IntakeConstants.STORE_ANGLE) <= 5.0
+      )      
+    );
 
     driverController.y().toggleOnTrue(new StartEndCommand(
       () -> intake.setSpeed(-1.0), 
