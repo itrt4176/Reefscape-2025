@@ -1,0 +1,254 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Elbow Joint ProfiledPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Encoders": "Alerts",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/IMU": "Alerts",
+      "/SmartDashboard/JSON": "Alerts",
+      "/SmartDashboard/Motors": "Alerts",
+      "/SmartDashboard/Pigeon 2 (v6) [9]": "Gyro",
+      "/SmartDashboard/Shoulder Joint ProfiledPIDController": "ProfiledPIDController",
+      "/SmartDashboard/Swerve Drive": "Alerts",
+      "/SmartDashboard/drive_field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Elbow Joint ProfiledPIDController": {
+        "window": {
+          "name": "Elbow",
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shoulder Joint ProfiledPIDController": {
+        "window": {
+          "name": "Shoulder",
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "4176"
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 2,
+          "legendLocation": 2,
+          "legendOutside": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shoulder Joint Position"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shoulder Joint Position Setpoint"
+            }
+          ]
+        },
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 2,
+          "legendLocation": 2,
+          "legendOutside": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.4470588266849518,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shoulder Joint Velocity"
+            },
+            {
+              "color": [
+                0.8666666746139526,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shoulder Joint Velocity Setpoint"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 2,
+          "legendHorizontal": true,
+          "legendLocation": 2,
+          "legendOutside": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Position"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Position Setpoint"
+            }
+          ]
+        },
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 2,
+          "legendHorizontal": true,
+          "legendLocation": 2,
+          "legendOutside": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Velocity"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Velocity Setpoint"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 458,
+          "legendLocation": 2,
+          "legendOutside": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Velocity Setpoint"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Velocity"
+            },
+            {
+              "color": [
+                0.3333333432674408,
+                0.658823549747467,
+                0.4078431725502014,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Position Setpoint"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Elbow Joint Position"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
