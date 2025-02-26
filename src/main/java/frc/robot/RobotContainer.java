@@ -209,10 +209,10 @@ public class RobotContainer {
         armControlPanel.setLevel3LED(LEDMode.Blink),
         parallel(
           elbowJoint.setPosition(Position.LEVEL_THREE).andThen(
-            waitUntil(() -> elbowJoint.getAngle().in(Degrees) <= 150),
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) <= 135),
             shoulderJoint.setPosition(Position.LEVEL_THREE)
           ),
-          setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
+          setWrist(ClawConstants.L3_ARC, ClawConstants.L3_ROT)
         ),
         armControlPanel.setLevel3LED(LEDMode.On)
       )  

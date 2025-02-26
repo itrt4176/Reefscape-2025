@@ -82,12 +82,12 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.FLAT, 165.0);
+      angleMap.put(ArmJoint.Position.FLAT, 180.0);
       angleMap.put(ArmJoint.Position.INTAKE, 82.9);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 170.0);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 98.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 140.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 140.0);
     }
@@ -96,7 +96,7 @@ public final class Constants {
   public static class ElbowJointConstants {
     public static final int motorPort = 41;
     public static final int encoderPort = 1;
-    public static final double encoderOffset = 251.2;
+    public static final double encoderOffset = 251.4;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       54.392,
@@ -114,9 +114,9 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.FLAT, 20.0);
+      angleMap.put(ArmJoint.Position.FLAT, 0.0);
       angleMap.put(ArmJoint.Position.INTAKE, 202.8);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 0.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 54.3);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
@@ -133,16 +133,16 @@ public final class Constants {
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;
 
-    public static final double L1_ARC = 0.0;
-    public static final double L1_ROT = 0.0;
+    public static final double L1_ARC = 65.0;
+    public static final double L1_ROT = 90.0;
 
-    public static final double L2_ARC = 0.0;
+    public static final double L2_ARC = -17.8;
     public static final double L2_ROT = 0.0;
 
-    public static final double L3_ARC = 0.0;
+    public static final double L3_ARC = 30.0;
     public static final double L3_ROT = 0.0;
 
-    public static final double L4_ARC = 0.0;
+    public static final double L4_ARC = 45.0;
     public static final double L4_ROT = 0.0;
 
     public static final double LOW_ALGAE_ARC = 0.0;
@@ -151,7 +151,7 @@ public final class Constants {
     public static final double HIGH_ALGAE_ARC = 0.0;
     public static final double HIGH_ALGAE_ROT = 0.0;
 
-    public static final double FLAT_ARC = 0.0;
+    public static final double FLAT_ARC = 65.0;
     public static final double FLAT_ROT = 0.0;
   }
 }
