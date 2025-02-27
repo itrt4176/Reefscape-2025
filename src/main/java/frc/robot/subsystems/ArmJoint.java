@@ -22,8 +22,10 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
@@ -73,7 +75,9 @@ public class ArmJoint extends SubsystemBase {
   private MutAngle angle;
   private DoubleSupplier relativeToAngle;
   private MutAngularVelocity velocity;
+  private MedianFilter velocityFilter;
   private MutAngularAcceleration acceleration;
+  private MedianFilter accelFilter;
   private double timestamp;
   
   private MutAngle goal;
@@ -115,7 +119,9 @@ public class ArmJoint extends SubsystemBase {
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0 - encoderOffset);
     velocity = DegreesPerSecond.mutable(0);
+    velocityFilter = new MedianFilter(10);
     acceleration = DegreesPerSecondPerSecond.mutable(0);
+    accelFilter = new MedianFilter(10);
     timestamp = Timer.getFPGATimestamp();
 
     goal = Degrees.mutable(angleMap.get(Position.START));
@@ -186,8 +192,8 @@ public class ArmJoint extends SubsystemBase {
     double newTimestamp = Timer.getFPGATimestamp();
     double period = newTimestamp - timestamp;
     double newAngle = jointEncoder.get() * 360.0 - encoderOffset + relativeToAngle.getAsDouble();
-    double newVelocity = (newAngle - angle.in(Degrees)) / period;
-    double newAcceleration = (newVelocity - velocity.in(DegreesPerSecond)) / period;
+    double newVelocity = velocityFilter.calculate((newAngle - angle.in(Degrees)) / period);
+    double newAcceleration = accelFilter.calculate((newVelocity - velocity.in(DegreesPerSecond)) / period);
 
     acceleration.mut_replace(newAcceleration, DegreesPerSecondPerSecond);
     velocity.mut_replace(newVelocity, DegreesPerSecond);
@@ -218,8 +224,9 @@ public class ArmJoint extends SubsystemBase {
 
   public Command adjustGoal(DoubleSupplier offsetSupplier) {
     return runOnce(() -> {
-      goalAdjustment.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
+      goalAdjustment.mut_plus(MathUtil.applyDeadband(offsetSupplier.getAsDouble(), 0.05) * 0.001, Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+      // Maybe this is the use case for setting a new goal without resetting the PID loop?
       pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
     }).withName("Adjust Offset")
       .andThen(this::moveJoint, this)
