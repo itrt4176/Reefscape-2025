@@ -173,18 +173,23 @@ public class RobotContainer {
     
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
-    driverController.x().onTrue(
-      either(
-        intakeDown.alongWith(runOnce(() -> intake.setSpeed(1.0))),
-        storeIntake.alongWith(runOnce(() -> intake.setSpeed(0.0))),
-        () -> Math.abs(intake.getPivotDegrees() - IntakeConstants.STORE_ANGLE) <= 5.0
-      )      
+    driverController.x().toggleOnTrue(
+      startEnd(
+        () -> {
+          intake.setPivotAngle(IntakeConstants.INTAKE_DOWN);
+          intake.setSpeed(1.0);
+        },
+        () -> {
+          intake.setPivotAngle(IntakeConstants.STORE_ANGLE);
+          intake.setSpeed(0.0);
+        }
+      )
     );
 
     driverController.y().toggleOnTrue(new StartEndCommand(
       () -> intake.setSpeed(-1.0), 
-      () -> intake.setSpeed(0), 
-      intake));
+      () -> intake.setSpeed(0) 
+    ));
 
     driverController.leftTrigger(0.5).whileTrue(
       startEnd(

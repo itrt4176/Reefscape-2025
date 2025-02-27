@@ -7,11 +7,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 
 
@@ -24,6 +27,8 @@ public class Intake extends SubsystemBase {
 
   TalonFX axelRotation;
 
+  private double setpoint;
+
   /** Creates a new Intake. */
   public Intake() {
 
@@ -35,6 +40,8 @@ public class Intake extends SubsystemBase {
 
     axelRotation = new TalonFX(31);//placeholder
 
+    setpoint = IntakeConstants.STORE_ANGLE;
+    setDefaultCommand(moveToAngle());
   }
 
 
@@ -56,6 +63,26 @@ public class Intake extends SubsystemBase {
   public void pivotStop()
   {
     pivotMotor.set(0);
+  }
+
+  private Command moveToAngle() {
+    return run(() -> {
+      var error = setpoint - getPivotDegrees();
+
+      if (Math.abs(error) < 0.5) {
+        error = 0.0;
+      }
+
+      setPivotSpeed(MathUtil.clamp(error * 0.05, -0.1, 0.1));
+    });
+  }
+
+  public void setPivotAngle(double angle) {
+    setpoint = angle;
+  }
+
+  public boolean atAngleSetpoint() {
+    return Math.abs(setpoint - getPivotDegrees()) <= 0.5;
   }
 
   @Override
