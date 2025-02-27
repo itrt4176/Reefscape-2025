@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IntakePositioning;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.ArmJoint;
 import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+import frc.robot.utils.BrakingMotors;
 import frc.robot.utils.CommandTigerPad;
 import frc.robot.utils.TigerPad.LEDMode;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -126,21 +128,18 @@ public class RobotContainer {
     new File(Filesystem.getDeployDirectory(), "swerve/neo")
   );
 
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  // The robot's subsystems and commands are defined here...
-
   private final Intake intake = new Intake();
   private final IntakePositioning storeIntake = new IntakePositioning(intake, IntakeConstants.STORE_ANGLE);
-  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN); 
+  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN);
+
+  private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
+  private Trigger robotEnabled = new Trigger(Robot::robotEnabled);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
-    shoulderJoint.setEnabled(true);
-    elbowJoint.setEnabled(true);
+    // shoulderJoint.setEnabled(false);
+    // elbowJoint.setEnabled(false);
 
     // Configure the trigger bindings
     configureBindings();
@@ -169,6 +168,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    robotEnabled.onTrue(runOnce(() -> {
+      for (BrakingMotors subsystem : brakingSubsystems) {
+        subsystem.enableMotorBrakes(true);
+      }
+    })).onFalse(runOnce(() -> {
+      for (BrakingMotors subsystem : brakingSubsystems) {
+        subsystem.enableMotorBrakes(false);
+      }
+    }));
+
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));

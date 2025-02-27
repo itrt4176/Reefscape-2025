@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -38,6 +39,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.utils.BrakingMotors;
+
 //import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +62,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
 
   /**
    * Swerve drive object.
@@ -143,6 +146,8 @@ public class SwerveSubsystem extends SubsystemBase {
     zeroGyro();
     setupPathPlanner();
     SmartDashboard.putData("drive_field",d_field);
+
+    setMotorBrake(false);
   }
 
   /**
@@ -626,6 +631,11 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setMotorBrake(boolean brake) {
     swerveDrive.setMotorIdleMode(brake);
+  }
+
+  @Override
+  public Command enableMotorBrakes(boolean enable) {
+      return runOnce(() -> setMotorBrake(enable)).ignoringDisable(true);
   }
 
   /**

@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+  private static boolean robotEnabled = false;
+
   private Command autonomousCommand;
 
   private final RobotContainer m_robotContainer;
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    robotEnabled = false;
   }
 
   @Override
@@ -72,6 +75,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    robotEnabled = true;
+
     autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -87,6 +92,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    robotEnabled = true;
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -103,6 +110,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    robotEnabled = true;
+
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
@@ -120,5 +129,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
+  }
+
+  public static boolean robotEnabled() {
+    return robotEnabled;
   }
 }

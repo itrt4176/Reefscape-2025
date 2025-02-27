@@ -15,11 +15,13 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.utils.BrakingMotors;
 
-public class Claw extends SubsystemBase {
+public class Claw extends SubsystemBase implements BrakingMotors {
   
   /** 
    * The left motor controller controlling the wrist
@@ -49,8 +51,8 @@ public class Claw extends SubsystemBase {
 
     gripMotor = new SparkMax(5, MotorType.kBrushless);
 
-    leftConfig.idleMode(IdleMode.kBrake);
-    rightConfig.idleMode(IdleMode.kBrake);
+    leftConfig.idleMode(IdleMode.kCoast);
+    rightConfig.idleMode(IdleMode.kCoast);
 
     rightConfig.inverted(true);
 
@@ -141,6 +143,18 @@ public class Claw extends SubsystemBase {
   {
     leftMotor.set(speed);
     rightMotor.set(-speed);
+  }
+
+  @Override
+  public Command enableMotorBrakes(boolean enable) {
+    var idleMode = enable ? IdleMode.kBrake : IdleMode.kCoast;
+
+    return runOnce(
+      () -> {
+        leftMotor.configure(leftConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        rightMotor.configure(rightConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      }
+    ).ignoringDisable(true);
   }
 
   @Override

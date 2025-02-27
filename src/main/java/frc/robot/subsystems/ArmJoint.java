@@ -17,6 +17,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -40,8 +42,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.utils.AccumulatingAnalogEncoder;
+import frc.robot.utils.BrakingMotors;
 
-public class ArmJoint extends SubsystemBase {
+public class ArmJoint extends SubsystemBase implements BrakingMotors {
   public enum Position {
     FLAT,
     INTAKE,
@@ -93,6 +96,8 @@ public class ArmJoint extends SubsystemBase {
   private final SysIdRoutine idRoutine;
   private final MutVoltage routineVoltage = Volts.mutable(0);
 
+  private SparkBaseConfig jointConfig;
+
   private boolean enabled;
   private boolean sysIdRunning;
 
@@ -109,11 +114,11 @@ public class ArmJoint extends SubsystemBase {
     this.encoderOffset = encoderOffset;
     this.relativeToAngle = relativeToAngle;
 
-    SparkBaseConfig jointConfig = new SparkMaxConfig()
+    jointConfig = new SparkMaxConfig()
       .inverted(isInverted)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kCoast);
 
-    jointMotor.configure(jointConfig, null, null);
+    jointMotor.configure(jointConfig, null, PersistMode.kPersistParameters);
 
     this.angleMap = angleMap;
 
@@ -292,6 +297,14 @@ public class ArmJoint extends SubsystemBase {
    */
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+
+  @Override
+  public Command enableMotorBrakes(boolean enable) {
+    var idleMode = enable ? IdleMode.kBrake : IdleMode.kCoast;
+
+    return runOnce(() -> jointMotor.configure(jointConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters))
+      .ignoringDisable(true);
   }
 
   @Override
