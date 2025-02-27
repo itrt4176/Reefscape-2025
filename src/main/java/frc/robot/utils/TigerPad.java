@@ -138,9 +138,9 @@ public class TigerPad extends GenericHID implements Sendable {
     /** Lower arm axis. */
     LowerArm(0),
     /** Upper arm axis. */
-    UpperArm(1),
+    UpperArm(2),
     /** Wrist pivot axis. */
-    WristPivot(2),
+    WristPivot(1),
     /** Wrist rotation axis. */
     WristRotation(3);
 
