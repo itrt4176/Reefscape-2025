@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.File;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -133,7 +134,7 @@ public class RobotContainer {
   private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN);
 
   private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
-  private Trigger robotEnabled = new Trigger(Robot::robotEnabled);
+  private Trigger robotEnabled = new Trigger(RobotState::isEnabled);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -168,15 +169,15 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    robotEnabled.onTrue(runOnce(() -> {
+    robotEnabled.onChange(defer(() -> {
+      var command = none();
+
       for (BrakingMotors subsystem : brakingSubsystems) {
-        subsystem.enableMotorBrakes(true);
+        command = command.alongWith(subsystem.enableMotorBrakes(RobotState.isEnabled()));
       }
-    })).onFalse(runOnce(() -> {
-      for (BrakingMotors subsystem : brakingSubsystems) {
-        subsystem.enableMotorBrakes(false);
-      }
-    }));
+
+      return command;
+    }, Set.of()));
 
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
