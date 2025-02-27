@@ -23,8 +23,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.IntakePositioning;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -81,10 +88,12 @@ public class RobotContainer {
   private final HomeWrist homeWrist = new HomeWrist(claw);
 
   private final CommandXboxController driverController = new CommandXboxController(
-      OperatorConstants.DRIVE_CONTROLLER_PORT);
+    OperatorConstants.DRIVE_CONTROLLER_PORT
+  );
 
   private final CommandTigerPad armControlPanel = CommandTigerPad.getInstance(
-      OperatorConstants.ARM_CONTROL_PANEL_PORT);
+    OperatorConstants.ARM_CONTROL_PANEL_PORT
+  );
 
   private final ArmJoint shoulderJoint = new ArmJoint(
     ShoulderJointConstants.motorPort,
@@ -121,6 +130,13 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+  // The robot's subsystems and commands are defined here...
+
+  private final Intake intake = new Intake();
+  private final IntakePositioning storeIntake = new IntakePositioning(intake, IntakeConstants.STORE_ANGLE);
+  private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN); 
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
     shoulderJoint.setEnabled(true);

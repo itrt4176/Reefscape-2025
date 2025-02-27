@@ -156,4 +156,10 @@ public final class Constants {
     public static final double FLAT_ARC = 65.0;
     public static final double FLAT_ROT = 0.0;
   }
+
+
+  public static class IntakeConstants {
+    public static final double STORE_ANGLE = 280;
+    public static final double INTAKE_DOWN = 247.5;
+  }
 }
