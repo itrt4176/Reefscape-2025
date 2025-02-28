@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.utils.BrakingMotors;
 
 public class Claw extends SubsystemBase implements BrakingMotors {
@@ -70,9 +72,7 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public double getArcDegrees()
   {
-    return arcThrift.get() * 360.0 - Constants.ClawConstants.ENCODER_OFFSET;
-
-    
+    return arcThrift.get() * 360.0 - Constants.ClawConstants.ENCODER_OFFSET;    
   }
 
   public void setGripSpeed(double speed)
@@ -130,19 +130,19 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void setRightSpeed(double speed)
   {
-    rightMotor.set(speed);
+    rightMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
   }
 
   public void setLeftSpeed(double speed)
   {
-    leftMotor.set(speed);
+    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
   }
 
 
   public void setRotationSpeed(double speed)
   {
-    leftMotor.set(speed);
-    rightMotor.set(-speed);
+    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+    rightMotor.set(MathUtil.clamp(-speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
   }
 
   @Override
