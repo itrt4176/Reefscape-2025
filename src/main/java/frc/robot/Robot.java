@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * package after creating
  * this project, you must also update the Main.java file in the project.
  */
+@Logged
 public class Robot extends TimedRobot {
-  private static boolean robotEnabled = false;
 
   private Command autonomousCommand;
 
@@ -35,6 +38,9 @@ public class Robot extends TimedRobot {
     // CanBridge.runTCP();
 
     m_robotContainer = new RobotContainer();
+
+    DataLogManager.start();
+    Epilogue.bind(this);
   }
 
   /**
@@ -61,9 +67,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    robotEnabled = false;
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {
@@ -75,8 +79,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    robotEnabled = true;
-
     autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -92,8 +94,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    robotEnabled = true;
-
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -110,8 +110,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    robotEnabled = true;
-
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
@@ -129,9 +127,5 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-  }
-
-  public static boolean robotEnabled() {
-    return robotEnabled;
   }
 }
