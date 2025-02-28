@@ -45,7 +45,9 @@ import frc.robot.commands.HomeWrist;
 import frc.robot.commands.RotationSetpoint;
 import frc.robot.commands.RotationSpeed;
 import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ArmJoint;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ArmJoint.Position;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -53,6 +55,9 @@ import frc.robot.utils.BrakingMotors;
 import frc.robot.utils.CommandTigerPad;
 import frc.robot.utils.TigerPad.LEDMode;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -124,6 +129,8 @@ public class RobotContainer {
   );
 
   private final ArmCommands armCommands = new ArmCommands(shoulderJoint, elbowJoint);
+
+  private Climber climber = new Climber();
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(
     new File(Filesystem.getDeployDirectory(), "swerve/neo")
@@ -201,6 +208,9 @@ public class RobotContainer {
       () -> intake.setSpeed(0) 
     ));
 
+    driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
+    driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
+
 
     driverController.leftTrigger(0.5).whileTrue(
       startEnd(
@@ -245,7 +255,7 @@ public class RobotContainer {
       setWristAndArm(
         ClawConstants.FLAT_ARC,
         ClawConstants.FLAT_ROT,
-        Position.FLAT,
+        Position.CLIMB,
         armControlPanel::setArmFlatLED
       )
     );
@@ -336,6 +346,8 @@ public class RobotContainer {
       setLEDCommand.apply(LEDMode.On)
     );
   }
+
+    
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

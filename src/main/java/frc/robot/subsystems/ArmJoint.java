@@ -46,7 +46,7 @@ import frc.robot.utils.BrakingMotors;
 
 public class ArmJoint extends SubsystemBase implements BrakingMotors {
   public enum Position {
-    FLAT,
+    CLIMB,
     INTAKE,
     LEVEL_ONE,
     LEVEL_TWO,
