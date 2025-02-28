@@ -14,36 +14,47 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularAcceleration;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.utils.AccumulatingAnalogEncoder;
+import frc.robot.utils.BrakingMotors;
 
-public class ArmJoint extends SubsystemBase {
+@Logged
+public class ArmJoint extends SubsystemBase implements BrakingMotors {
   public enum Position {
-    STOW,
+    CLIMB,
     INTAKE,
     LEVEL_ONE,
     LEVEL_TWO,
     LEVEL_THREE,
-    LEVEL_FOUR
+    LEVEL_FOUR,
+    LOW_ALGAE,
+    HIGH_ALGAE,
+    START
   }
 
   public record PIDConfig(
@@ -61,13 +72,15 @@ public class ArmJoint extends SubsystemBase {
   ) {}
 
   private SparkMax jointMotor;
-  private AnalogEncoder jointEncoder;
+  private AccumulatingAnalogEncoder jointEncoder;
   private double encoderOffset;
 
   private MutAngle angle;
   private DoubleSupplier relativeToAngle;
   private MutAngularVelocity velocity;
+  private MedianFilter velocityFilter;
   private MutAngularAcceleration acceleration;
+  private MedianFilter accelFilter;
   private double timestamp;
   
   private MutAngle goal;
@@ -83,36 +96,40 @@ public class ArmJoint extends SubsystemBase {
   private final SysIdRoutine idRoutine;
   private final MutVoltage routineVoltage = Volts.mutable(0);
 
+  private SparkBaseConfig jointConfig;
+
   private boolean enabled;
   private boolean sysIdRunning;
 
   private boolean firstRun;
 
 /** Creates a new ArmSubsystem. */
-  public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
+  public ArmJoint(int motorId, int encoderId, double encoderOffset,  DoubleSupplier relativeToAngle,  PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted, double minAngle, double maxAngle) {
     super(name);
 
     firstRun = true;
 
     jointMotor = new SparkMax(motorId, MotorType.kBrushless);
-    jointEncoder = new AnalogEncoder(encoderId);
+    jointEncoder = new AccumulatingAnalogEncoder(encoderId, 5);
     this.encoderOffset = encoderOffset;
     this.relativeToAngle = relativeToAngle;
 
-    SparkMaxConfig jointConfig = new SparkMaxConfig(); 
+    jointConfig = new SparkMaxConfig()
+      .inverted(isInverted)
+      .idleMode(IdleMode.kCoast);
 
-    jointConfig.inverted(isInverted);
-
-    jointMotor.configure(jointConfig, null, null);
+    jointMotor.configure(jointConfig, null, PersistMode.kPersistParameters);
 
     this.angleMap = angleMap;
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0 - encoderOffset);
     velocity = DegreesPerSecond.mutable(0);
+    velocityFilter = new MedianFilter(15);
     acceleration = DegreesPerSecondPerSecond.mutable(0);
+    accelFilter = new MedianFilter(15);
     timestamp = Timer.getFPGATimestamp();
 
-    goal = Degrees.mutable(angleMap.get(Position.STOW));
+    goal = Degrees.mutable(angleMap.get(Position.START));
     goalAdjustment = Degrees.mutable(0.0);
 
     pid = new ProfiledPIDController(
@@ -138,6 +155,7 @@ public class ArmJoint extends SubsystemBase {
 
     pid.setGoal(goal.in(Rotations));
 
+    
     atGoal = new Trigger(pid::atGoal);
 
     setDefaultCommand(run(this::moveJoint));
@@ -167,8 +185,8 @@ public class ArmJoint extends SubsystemBase {
     sysIdRunning = false;
   }
 
-  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted) {
-    this(motorId, encoderId, encoderOffset, () -> 0, pidConfig, angleMap, name, isInverted);
+  public ArmJoint(int motorId, int encoderId, double encoderOffset, PIDConfig pidConfig, Map<Position, Double> angleMap, String name, boolean isInverted, double minAngle, double maxAngle) {
+    this(motorId, encoderId, encoderOffset, () -> 0, pidConfig, angleMap, name, isInverted, minAngle, maxAngle);
   }
 
   public Angle getAngle() {
@@ -179,8 +197,8 @@ public class ArmJoint extends SubsystemBase {
     double newTimestamp = Timer.getFPGATimestamp();
     double period = newTimestamp - timestamp;
     double newAngle = jointEncoder.get() * 360.0 - encoderOffset + relativeToAngle.getAsDouble();
-    double newVelocity = (newAngle - angle.in(Degrees)) / period;
-    double newAcceleration = (newVelocity - velocity.in(DegreesPerSecond)) / period;
+    double newVelocity = velocityFilter.calculate((newAngle - angle.in(Degrees)) / period);
+    double newAcceleration = accelFilter.calculate((newVelocity - velocity.in(DegreesPerSecond)) / period);
 
     acceleration.mut_replace(newAcceleration, DegreesPerSecondPerSecond);
     velocity.mut_replace(newVelocity, DegreesPerSecond);
@@ -204,18 +222,30 @@ public class ArmJoint extends SubsystemBase {
   public Command setPosition(Position position) {
     return runOnce(() -> {
       goal.mut_replace(angleMap.get(position), Degrees);
+      goalAdjustment.mut_replace(0, Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
       pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
-    }).withName(position.toString());
+    }).asProxy().withName(position.toString());
   }
 
   public Command adjustGoal(DoubleSupplier offsetSupplier) {
-    return runOnce(() -> {
-      goalAdjustment.mut_plus(offsetSupplier.getAsDouble() * 0.1, Degrees);
-      pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
-    }).withName("Adjust Offset")
-      .andThen(this::moveJoint, this)
-      .repeatedly();
+    return runOnce(() -> pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond))).andThen(
+      runOnce(() -> {
+        var adjustment = goalAdjustment.in(Degrees);
+        var offsetInput = MathUtil.applyDeadband(offsetSupplier.getAsDouble(), 0.1);
+        var newAdjustment = adjustment + (offsetInput / 10.0);
+        goalAdjustment.mut_replace(newAdjustment, Degrees);
+        pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+        // Maybe this is the use case for setting a new goal without resetting the PID loop?
+        // pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
+      }).andThen(this::moveJoint, this).repeatedly()
+    ).withName(getName() + " Adjust Goal");
+  }
+
+  public void setOffset(DoubleSupplier offsetSupplier) {
+    goalAdjustment.mut_plus(offsetSupplier.getAsDouble(), Degrees);
+    pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+    pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
   }
 
   private void moveJoint() {
@@ -274,6 +304,14 @@ public class ArmJoint extends SubsystemBase {
   }
 
   @Override
+  public Command enableMotorBrakes(boolean enable) {
+    var idleMode = enable ? IdleMode.kBrake : IdleMode.kCoast;
+
+    return runOnce(() -> jointMotor.configure(jointConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters))
+      .ignoringDisable(true);
+  }
+
+  @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (!sysIdRunning) {
@@ -281,11 +319,14 @@ public class ArmJoint extends SubsystemBase {
     }
 
     SmartDashboard.putNumber(getName() + " Raw Encoder", jointEncoder.get());
+    SmartDashboard.putNumber(getName() + " Unwrapped Encoder", jointEncoder.getRaw());
     SmartDashboard.putNumber(getName() + " Position", angle.in(Degrees));
     SmartDashboard.putNumber(getName() + " Velocity", velocity.in(DegreesPerSecond));
     SmartDashboard.putNumber(getName() + " Acceleration", acceleration.in(DegreesPerSecondPerSecond));
     SmartDashboard.putNumber(getName() + " Motor Bus Voltage", jointMotor.getBusVoltage());
     SmartDashboard.putNumber(getName() + " Motor get()", jointMotor.get());
     SmartDashboard.putNumber(getName() + " Motor Voltage", jointMotor.get() * jointMotor.getBusVoltage());
+    SmartDashboard.putNumber(getName() + " Goal", goal.in(Degrees));
+    SmartDashboard.putNumber(getName() + " Manual Adjustment", goalAdjustment.in(Degrees));
   }
 }

@@ -67,18 +67,18 @@ public class TigerPad extends GenericHID implements Sendable {
     Intake(1),
     /** Level 1 button. */
     Level1(2),
-    /** Level 2 left button. */
-    Level2Left(3),
-    /** Level 2 right button. */
-    Level2Right(4),
-    /** Level 3 left button. */
-    Level3Left(5),
-    /** Level 3 right button. */
-    Level3Right(6),
-    /** Level 4 left button. */
-    Level4Left(7),
-    /** Level 4 right button. */
-    Level4Right(8);
+    /** Level 2 button. */
+    Level2(3),
+    /** Arm flat button. */
+    ArmFlat(4),
+    /** Level 3 button. */
+    Level3(5),
+    /** Low algae button. */
+    LowAlgae(6),
+    /** Level 4 button. */
+    Level4(7),
+    /** High algae button. */
+    HighAlgae(8);
 
     /** Button value. */
     public final int value;
@@ -135,12 +135,12 @@ public class TigerPad extends GenericHID implements Sendable {
 
   /** Represents an axis on a TigerPad. */
   public enum Axis {
-    /** Lower arm axis. */
-    LowerArm(0),
-    /** Upper arm axis. */
-    UpperArm(1),
+    /** Shoulder joint axis. */
+    ShoulderJoint(0),
+    /** Elbow joint axis. */
+    ElbowJoint(2),
     /** Wrist pivot axis. */
-    WristPivot(2),
+    WristPivot(1),
     /** Wrist rotation axis. */
     WristRotation(3);
 
@@ -173,18 +173,18 @@ public class TigerPad extends GenericHID implements Sendable {
     Intake(0),
     /** Level 1 LED. */
     Level1(1),
-    /** Level 2 left LED. */
-    Level2Left(2),
-    /** Level 2 right LED. */
-    Level2Right(3),
-    /** Level 3 left LED. */
-    Level3Left(4),
-    /** Level 3 right LED. */
-    Level3Right(5),
-    /** Level 4 left LED. */
-    Level4Left(6),
-    /** Level 4 right LED. */
-    Level4Right(7);
+    /** Level 2 LED. */
+    Level2(2),
+    /** Flat arm LED. */
+    FlatArm(3),
+    /** Level 3 LED. */
+    Level3(4),
+    /** Low algae LED. */
+    LowAlgae(5),
+    /** Level 4 LED. */
+    Level4(6),
+    /** High algae LED. */
+    HighAlgae(7);
 
     /** LED value. */
     public final int value;
@@ -295,29 +295,29 @@ public class TigerPad extends GenericHID implements Sendable {
   }
 
   /**
-   * Get the lower arm axis value of the controller.
+   * Get the shoulder joint axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getLowerArm() {
-    return getRawAxis(Axis.LowerArm.value);
+  public double getShoulderJoint() {
+    return getRawAxis(Axis.ShoulderJoint.value);
   }
 
   /**
-   * Get the upper arm axis value of the controller.
+   * Get the elbow joint axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getUpperArm() {
-    return getRawAxis(Axis.UpperArm.value);
+  public double getElbowJoint() {
+    return getRawAxis(Axis.ElbowJoint.value);
   }
 
   /**
-   * Get the wrist pivot axis value of the controller.
+   * Get the wrist arc axis value of the controller.
    *
    * @return The axis value.
    */
-  public double getWristPivot() {
+  public double getWristArc() {
     return getRawAxis(Axis.WristPivot.value);
   }
 
@@ -511,348 +511,348 @@ public class TigerPad extends GenericHID implements Sendable {
   }
 
   /**
-   * Read the value of the level 2 left button on the controller.
+   * Read the value of the level 2 button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel2LeftButton() {
-    return getRawButton(Button.Level2Left.value);
+  public boolean getLevel2Button() {
+    return getRawButton(Button.Level2.value);
   }
 
   /**
-   * Whether the level 2 left button was pressed since the last check.
+   * Whether the level 2 button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel2LeftButtonPressed() {
-    return getRawButtonPressed(Button.Level2Left.value);
+  public boolean getLevel2ButtonPressed() {
+    return getRawButtonPressed(Button.Level2.value);
   }
 
   /**
-   * Whether the level 2 left button was released since the last check.
+   * Whether the level 2 button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel2LeftButtonReleased() {
-    return getRawButtonReleased(Button.Level2Left.value);
+  public boolean getLevel2ButtonReleased() {
+    return getRawButtonReleased(Button.Level2.value);
   }
 
   /**
-   * Constructs an event instance around the level 2 left button's digital signal.
+   * Constructs an event instance around the level 2 button's digital signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 2 left button's digital
+   * @return an event instance representing the level 2 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level2Left(EventLoop loop) {
-    return button(Button.Level2Left.value, loop);
+  public BooleanEvent level2(EventLoop loop) {
+    return button(Button.Level2.value, loop);
   }
 
   /**
-   * Read the mode of the level 2 left button LED on the controller.
+   * Read the mode of the level 2 button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel2LeftButtonLEDMode() {
-    return getLEDMode(LED.Level2Left);
+  public LEDMode getLevel2ButtonLEDMode() {
+    return getLEDMode(LED.Level2);
   }
 
   /**
-   * Set the mode of the level 2 left button LED.
+   * Set the mode of the level 2 button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel2LeftButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level2Left, mode);
+  public void setLevel2ButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.Level2, mode);
   }
 
   /**
-   * Read the value of the level 2 right button on the controller.
+   * Read the value of the arm flat button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel2RightButton() {
-    return getRawButton(Button.Level2Right.value);
+  public boolean getArmFlatButton() {
+    return getRawButton(Button.ArmFlat.value);
   }
 
   /**
-   * Whether the level 2 right button was pressed since the last check.
+   * Whether the arm flat button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel2RightButtonPressed() {
-    return getRawButtonPressed(Button.Level2Right.value);
+  public boolean getArmFlatButtonPressed() {
+    return getRawButtonPressed(Button.ArmFlat.value);
   }
 
   /**
-   * Whether the level 2 right button was released since the last check.
+   * Whether the arm flat button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel2RightButtonReleased() {
-    return getRawButtonReleased(Button.Level2Right.value);
+  public boolean getArmFlatButtonReleased() {
+    return getRawButtonReleased(Button.ArmFlat.value);
   }
 
   /**
-   * Constructs an event instance around the level 2 right button's digital
+   * Constructs an event instance around the arm flat button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 2 right button's digital
+   * @return an event instance representing the arm flat button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level2Right(EventLoop loop) {
-    return button(Button.Level2Right.value, loop);
+  public BooleanEvent armFlat(EventLoop loop) {
+    return button(Button.ArmFlat.value, loop);
   }
 
   /**
-   * Read the mode of the level 2 right button LED on the controller.
+   * Read the mode of the arm flat button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel2RightButtonLEDMode() {
-    return getLEDMode(LED.Level2Right);
+  public LEDMode getArmFlatButtonLEDMode() {
+    return getLEDMode(LED.FlatArm);
   }
 
   /**
-   * Set the mode of the level 2 right button LED.
+   * Set the mode of the arm flat button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel2RightButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level2Right, mode);
+  public void setArmFlatButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.FlatArm, mode);
   }
 
   /**
-   * Read the value of the level 3 left button on the controller.
+   * Read the value of the level 3 button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel3LeftButton() {
-    return getRawButton(Button.Level3Left.value);
+  public boolean getLevel3Button() {
+    return getRawButton(Button.Level3.value);
   }
 
   /**
-   * Whether the level 3 left button was pressed since the last check.
+   * Whether the level 3 button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel3LeftButtonPressed() {
-    return getRawButtonPressed(Button.Level3Left.value);
+  public boolean getLevel3ButtonPressed() {
+    return getRawButtonPressed(Button.Level3.value);
   }
 
   /**
-   * Whether the level 3 left button was released since the last check.
+   * Whether the level 3 button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel3LeftButtonReleased() {
-    return getRawButtonReleased(Button.Level3Left.value);
+  public boolean getLevel3ButtonReleased() {
+    return getRawButtonReleased(Button.Level3.value);
   }
 
   /**
-   * Constructs an event instance around the level 3 left button's digital signal.
+   * Constructs an event instance around the level 3 button's digital signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 3 left button's digital
+   * @return an event instance representing the level 3 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level3Left(EventLoop loop) {
-    return button(Button.Level3Left.value, loop);
+  public BooleanEvent level3(EventLoop loop) {
+    return button(Button.Level3.value, loop);
   }
 
   /**
-   * Read the mode of the level 3 left button LED on the controller.
+   * Read the mode of the level 3 button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel3LeftButtonLEDMode() {
-    return getLEDMode(LED.Level3Left);
+  public LEDMode getLevel3ButtonLEDMode() {
+    return getLEDMode(LED.Level3);
   }
 
   /**
-   * Set the mode of the level 3 left button LED.
+   * Set the mode of the level 3 button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel3LeftButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level3Left, mode);
+  public void setLevel3ButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.Level3, mode);
   }
 
   /**
-   * Read the value of the level 3 right button on the controller.
+   * Read the value of the low algae button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel3RightButton() {
-    return getRawButton(Button.Level3Right.value);
+  public boolean getLowAlgaeButton() {
+    return getRawButton(Button.LowAlgae.value);
   }
 
   /**
-   * Whether the level 3 right button was pressed since the last check.
+   * Whether the low algae button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel3RightButtonPressed() {
-    return getRawButtonPressed(Button.Level3Right.value);
+  public boolean getLowAlgaeButtonPressed() {
+    return getRawButtonPressed(Button.LowAlgae.value);
   }
 
   /**
-   * Whether the level 3 right button was released since the last check.
+   * Whether the low algae button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel3RightButtonReleased() {
-    return getRawButtonReleased(Button.Level3Right.value);
+  public boolean getLowAlgaeButtonReleased() {
+    return getRawButtonReleased(Button.LowAlgae.value);
   }
 
   /**
-   * Constructs an event instance around the level 3 right button's digital
+   * Constructs an event instance around the low algae button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 3 right button's digital
+   * @return an event instance representing the low algae button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level3Right(EventLoop loop) {
-    return button(Button.Level3Right.value, loop);
+  public BooleanEvent lowAlgae(EventLoop loop) {
+    return button(Button.LowAlgae.value, loop);
   }
 
   /**
-   * Read the mode of the level 3 right button LED on the controller.
+   * Read the mode of the low algae button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel3RightButtonLEDMode() {
-    return getLEDMode(LED.Level3Right);
+  public LEDMode getLowAlgaeButtonLEDMode() {
+    return getLEDMode(LED.LowAlgae);
   }
 
   /**
-   * Set the mode of the level 3 right button LED.
+   * Set the mode of the low algae button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel3RightButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level3Right, mode);
+  public void setLowAlgaeButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.LowAlgae, mode);
   }
 
   /**
-   * Read the value of the level 4 left button on the controller.
+   * Read the value of the level 4 button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel4LeftButton() {
-    return getRawButton(Button.Level4Left.value);
+  public boolean getLevel4Button() {
+    return getRawButton(Button.Level4.value);
   }
 
   /**
-   * Whether the level 4 left button was pressed since the last check.
+   * Whether the level 4 button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel4LeftButtonPressed() {
-    return getRawButtonPressed(Button.Level4Left.value);
+  public boolean getLevel4ButtonPressed() {
+    return getRawButtonPressed(Button.Level4.value);
   }
 
   /**
-   * Whether the level 4 left button was released since the last check.
+   * Whether the level 4 button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel4LeftButtonReleased() {
-    return getRawButtonReleased(Button.Level4Left.value);
+  public boolean getLevel4ButtonReleased() {
+    return getRawButtonReleased(Button.Level4.value);
   }
 
   /**
-   * Constructs an event instance around the level 4 left button's digital signal.
+   * Constructs an event instance around the level 4 button's digital signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 4 left button's digital
+   * @return an event instance representing the level 4 button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level4Left(EventLoop loop) {
-    return button(Button.Level4Left.value, loop);
+  public BooleanEvent level4(EventLoop loop) {
+    return button(Button.Level4.value, loop);
   }
 
   /**
-   * Read the mode of the level 4 left button LED on the controller.
+   * Read the mode of the level 4 button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel4LeftButtonLEDMode() {
-    return getLEDMode(LED.Level4Left);
+  public LEDMode getLevel4ButtonLEDMode() {
+    return getLEDMode(LED.Level4);
   }
 
   /**
-   * Set the mode of the level 4 left button LED.
+   * Set the mode of the level 4 button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel4LeftButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level4Left, mode);
+  public void setLevel4ButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.Level4, mode);
   }
 
   /**
-   * Read the value of the level 4 right button on the controller.
+   * Read the value of the high algae button on the controller.
    *
    * @return The state of the button.
    */
-  public boolean getLevel4RightButton() {
-    return getRawButton(Button.Level4Right.value);
+  public boolean getHighAlgaeButton() {
+    return getRawButton(Button.HighAlgae.value);
   }
 
   /**
-   * Whether the level 4 right button was pressed since the last check.
+   * Whether the high algae button was pressed since the last check.
    * 
    * @return Whether the button was pressed since the last check.
    */
-  public boolean getLevel4RightButtonPressed() {
-    return getRawButtonPressed(Button.Level4Right.value);
+  public boolean getHighAlgaeButtonPressed() {
+    return getRawButtonPressed(Button.HighAlgae.value);
   }
 
   /**
-   * Whether the level 4 right button was released since the last check.
+   * Whether the high algae button was released since the last check.
    * 
    * @return Whether the button was released since the last check.
    */
-  public boolean getLevel4RightButtonReleased() {
-    return getRawButtonReleased(Button.Level4Right.value);
+  public boolean getHighAlgaeButtonReleased() {
+    return getRawButtonReleased(Button.HighAlgae.value);
   }
 
   /**
-   * Constructs an event instance around the level 4 right button's digital
+   * Constructs an event instance around the high algae button's digital
    * signal.
    * 
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the level 4 right button's digital
+   * @return an event instance representing the high algae button's digital
    *         signal
    *         attached to the given loop.
    */
-  public BooleanEvent level4Right(EventLoop loop) {
-    return button(Button.Level4Right.value, loop);
+  public BooleanEvent highAlgae(EventLoop loop) {
+    return button(Button.HighAlgae.value, loop);
   }
 
   /**
-   * Read the mode of the level 4 right button LED on the controller.
+   * Read the mode of the high algae button LED on the controller.
    * 
    * @return The mode of the button's LED.
    */
-  public LEDMode getLevel4RightButtonLEDMode() {
-    return getLEDMode(LED.Level4Right);
+  public LEDMode getHighAlgaeButtonLEDMode() {
+    return getLEDMode(LED.HighAlgae);
   }
 
   /**
-   * Set the mode of the level 4 right button LED.
+   * Set the mode of the high algae button LED.
    * 
    * @param mode The {@link LEDMode} to set the button's LED to.
    */
-  public void setLevel4RightButtonLEDMode(LEDMode mode) {
-    setLEDMode(LED.Level4Right, mode);
+  public void setHighAlgaeButtonLEDMode(LEDMode mode) {
+    setLEDMode(LED.HighAlgae, mode);
   }
 
   /**
@@ -938,9 +938,9 @@ public class TigerPad extends GenericHID implements Sendable {
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("HID");
     builder.publishConstString("ControllerType", "TigerPad");
-    builder.addDoubleProperty("LowerArm", this::getLowerArm, null);
-    builder.addDoubleProperty("UpperArm", this::getUpperArm, null);
-    builder.addDoubleProperty("WristPivot", this::getWristPivot, null);
+    builder.addDoubleProperty("LowerArm", this::getShoulderJoint, null);
+    builder.addDoubleProperty("UpperArm", this::getElbowJoint, null);
+    builder.addDoubleProperty("WristPivot", this::getWristArc, null);
     builder.addBooleanProperty("Intake", this::getIntakeButton, null);
     builder.addStringProperty(
         "IntakeLED",
@@ -951,36 +951,36 @@ public class TigerPad extends GenericHID implements Sendable {
         "Level1LED",
         () -> getLevel1ButtonLEDMode().toString(),
         (String name) -> setLevel1ButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level2Left", this::getLevel2LeftButton, null);
+    builder.addBooleanProperty("Level2", this::getLevel2Button, null);
     builder.addStringProperty(
-        "Level2LeftLED",
-        () -> getLevel2LeftButtonLEDMode().toString(),
-        (String name) -> setLevel2LeftButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level2Right", this::getLevel2RightButton, null);
+        "Level2LED",
+        () -> getLevel2ButtonLEDMode().toString(),
+        (String name) -> setLevel2ButtonLEDMode(LEDMode.safeValueOf(name)));
+    builder.addBooleanProperty("ArmFlat", this::getArmFlatButton, null);
     builder.addStringProperty(
-        "Level2RightLED",
-        () -> getLevel2RightButtonLEDMode().toString(),
-        (String name) -> setLevel2RightButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level3Left", this::getLevel3LeftButton, null);
+        "ArmFlatLED",
+        () -> getArmFlatButtonLEDMode().toString(),
+        (String name) -> setArmFlatButtonLEDMode(LEDMode.safeValueOf(name)));
+    builder.addBooleanProperty("Level3", this::getLevel3Button, null);
     builder.addStringProperty(
-        "Level3LeftLED",
-        () -> getLevel3LeftButtonLEDMode().toString(),
-        (String name) -> setLevel3LeftButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level3Right", this::getLevel3RightButton, null);
+        "Level3LED",
+        () -> getLevel3ButtonLEDMode().toString(),
+        (String name) -> setLevel3ButtonLEDMode(LEDMode.safeValueOf(name)));
+    builder.addBooleanProperty("LowAlgae", this::getLowAlgaeButton, null);
     builder.addStringProperty(
-        "Level3RightLED",
-        () -> getLevel3RightButtonLEDMode().toString(),
-        (String name) -> setLevel3RightButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level4Left", this::getLevel4LeftButton, null);
+        "LowAlgaeLED",
+        () -> getLowAlgaeButtonLEDMode().toString(),
+        (String name) -> setLowAlgaeButtonLEDMode(LEDMode.safeValueOf(name)));
+    builder.addBooleanProperty("Level4", this::getLevel4Button, null);
     builder.addStringProperty(
-        "Level4LeftLED",
-        () -> getLevel4LeftButtonLEDMode().toString(),
-        (String name) -> setLevel4LeftButtonLEDMode(LEDMode.safeValueOf(name)));
-    builder.addBooleanProperty("Level4Right", this::getLevel4RightButton, null);
+        "Level4LED",
+        () -> getLevel4ButtonLEDMode().toString(),
+        (String name) -> setLevel4ButtonLEDMode(LEDMode.safeValueOf(name)));
+    builder.addBooleanProperty("HighAlgae", this::getHighAlgaeButton, null);
     builder.addStringProperty(
-        "Level4RightLED",
-        () -> getLevel4RightButtonLEDMode().toString(),
-        (String name) -> setLevel4RightButtonLEDMode(LEDMode.safeValueOf(name)));
+        "HighAlgaeLED",
+        () -> getHighAlgaeButtonLEDMode().toString(),
+        (String name) -> setHighAlgaeButtonLEDMode(LEDMode.safeValueOf(name)));
     builder.addBooleanProperty("ArmOverride", this::getArmOverrideSwitch, null);
     builder.addBooleanProperty("WristOverride", this::getWristOverrideSwitch, null);
   }

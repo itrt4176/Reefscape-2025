@@ -6,26 +6,28 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClawSetArcAngle extends Command {
+public class IntakePositioning extends Command {
 
-  private Claw claw;
+  Intake intake;
 
-  private double angle;
+  double speed;
 
-  private double speed;
+  double angle;
 
-  private PIDController pid = new PIDController(0.02, 0.000, 0.0); //test for vals
 
-  /** Creates a new ArmSetArcAngle. */
-  public ClawSetArcAngle(Claw claw, double angle) {
+  PIDController pid = new PIDController(0.02, 0.0, 0.0);
+
+  /** Creates a new IntakePositioning. */
+  public IntakePositioning(Intake intake, double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.claw = claw;
     this.angle = angle;
+    this.intake = intake;
 
-    addRequirements(claw);
+    addRequirements(intake);
+
   }
 
   // Called when the command is initially scheduled.
@@ -35,24 +37,18 @@ public class ClawSetArcAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    speed = pid.calculate(claw.getArcDegrees(), angle);
+    speed = pid.calculate(intake.getPivotDegrees(), angle);
 
-    claw.setArcingSpeed(speed);
+    intake.setPivotSpeed(speed * .3);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-    speed = 0;
-
-    claw.setArcingSpeed(speed);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (speed < 0.01 && (Math.abs(claw.getArcDegrees() - angle) < 0.8));
-    
+    return false;
   }
 }

@@ -6,22 +6,31 @@ package frc.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.Meter;
 
+//import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,24 +38,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-//import frc.robot.subsystems.swervedrive.Vision.Cameras;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import org.json.simple.parser.ParseException;
+import frc.robot.utils.BrakingMotors;
 //import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -57,9 +57,8 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
 
   /**
    * Swerve drive object.
@@ -69,7 +68,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * AprilTag field layout.
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-      .loadField(AprilTagFields.k2024Crescendo);
+      .loadField(AprilTagFields.k2025ReefscapeWelded);
   /**
    * Enable vision odometry updates while driving.
    */
@@ -80,6 +79,8 @@ public class SwerveSubsystem extends SubsystemBase {
   // private Vision vision;
 
   private final Field2d d_field = new Field2d();
+
+  private boolean slowMode = false;
 
 
   /**
@@ -141,6 +142,13 @@ public class SwerveSubsystem extends SubsystemBase {
     zeroGyro();
     setupPathPlanner();
     SmartDashboard.putData("drive_field",d_field);
+
+    setMotorBrake(false);
+
+    swerveDrive.setMaximumAllowableSpeeds(
+      swerveDrive.getMaximumChassisVelocity() * 0.85,
+      swerveDrive.getMaximumChassisAngularVelocity() * 0.85
+    );
   }
 
   /**
@@ -360,7 +368,6 @@ public class SwerveSubsystem extends SubsystemBase {
       DriverStation.reportError(e.toString(), true);
     }
     return Commands.none();
-
   }
 
   /**
@@ -434,6 +441,10 @@ public class SwerveSubsystem extends SubsystemBase {
         .replaceSwerveModuleFeedforward(new SimpleMotorFeedforward(kS, kV, kA));
   }
 
+  public void enableSlowMode(boolean enable) {
+    slowMode = enable;
+  }
+
   /**
    * Command to drive the robot using translative values and heading as angular
    * velocity.
@@ -449,20 +460,24 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveCommand(DoubleSupplier translationX,
       DoubleSupplier translationY, DoubleSupplier angularRotationX) {
     // return run(() -> {
-    //   // Make the robot move
+    //   var slowScale = slowMode ? 0.3 : 1.0;
+
+      // Make the robot move
     //   swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
     //       translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
     //       translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-    //       0.8),
-    //       Math.pow(angularRotationX.getAsDouble(), 3)
+    //       0.8 * slowScale),
+    //       Math.pow(angularRotationX.getAsDouble() * slowScale, 3)
     //           * swerveDrive.getMaximumChassisAngularVelocity(),
     //       true, false);
     // });
 
     return run(() -> {
-      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity(),
-                                          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity()),
-                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
+      var slowScale = slowMode ? 0.3 : 1.0;
+
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity(),
+                                          Math.pow(translationY.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity()),
+                        Math.pow(angularRotationX.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
     });
@@ -617,6 +632,11 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setMotorBrake(boolean brake) {
     swerveDrive.setMotorIdleMode(brake);
+  }
+
+  @Override
+  public Command enableMotorBrakes(boolean enable) {
+      return runOnce(() -> setMotorBrake(enable)).ignoringDisable(true);
   }
 
   /**

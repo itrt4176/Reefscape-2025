@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.nio.file.attribute.AclEntryPermission;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -81,19 +82,22 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.STOW, 165.0);
+      angleMap.put(ArmJoint.Position.CLIMB, 180.0);
       angleMap.put(ArmJoint.Position.INTAKE, 82.9);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 135.4);
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 187.5);
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 168.6);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 89.85);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 177.6);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
+      angleMap.put(ArmJoint.Position.LOW_ALGAE, 146.0);
+      angleMap.put(ArmJoint.Position.HIGH_ALGAE, 174.3);
+      angleMap.put(ArmJoint.Position.START, 113.2);
     }
   }
 
   public static class ElbowJointConstants {
     public static final int motorPort = 41;
     public static final int encoderPort = 1;
-    public static final double encoderOffset = 188.6;
+    public static final double encoderOffset = 251.4;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
       54.392,
@@ -111,17 +115,52 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.STOW, 20.0);
-      angleMap.put(ArmJoint.Position.INTAKE, 192.6);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, -30.0);
-      angleMap.put(ArmJoint.Position.LEVEL_TWO, 14.3);
-      angleMap.put(ArmJoint.Position.LEVEL_THREE, 27.5);
+      angleMap.put(ArmJoint.Position.CLIMB, 118.0);
+      angleMap.put(ArmJoint.Position.INTAKE, 197.8);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 0.0);
+      angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
+      angleMap.put(ArmJoint.Position.LEVEL_THREE, 58.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
+      angleMap.put(ArmJoint.Position.LOW_ALGAE, -20.0);
+      angleMap.put(ArmJoint.Position.HIGH_ALGAE, 22.6);
+      angleMap.put(ArmJoint.Position.START, -51.9);
     }
   }
 
 
   public static class ClawConstants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
+    public static final double ENCODER_OFFSET = 206.0;
+    public static final double MAX_OUTPUT = 0.2;
+
+    public static final double INTAKE_ARC = 50.0;
+    public static final double INTAKE_ROT = 90.0;
+
+    public static final double L1_ARC = 65.0;
+    public static final double L1_ROT = 90.0;
+
+    public static final double L2_ARC = -17.8;
+    public static final double L2_ROT = 0.0;
+
+    public static final double L3_ARC = 27.2;
+    public static final double L3_ROT = 0.0;
+
+    public static final double L4_ARC = 45.0;
+    public static final double L4_ROT = 0.0;
+
+    public static final double LOW_ALGAE_ARC = -20.0;
+    public static final double LOW_ALGAE_ROT = 90.0;
+
+    public static final double HIGH_ALGAE_ARC = 0.0;
+    public static final double HIGH_ALGAE_ROT = 90.0;
+
+    public static final double CLIMB_ARC = 20.0;
+    public static final double CLIMB_ROT = 0.0;
+  }
+
+
+  public static class IntakeConstants {
+    public static final double STORE_ANGLE = 220;
+    public static final double INTAKE_DOWN = 179.5;
   }
 }

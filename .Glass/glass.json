@@ -20,6 +20,11 @@
       "/SmartDashboard/drive_field": "Field2d"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Elbow Joint ProfiledPIDController": {
         "window": {
           "name": "Elbow",
@@ -248,7 +253,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
