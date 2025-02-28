@@ -135,10 +135,10 @@ public class TigerPad extends GenericHID implements Sendable {
 
   /** Represents an axis on a TigerPad. */
   public enum Axis {
-    /** Lower arm axis. */
-    LowerArm(0),
-    /** Upper arm axis. */
-    UpperArm(2),
+    /** Shoulder joint axis. */
+    ShoulderJoint(0),
+    /** Elbow joint axis. */
+    ElbowJoint(2),
     /** Wrist pivot axis. */
     WristPivot(1),
     /** Wrist rotation axis. */
@@ -300,7 +300,7 @@ public class TigerPad extends GenericHID implements Sendable {
    * @return The axis value.
    */
   public double getShoulderJoint() {
-    return getRawAxis(Axis.LowerArm.value);
+    return getRawAxis(Axis.ShoulderJoint.value);
   }
 
   /**
@@ -309,7 +309,7 @@ public class TigerPad extends GenericHID implements Sendable {
    * @return The axis value.
    */
   public double getElbowJoint() {
-    return getRawAxis(Axis.UpperArm.value);
+    return getRawAxis(Axis.ElbowJoint.value);
   }
 
   /**

@@ -124,9 +124,9 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
 
     angle = Degrees.mutable(jointEncoder.get() * 360.0 - encoderOffset);
     velocity = DegreesPerSecond.mutable(0);
-    velocityFilter = new MedianFilter(10);
+    velocityFilter = new MedianFilter(15);
     acceleration = DegreesPerSecondPerSecond.mutable(0);
-    accelFilter = new MedianFilter(10);
+    accelFilter = new MedianFilter(15);
     timestamp = Timer.getFPGATimestamp();
 
     goal = Degrees.mutable(angleMap.get(Position.START));
@@ -228,14 +228,17 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
   }
 
   public Command adjustGoal(DoubleSupplier offsetSupplier) {
-    return runOnce(() -> {
-      goalAdjustment.mut_plus(MathUtil.applyDeadband(offsetSupplier.getAsDouble(), 0.05) * 0.001, Degrees);
-      pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
-      // Maybe this is the use case for setting a new goal without resetting the PID loop?
-      pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
-    }).withName("Adjust Offset")
-      .andThen(this::moveJoint, this)
-      .repeatedly();
+    return runOnce(() -> pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond))).andThen(
+      runOnce(() -> {
+        var adjustment = goalAdjustment.in(Degrees);
+        var offsetInput = MathUtil.applyDeadband(offsetSupplier.getAsDouble(), 0.1);
+        var newAdjustment = adjustment + (offsetInput * 2.0 / 50.0);
+        goalAdjustment.mut_replace(newAdjustment, Degrees);
+        pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
+        // Maybe this is the use case for setting a new goal without resetting the PID loop?
+        // pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
+      }).andThen(this::moveJoint, this).repeatedly()
+    ).withName(getName() + " Adjust Goal");
   }
 
   public void setOffset(DoubleSupplier offsetSupplier) {
@@ -322,5 +325,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
     SmartDashboard.putNumber(getName() + " Motor Bus Voltage", jointMotor.getBusVoltage());
     SmartDashboard.putNumber(getName() + " Motor get()", jointMotor.get());
     SmartDashboard.putNumber(getName() + " Motor Voltage", jointMotor.get() * jointMotor.getBusVoltage());
+    SmartDashboard.putNumber(getName() + " Goal", goal.in(Degrees));
+    SmartDashboard.putNumber(getName() + " Manual Adjustment", goalAdjustment.in(Degrees));
   }
 }
