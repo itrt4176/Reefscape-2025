@@ -154,8 +154,8 @@ public final class Constants {
     public static final double HIGH_ALGAE_ARC = 0.0;
     public static final double HIGH_ALGAE_ROT = 0.0;
 
-    public static final double FLAT_ARC = 65.0;
-    public static final double FLAT_ROT = 0.0;
+    public static final double CLIMB_ARC = -80.0;
+    public static final double CLIMB_ROT = 0.0;
   }
 
 

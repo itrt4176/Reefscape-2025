@@ -253,8 +253,8 @@ public class RobotContainer {
 
     armControlPanel.armFlat().onTrue(
       setWristAndArm(
-        ClawConstants.FLAT_ARC,
-        ClawConstants.FLAT_ROT,
+        ClawConstants.CLIMB_ARC,
+        ClawConstants.CLIMB_ROT,
         Position.CLIMB,
         armControlPanel::setArmFlatLED
       )
