@@ -58,7 +58,6 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-@Logged
 public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
 
   /**
