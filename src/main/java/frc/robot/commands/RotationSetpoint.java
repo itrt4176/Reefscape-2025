@@ -65,7 +65,7 @@ public class RotationSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 2.0));
+    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 0.75));
 
   }
 }

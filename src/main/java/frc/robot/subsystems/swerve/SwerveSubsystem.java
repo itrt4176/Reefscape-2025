@@ -144,6 +144,11 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     SmartDashboard.putData("drive_field",d_field);
 
     setMotorBrake(false);
+
+    swerveDrive.setMaximumAllowableSpeeds(
+      swerveDrive.getMaximumChassisVelocity() * 0.85,
+      swerveDrive.getMaximumChassisAngularVelocity() * 0.85
+    );
   }
 
   /**
