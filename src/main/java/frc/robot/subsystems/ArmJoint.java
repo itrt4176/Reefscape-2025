@@ -222,6 +222,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
   public Command setPosition(Position position) {
     return runOnce(() -> {
       goal.mut_replace(angleMap.get(position), Degrees);
+      goalAdjustment.mut_replace(0, Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
       pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
     }).asProxy().withName(position.toString());
