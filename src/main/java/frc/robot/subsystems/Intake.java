@@ -73,7 +73,7 @@ public class Intake extends SubsystemBase {
         error = 0.0;
       }
 
-      setPivotSpeed(MathUtil.clamp(error * 0.05, -0.1, 0.1));
+      setPivotSpeed(MathUtil.clamp(error * 0.0175, -0.1, 0.1));
     });
   }
 
@@ -82,7 +82,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atAngleSetpoint() {
-    return Math.abs(setpoint - getPivotDegrees()) <= 0.5;
+    return Math.abs(setpoint - getPivotDegrees()) <= 0.75;
   }
 
   @Override
