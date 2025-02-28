@@ -233,7 +233,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
       runOnce(() -> {
         var adjustment = goalAdjustment.in(Degrees);
         var offsetInput = MathUtil.applyDeadband(offsetSupplier.getAsDouble(), 0.1);
-        var newAdjustment = adjustment + (offsetInput * 2.0 / 50.0);
+        var newAdjustment = adjustment + (offsetInput / 10.0);
         goalAdjustment.mut_replace(newAdjustment, Degrees);
         pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
         // Maybe this is the use case for setting a new goal without resetting the PID loop?
