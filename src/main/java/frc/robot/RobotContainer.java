@@ -242,14 +242,15 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.level2().onTrue(
-      setWristAndArm(
-        ClawConstants.L2_ARC,
-        ClawConstants.L2_ROT,
-        Position.LEVEL_TWO,
-        armControlPanel::setLevel2LED
-      )
-    );
+    // For next comp
+    // armControlPanel.level2().onTrue(
+    //   setWristAndArm(
+    //     ClawConstants.L2_ARC,
+    //     ClawConstants.L2_ROT,
+    //     Position.LEVEL_TWO,
+    //     armControlPanel::setLevel2LED
+    //   )
+    // );
 
     armControlPanel.armFlat().onTrue(
       setWristAndArm(
