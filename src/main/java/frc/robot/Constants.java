@@ -87,7 +87,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 177.6);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 107.5);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 146.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 174.3);
       angleMap.put(ArmJoint.Position.START, 113.2);
@@ -117,7 +117,7 @@ public final class Constants {
     static {
       angleMap.put(ArmJoint.Position.CLIMB, 118.0);
       angleMap.put(ArmJoint.Position.INTAKE, 197.8);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 0.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 2.5);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 58.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
@@ -154,7 +154,7 @@ public final class Constants {
     public static final double HIGH_ALGAE_ARC = 0.0;
     public static final double HIGH_ALGAE_ROT = 90.0;
 
-    public static final double CLIMB_ARC = 20.0;
+    public static final double CLIMB_ARC = 50.0;
     public static final double CLIMB_ROT = 0.0;
   }
 
