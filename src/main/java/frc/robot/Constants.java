@@ -131,7 +131,7 @@ public final class Constants {
   public static class ClawConstants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ENCODER_OFFSET = 206.0;
-    public static final double MAX_OUTPUT = 0.2;
+    public static final double MAX_OUTPUT = 0.5;
 
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;
