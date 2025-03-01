@@ -115,7 +115,7 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.CLIMB, 118.0);
+      angleMap.put(ArmJoint.Position.CLIMB, 123.0);
       angleMap.put(ArmJoint.Position.INTAKE, 197.8);
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 2.5);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
