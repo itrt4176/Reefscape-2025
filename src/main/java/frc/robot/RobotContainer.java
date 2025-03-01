@@ -168,7 +168,7 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(joystickDrive);
 
-    autoChooser.addOption("Do Nothing", none());
+    autoChooser.setDefaultOption("Do Nothing", none());
     autoChooser.addOption("Leave starting position", drivebase.driveToDistanceCommand(Units.inchesToMeters(60), -0.25));
     autoChooser.addOption(
       "Place L1", 
