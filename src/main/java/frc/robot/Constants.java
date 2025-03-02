@@ -160,7 +160,7 @@ public final class Constants {
 
 
   public static class IntakeConstants {
-    public static final double STORE_ANGLE = 220;
+    public static final double STORE_ANGLE = 235;
     public static final double INTAKE_DOWN = 179.5;
   }
 }

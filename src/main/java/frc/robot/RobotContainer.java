@@ -216,10 +216,12 @@ public class RobotContainer {
     driverController.x().toggleOnTrue(
       startEnd(
         () -> {
+          intake.setPivotBrake(false);
           intake.setPivotAngle(IntakeConstants.INTAKE_DOWN);
           intake.setSpeed(1.0);
         },
         () -> {
+          intake.setPivotBrake(true);
           intake.setPivotAngle(IntakeConstants.STORE_ANGLE);
           intake.setSpeed(0.0);
         }

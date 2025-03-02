@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
@@ -14,9 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.utils.BrakingMotors;
 
 @Logged
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements BrakingMotors {
   AnalogInput sensor;
 
   AnalogEncoder encoder;
@@ -81,6 +85,24 @@ public class Intake extends SubsystemBase {
 
   public boolean atAngleSetpoint() {
     return Math.abs(setpoint - getPivotDegrees()) <= 0.75;
+  }
+
+  public void setPivotBrake(boolean enable) {
+    var neutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+    var motorConfig = new TalonFXConfiguration();
+    pivotMotor.getConfigurator().refresh(motorConfig);
+    var motorOutputConfig = motorConfig.MotorOutput;
+
+    pivotMotor.getConfigurator().apply(
+      motorConfig.withMotorOutput(
+        motorOutputConfig.withNeutralMode(neutralMode)
+      )
+    );
+  }
+
+  @Override
+  public Command enableMotorBrakes(boolean enable) {
+    return runOnce(() -> setPivotBrake(enable)).ignoringDisable(true);
   }
 
   @Override
