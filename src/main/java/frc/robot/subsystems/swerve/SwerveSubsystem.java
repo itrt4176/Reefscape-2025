@@ -95,7 +95,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(
           Constants.DriveConstants.MAX_SPEED,
-          new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)),
+          new Pose2d(new Translation2d(Meter.of(0), Meter.of(0)),
               Rotation2d.fromDegrees(0)));
       // Alternative method if you don't want to supply the conversion factor
       // via JSON files.
@@ -146,8 +146,8 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     setMotorBrake(false);
 
     swerveDrive.setMaximumAllowableSpeeds(
-      swerveDrive.getMaximumChassisVelocity() * 0.85,
-      swerveDrive.getMaximumChassisAngularVelocity() * 0.85
+      swerveDrive.getMaximumChassisVelocity() * 0.75,
+      swerveDrive.getMaximumChassisAngularVelocity() * 0.75
     );
   }
 
@@ -473,7 +473,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     // });
 
     return run(() -> {
-      var slowScale = slowMode ? 0.3 : 1.0;
+      var slowScale = slowMode ? 0.45 : 1.0;
 
       swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity(),
                                           Math.pow(translationY.getAsDouble() * slowScale, 3) * swerveDrive.getMaximumChassisVelocity()),

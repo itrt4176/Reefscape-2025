@@ -87,7 +87,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 177.6);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 104.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 107.5);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 146.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 174.3);
       angleMap.put(ArmJoint.Position.START, 113.2);
@@ -103,7 +103,7 @@ public final class Constants {
       54.392,
       0.0,
       1.45087, 
-      160.0, 
+      160.0 * 1.20, 
       220.0, 
       0.5, 
       0.18808, 
@@ -115,9 +115,9 @@ public final class Constants {
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
 
     static {
-      angleMap.put(ArmJoint.Position.CLIMB, 118.0);
+      angleMap.put(ArmJoint.Position.CLIMB, 123.0);
       angleMap.put(ArmJoint.Position.INTAKE, 197.8);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 0.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 2.5);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 58.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
@@ -131,7 +131,7 @@ public final class Constants {
   public static class ClawConstants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ENCODER_OFFSET = 206.0;
-    public static final double MAX_OUTPUT = 0.2;
+    public static final double MAX_OUTPUT = 0.5;
 
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;
@@ -145,7 +145,7 @@ public final class Constants {
     public static final double L3_ARC = 27.2;
     public static final double L3_ROT = 0.0;
 
-    public static final double L4_ARC = 45.0;
+    public static final double L4_ARC = 48.0;
     public static final double L4_ROT = 0.0;
 
     public static final double LOW_ALGAE_ARC = -20.0;
@@ -154,7 +154,7 @@ public final class Constants {
     public static final double HIGH_ALGAE_ARC = 0.0;
     public static final double HIGH_ALGAE_ROT = 90.0;
 
-    public static final double CLIMB_ARC = 20.0;
+    public static final double CLIMB_ARC = 50.0;
     public static final double CLIMB_ROT = 0.0;
   }
 

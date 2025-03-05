@@ -20,11 +20,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IntakePositioning;
@@ -143,6 +146,8 @@ public class RobotContainer {
   private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
   private Trigger robotEnabled = new Trigger(RobotState::isEnabled);
 
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>(); 
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
@@ -156,12 +161,30 @@ public class RobotContainer {
 
     //Apply inversion for inversion later
     Command joystickDrive = drivebase.driveCommand(
-                    () -> MathUtil.applyDeadband(driverController.getLeftY(), 0.1), 
-                    () -> MathUtil.applyDeadband(driverController.getLeftX(), 0.1), 
+                    () -> MathUtil.applyDeadband(-driverController.getLeftY(), 0.1), 
+                    () -> MathUtil.applyDeadband(-driverController.getLeftX(), 0.1), 
                     () -> MathUtil.applyDeadband(-driverController.getRightX(), 0.1));
 
 
     drivebase.setDefaultCommand(joystickDrive);
+
+    autoChooser.setDefaultOption("Do Nothing", none());
+    autoChooser.addOption("Leave starting position", drivebase.driveToDistanceCommand(Units.inchesToMeters(60), -0.25));
+    autoChooser.addOption(
+      "Place L1", 
+      new HomeWrist(claw).andThen(
+        waitSeconds(0.75),
+        setWristAndArm(
+          ClawConstants.L1_ARC,
+          ClawConstants.L1_ROT,
+          Position.LEVEL_ONE,
+          armControlPanel::setLevel1LED
+        ),
+        drivebase.driveToDistanceCommand(Units.inchesToMeters(70 - 10), -0.25)
+      )
+    );
+    
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -357,8 +380,27 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
-    // return elbowJoint.setPosition(ArmJoint.Position.STOW);
+    // return armCommands.setPosition(Position.LEVEL_ONE).andThen(
+    //   waitUntil(armCommands.atGoal()).withTimeout(1.5),
+    //   new HomeWrist(claw),
+    //   setWrist(ClawConstants.L1_ARC, ClawConstants.L1_ROT),
+    //   drivebase.driveToDistanceCommand(Units.inchesToMeters(70 - 10), -0.25)
+    // );
+
+    // return new HomeWrist(claw).andThen(
+    //   waitSeconds(.075),
+    //   setWristAndArm(
+    //     ClawConstants.L1_ARC,
+    //     ClawConstants.L1_ROT,
+    //     Position.LEVEL_ONE,
+    //     armControlPanel::setLevel1LED
+    //   ),
+    //   drivebase.driveToDistanceCommand(Units.inchesToMeters(70 - 10), -0.25)
+    // );
+
+    // return drivebase.driveToDistanceCommand(Units.inchesToMeters(60), -0.25);
+
+    return autoChooser.getSelected();
   }
 
   public void setMotorBrake(boolean brake) { drivebase.setMotorBrake(brake); }
