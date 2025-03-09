@@ -247,7 +247,7 @@ public class RobotContainer {
         armControlPanel.setIntakeLED(LEDMode.Blink),
         parallel(
           elbowJoint.setPosition(Position.INTAKE).andThen(
-            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 50),
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 15),
             shoulderJoint.setPosition(Position.INTAKE)
           ),
           setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
