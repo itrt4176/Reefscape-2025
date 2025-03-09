@@ -103,13 +103,13 @@ public final class Constants {
       54.392,
       0.0,
       1.45087, 
-      160.0 * 1.30, 
-      220.0 * 0.85 * 0.5, 
+      180.0, 
+      180.0 * 1.05, 
       0.5, 
-      0.18808, 
-      .175588, 
-      25.158,
-      3.7862, 
+      0.21808, 
+      0.487588, 
+      25.408,
+      4.2262, 
       0.02
     );
     public static final Map<ArmJoint.Position, Double> angleMap = new EnumMap<>(ArmJoint.Position.class);
