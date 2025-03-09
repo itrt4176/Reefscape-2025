@@ -334,6 +334,16 @@ public class RobotContainer {
   }
 
   private void configureSysIdBindings() {
+    robotEnabled.onChange(defer(() -> {
+      var command = none();
+
+      for (BrakingMotors subsystem : brakingSubsystems) {
+        command = command.alongWith(subsystem.enableMotorBrakes(RobotState.isEnabled()));
+      }
+
+      return command;
+    }, Set.of()));
+
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
     driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -343,10 +353,10 @@ public class RobotContainer {
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   private Command setWrist(double arcAngle, double rotationAngle) {
