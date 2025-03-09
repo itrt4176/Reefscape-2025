@@ -13,6 +13,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.File;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -242,7 +243,7 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.intake().or(driverController.povLeft()).onTrue(
+    armControlPanel.intake().onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
         armControlPanel.setIntakeLED(LEDMode.Blink),
         parallel(
@@ -256,7 +257,7 @@ public class RobotContainer {
       )  
     );
 
-    armControlPanel.level1().or(driverController.povDown()).onTrue(
+    armControlPanel.level1().onTrue(
       setWristAndArm(
         ClawConstants.L1_ARC,
         ClawConstants.L1_ROT,
@@ -325,10 +326,27 @@ public class RobotContainer {
       )
     );
 
+    driverController.povLeft().whileTrue(
+        drivebase.driveRobotRelativeCommand(
+              () -> 0.0, () -> 0.05, () -> 0.0).until(
+                () -> claw.isSwitchTriggered())
+    );
+
+    driverController.povRight().whileTrue(
+        drivebase.driveRobotRelativeCommand(
+              () -> 0.0, () -> -0.05, () -> 0.0).until(
+                () -> claw.isSwitchTriggered()
+              )
+    );
     
     armControlPanel.armOverride().whileTrue(armCommands.adjustOffset(armControlPanel::getShoulderJoint, armControlPanel::getElbowJoint));
 
     driverController.start().onTrue(homeWrist);
+
+    driverController.povDown().onTrue(
+        setWrist(
+            ClawConstants.SCORE_ARC, 
+            ClawConstants.SCORE_ROT));
 
     claw.homed().onTrue(runOnce(claw::zeroRotation));
   }

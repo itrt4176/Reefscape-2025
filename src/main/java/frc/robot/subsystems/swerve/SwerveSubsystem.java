@@ -483,6 +483,18 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     });
   }
 
+  public Command driveRobotRelativeCommand(DoubleSupplier translationX,
+  DoubleSupplier translationY, DoubleSupplier angularRotationX)
+  {
+    return run(() -> {
+      swerveDrive.drive(new Translation2d(Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity(),
+                                          Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumChassisVelocity()),
+                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
+                        false,
+                        false);
+    });
+  }
+
   /**
    * The primary method for controlling the drivebase. Takes a
    * {@link Translation2d} and a rotation rate, and calculates and commands

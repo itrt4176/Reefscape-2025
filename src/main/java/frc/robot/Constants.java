@@ -148,6 +148,9 @@ public final class Constants {
     public static final double L4_ARC = 48.0;
     public static final double L4_ROT = 0.0;
 
+    public static final double SCORE_ARC = 90.0;
+    public static final double SCORE_ROT = 0.0;
+
     public static final double LOW_ALGAE_ARC = -20.0;
     public static final double LOW_ALGAE_ROT = 90.0;
 

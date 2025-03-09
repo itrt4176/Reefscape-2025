@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.dyn4j.exception.SameObjectException;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -45,6 +48,8 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   DigitalInput rotationInput;
 
+  DigitalInput detectStick;
+
   private final Trigger atHome = new Trigger(this::isRotationHomed);
 
   /** Creates a new Claw. */
@@ -67,6 +72,8 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     arcThrift = new AnalogEncoder(2);
 
     rotationInput = new DigitalInput(0);
+
+    detectStick = new DigitalInput(9);
 
     zeroRotation();
   }
@@ -158,6 +165,11 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     ).ignoringDisable(true);
   }
 
+  public boolean isSwitchTriggered()
+  {
+    return detectStick.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -168,5 +180,7 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
     SmartDashboard.putNumber("Left Speed", getLeftRotationSpeed());
     SmartDashboard.putNumber("Right Speed", getRightRotationSpeed());
+
+    SmartDashboard.putBoolean("In Position", isSwitchTriggered());
   }
 }
