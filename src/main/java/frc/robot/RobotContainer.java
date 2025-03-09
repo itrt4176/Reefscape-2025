@@ -284,7 +284,7 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.level3().or(driverController.povRight()).onTrue(
+    armControlPanel.level3().onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
         armControlPanel.setLevel3LED(LEDMode.Blink),
         parallel(
@@ -307,7 +307,7 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.level4().or(driverController.povUp()).onTrue(
+    armControlPanel.level4().onTrue(
       setWristAndArm(
         ClawConstants.L4_ARC,
         ClawConstants.L4_ROT,
