@@ -34,6 +34,7 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularAcceleration;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -170,7 +171,6 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
         volts -> { jointMotor.set(volts.magnitude() / jointMotor.getBusVoltage()); },
         log -> {
           updateAngle();
-
           log.motor(getName() + " motor")
             .voltage(routineVoltage.mut_replace(jointMotor.get() * jointMotor.getBusVoltage(), Volts))
             .angularPosition(angle)

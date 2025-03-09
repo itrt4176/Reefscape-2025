@@ -66,14 +66,14 @@ public final class Constants {
     public static final double encoderOffset = 81.0;
 
     public static final ArmJoint.PIDConfig pidConfig = new ArmJoint.PIDConfig(
-      42.0,
+      40.0,
       0.0,
-      8.165, 
-      160.0, 
-      220.0, 
+      8.665, 
+      160.0 * 1.30, 
+      220.0 * 0.85, 
       0.5, 
       0.60459, 
-      0.016192, 
+      0.026192, 
       13.975,
       5.1899, 
       0.02
@@ -103,11 +103,11 @@ public final class Constants {
       54.392,
       0.0,
       1.45087, 
-      160.0 * 1.20, 
-      220.0, 
+      160.0 * 1.30, 
+      220.0 * 0.85, 
       0.5, 
       0.18808, 
-      .025588, 
+      .035588, 
       23.908,
       2.5362, 
       0.02
