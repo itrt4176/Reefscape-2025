@@ -328,13 +328,13 @@ public class RobotContainer {
 
     driverController.povLeft().whileTrue(
         drivebase.driveRobotRelativeCommand(
-              () -> 0.0, () -> 0.05, () -> 0.0).until(
+              () -> 0.0, () -> -0.3, () -> 0.0).until(
                 () -> claw.isSwitchTriggered())
     );
 
     driverController.povRight().whileTrue(
         drivebase.driveRobotRelativeCommand(
-              () -> 0.0, () -> -0.05, () -> 0.0).until(
+              () -> 0.0, () -> 0.3, () -> 0.0).until(
                 () -> claw.isSwitchTriggered()
               )
     );

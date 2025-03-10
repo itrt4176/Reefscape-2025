@@ -73,7 +73,7 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
     rotationInput = new DigitalInput(0);
 
-    detectStick = new DigitalInput(9);
+    detectStick = new DigitalInput(8);
 
     zeroRotation();
   }
@@ -167,7 +167,7 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public boolean isSwitchTriggered()
   {
-    return detectStick.get();
+    return !detectStick.get();
   }
 
   @Override
