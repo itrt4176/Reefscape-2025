@@ -8,14 +8,13 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import org.dyn4j.exception.SameObjectException;
-
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.commands.HomeWrist;
 import frc.robot.utils.BrakingMotors;
 
 @Logged
@@ -52,6 +52,14 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   private final Trigger atHome = new Trigger(this::isRotationHomed);
 
+  private final PIDController arcPID = new PIDController(0.014, 0.000, 0.0);
+  private final Trigger atArcSetpoint = new Trigger(arcPID::atSetpoint);
+
+  private final PIDController rotPID = new PIDController(0.02, 0.0, 0.00);
+  private final Trigger atRotSetpoint = new Trigger(rotPID::atSetpoint);
+
+  private final Trigger atPosition = atArcSetpoint.and(atRotSetpoint);
+
   /** Creates a new Claw. */
   public Claw() {
     rightMotor = new SparkMax(3, MotorType.kBrushless);
@@ -79,7 +87,17 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
     detectStick = new DigitalInput(8);
 
+    arcPID.setTolerance(ClawConstants.ARC_TOLERANCE);
+    arcPID.setSetpoint(getArcDegrees());
+
     zeroRotation();
+    rotPID.setTolerance(ClawConstants.ROT_TOLERANCE);
+    rotPID.setSetpoint(0.0);
+
+    // TODO: Uncomment when working
+    // setDefaultCommand(
+    //   new HomeWrist(this).andThen(runOnce(() -> setDefaultCommand(arcAndRotate())))
+    // );
   }
 
   public double getArcDegrees()
@@ -96,6 +114,14 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   {
     leftMotor.set(speed);
     rightMotor.set(speed);
+  }
+
+  public double getArcSetpoint() {
+    return arcPID.getSetpoint();
+  }
+
+  public Trigger atArcAngle() {
+    return atArcSetpoint;
   }
 
   public void zeroRotation()
@@ -127,6 +153,18 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     return rightMotor.getEncoder().getPosition() * 2;
   }
 
+  public double getRotationDegrees() {
+    return getLeftRotationDegrees() - getRotationDegrees();
+  }
+
+  public double getRotationSetpoint() {
+    return rotPID.getSetpoint();
+  }
+
+  public Trigger atRotationAngle() {
+    return atRotSetpoint;
+  }
+
   public double getLeftRotationSpeed()
   {
     return leftMotor.getEncoder().getVelocity() / 11000.0;
@@ -137,7 +175,6 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   {
     return rightMotor.getEncoder().getVelocity() / 11000.0;
   }
-
   
 
   public void setRightSpeed(double speed)
@@ -155,6 +192,40 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   {
     leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
     rightMotor.set(MathUtil.clamp(-speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+  }
+
+  private Command arcAndRotate() {
+    return run(() -> {
+      var arcOutput = MathUtil.clamp(
+        arcPID.calculate(getArcDegrees()),
+        -ClawConstants.MAX_OUTPUT * 0.5,
+        ClawConstants.MAX_OUTPUT * 0.5
+      );
+
+      var rotOutput = MathUtil.clamp(
+        arcPID.calculate(getRotationDegrees()),
+        -ClawConstants.MAX_OUTPUT,
+        ClawConstants.MAX_OUTPUT
+      );
+
+      leftMotor.set(arcOutput + rotOutput);
+      rightMotor.set(arcOutput - rotOutput);
+    });
+  }
+
+  public Command setPosition(double arcSetpoint, double rotSetpoint) {
+    return runOnce(() -> {
+      arcPID.setSetpoint(arcSetpoint);
+      arcPID.reset();
+
+      rotPID.setSetpoint(rotSetpoint);
+      rotPID.reset();
+    }).asProxy().withName("Arc: " + arcSetpoint + " Rotation: " + rotSetpoint)
+      .andThen(arcAndRotate()).finallyDo(() -> setArcingSpeed(0)); // TODO: Remove when working
+  }
+
+  public Trigger atPosition() {
+    return atPosition;
   }
 
   @Override
@@ -178,8 +249,13 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arc Degrees", getArcDegrees());
+    SmartDashboard.putNumber("Arc Setpoint", getArcSetpoint());
+
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());
+    SmartDashboard.putNumber("Rotation Degrees", getRotationDegrees());
+    SmartDashboard.putNumber("Roation Setpoint", getRotationSetpoint());
+
     SmartDashboard.putBoolean("Is Homed", isRotationHomed());
 
     SmartDashboard.putNumber("Left Speed", getLeftRotationSpeed());

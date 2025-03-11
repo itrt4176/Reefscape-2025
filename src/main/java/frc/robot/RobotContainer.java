@@ -239,8 +239,8 @@ public class RobotContainer {
     //   () -> intake.setSpeed(0) 
     // ));
 
-    driverController.x().onTrue(test1);
-    driverController.y().onTrue(test2);
+    driverController.x().toggleOnTrue(claw.setPosition(ClawConstants.L1_ARC, ClawConstants.L1_ROT));
+    driverController.y().toggleOnTrue(claw.setPosition(ClawConstants.L4_ARC, ClawConstants.L4_ROT));
 
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
