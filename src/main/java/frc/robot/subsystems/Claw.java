@@ -126,8 +126,8 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void zeroRotation()
   {
-    leftMotor.getEncoder().setPosition(0);
-    rightMotor.getEncoder().setPosition(0);
+    leftMotor.getEncoder().setPosition(0.375);
+    rightMotor.getEncoder().setPosition(0.375);
   }
 
   public boolean isRotationHomed()
@@ -179,12 +179,12 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void setRightSpeed(double speed)
   {
-    rightMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+    rightMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT * 2.0, ClawConstants.MAX_OUTPUT * 2.0));
   }
 
   public void setLeftSpeed(double speed)
   {
-    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT * 2.0, ClawConstants.MAX_OUTPUT * 2.0));
   }
 
 
