@@ -54,7 +54,7 @@ public class ClawSetArcAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (speed < 0.01 && (Math.abs(claw.getArcDegrees() - angle) < 0.8));
+    return (speed < 0.01 && (Math.abs(claw.getArcDegrees() - angle) < ClawConstants.ARC_TOLERANCE));
     
   }
 }

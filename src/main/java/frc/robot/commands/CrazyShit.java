@@ -22,7 +22,6 @@ public class CrazyShit extends Command {
   private double arcAngle;
 
   private double rotSpeed;
-  private double rightSpeed;
 
   private double arcSpeed;
 
@@ -30,7 +29,7 @@ public class CrazyShit extends Command {
 
   private PIDController rotPID = new PIDController(0.02, 0.0, 0.00);
 
-  private PIDController pid = new PIDController(0.014, 0.000, 0.0);
+  private PIDController arcPID = new PIDController(0.014, 0.000, 0.0);
 
 
   /** Creates a new CrazyShit. */
@@ -70,7 +69,7 @@ public class CrazyShit extends Command {
     }
     else
     {
-      arcSpeed = MathUtil.clamp(pid.calculate(claw.getArcDegrees(), arcSetpoint), -ClawConstants.MAX_OUTPUT * 0.5, ClawConstants.MAX_OUTPUT * 0.5);
+      arcSpeed = MathUtil.clamp(arcPID.calculate(claw.getArcDegrees(), arcSetpoint), -ClawConstants.MAX_OUTPUT * 0.5, ClawConstants.MAX_OUTPUT * 0.5);
 
       rotationTime = true;
 
@@ -89,11 +88,11 @@ public class CrazyShit extends Command {
   }
 
   private boolean rotAtSetpoint() {
-    return rotSpeed < 0.02 && (Math.abs(rotAngle) - rotSetpoint) < 1.0;
+    return rotSpeed < 0.02 && (Math.abs(rotAngle) - rotSetpoint) < ClawConstants.ROT_TOLERANCE;
   }
 
   private boolean arcAtSetpoint() {
-    return arcSpeed < 0.01 && (Math.abs(claw.getArcDegrees() - arcAngle) < 0.8);
+    return arcSpeed < 0.01 && (Math.abs(claw.getArcDegrees() - arcAngle) < ClawConstants.ARC_TOLERANCE);
   }
 
   // Returns true when the command should end.

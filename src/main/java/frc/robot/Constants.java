@@ -133,6 +133,9 @@ public final class Constants {
     public static final double ENCODER_OFFSET = 206.0;
     public static final double MAX_OUTPUT = 0.075;
 
+    public static final double ARC_TOLERANCE = 0.8;
+    public static final double ROT_TOLERANCE = 1.0;
+
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;
 
