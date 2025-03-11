@@ -17,6 +17,8 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.led.RainbowAnimation;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -96,6 +98,11 @@ public class RobotContainer {
   // private final ClawSetArcAngle levelThreeClaw = new ClawSetArcAngle(claw, 225.0);
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
+
+  private final CrazyShit test1 = new CrazyShit(claw, 90.0, claw.getArcDegrees());
+
+  private final CrazyShit test2 = new CrazyShit(claw, 0.0, claw.getArcDegrees());
+
 
   private final HomeWrist homeWrist = new HomeWrist(claw);
 
@@ -214,26 +221,32 @@ public class RobotContainer {
 
     driverController.b().whileTrue(startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw));
 
-    driverController.x().toggleOnTrue(
-      startEnd(
-        () -> {
-          intake.setPivotAngle(IntakeConstants.INTAKE_DOWN);
-          intake.setSpeed(1.0);
-        },
-        () -> {
-          intake.setPivotAngle(IntakeConstants.STORE_ANGLE);
-          intake.setSpeed(0.0);
-        }
-      )
-    );
+    // driverController.x().toggleOnTrue(
+    //   startEnd(
+    //     () -> {
+    //       intake.setPivotAngle(IntakeConstants.INTAKE_DOWN);
+    //       intake.setSpeed(1.0);
+    //     },
+    //     () -> {
+    //       intake.setPivotAngle(IntakeConstants.STORE_ANGLE);
+    //       intake.setSpeed(0.0);
+    //     }
+    //   )
+    // );
 
-    driverController.y().toggleOnTrue(new StartEndCommand(
-      () -> intake.setSpeed(-1.0), 
-      () -> intake.setSpeed(0) 
-    ));
+    // driverController.y().toggleOnTrue(new StartEndCommand(
+    //   () -> intake.setSpeed(-1.0), 
+    //   () -> intake.setSpeed(0) 
+    // ));
+
+    driverController.x().onTrue(test1);
+    driverController.y().onTrue(test2);
 
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
+
+    // driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setArcingSpeed(0.2), () -> claw.setArcingSpeed(0), claw));
+    // driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setArcingSpeed(-0.2), () -> claw.setArcingSpeed(0), claw));
 
 
     driverController.leftTrigger(0.5).whileTrue(
@@ -328,13 +341,13 @@ public class RobotContainer {
 
     driverController.povLeft().whileTrue(
         drivebase.driveRobotRelativeCommand(
-              () -> 0.0, () -> -0.3, () -> 0.0).until(
+              () -> -0.2, () -> -0.3, () -> 0.0).until(
                 () -> claw.isSwitchTriggered())
     );
 
     driverController.povRight().whileTrue(
         drivebase.driveRobotRelativeCommand(
-              () -> 0.0, () -> 0.3, () -> 0.0).until(
+              () -> -0.2, () -> 0.3, () -> 0.0).until(
                 () -> claw.isSwitchTriggered()
               )
     );

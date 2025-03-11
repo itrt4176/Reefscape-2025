@@ -41,14 +41,9 @@ public class RotationSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double setpoint = (angle/2.0);
 
-    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees(), setpoint);
-    claw.setLeftSpeed(leftSpeed);
-
-
-    rightSpeed = rightpid.calculate(claw.getRightRotationDegrees(), -setpoint);
-    claw.setRightSpeed(rightSpeed);
+    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees() + -claw.getRightRotationDegrees(), angle);
+    claw.setRotationSpeed(leftSpeed);
     
   }
 
@@ -65,7 +60,7 @@ public class RotationSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 1.65));
+    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 1.0));
 
   }
 }

@@ -87,7 +87,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 177.6);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 107.5);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 90.0);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 146.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 174.3);
       angleMap.put(ArmJoint.Position.START, 113.2);
@@ -120,7 +120,7 @@ public final class Constants {
       angleMap.put(ArmJoint.Position.LEVEL_ONE, 2.5);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 58.5);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 88.0);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 90.0);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, -20.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 22.6);
       angleMap.put(ArmJoint.Position.START, -51.9);
@@ -131,7 +131,7 @@ public final class Constants {
   public static class ClawConstants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ENCODER_OFFSET = 206.0;
-    public static final double MAX_OUTPUT = 0.5;
+    public static final double MAX_OUTPUT = 0.075;
 
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;
