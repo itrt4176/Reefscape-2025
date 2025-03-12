@@ -100,8 +100,13 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void zeroRotation()
   {
-    leftMotor.getEncoder().setPosition(0.375);
-    rightMotor.getEncoder().setPosition(0.375);
+    var leftOffset =
+      ClawConstants.ROTATION_ZERO_OFFSET / 2.0 / ClawConstants.CLAW_DEGREE_ROT_CONVERSION;
+    
+      var rightOffset = -leftOffset;
+
+    leftMotor.getEncoder().setPosition(leftOffset);
+    rightMotor.getEncoder().setPosition(rightOffset);
   }
 
   public boolean isRotationHomed()

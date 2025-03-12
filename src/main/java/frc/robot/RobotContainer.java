@@ -341,18 +341,15 @@ public class RobotContainer {
     );
 
     driverController.povLeft().whileTrue(
-      setWrist(ClawConstants.L4_ARC, -4.0).alongWith(
-        drivebase.driveRobotRelativeCommand(
-              () -> -0.15, () -> -0.3, () -> 0.0).until(
-                () -> claw.isSwitchTriggered()))
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0).until(
+        () -> claw.isSwitchTriggered()
+      )
     );
 
     driverController.povRight().whileTrue(
-      setWrist(ClawConstants.L4_ARC, -4.0).alongWith(
-        drivebase.driveRobotRelativeCommand(
-              () -> -0.15, () -> 0.3, () -> 0.0).until(
-                () -> claw.isSwitchTriggered()
-              ))
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0).until(
+        () -> claw.isSwitchTriggered()
+      )
     );
     
     armControlPanel.armOverride().whileTrue(armCommands.adjustOffset(armControlPanel::getShoulderJoint, armControlPanel::getElbowJoint));
