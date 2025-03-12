@@ -35,17 +35,18 @@ public class RotationSetpoint extends Command {
 
     addRequirements(claw);
 
-    if (angle < ClawConstants.MIN_ROT_ANGLE) {
-      outsideRotLimits.setText(angle + "° is less than minimum allowed roation angle");
-      outsideRotLimits.set(true);
-      cancel();
-    } else if (angle > ClawConstants.MIN_ROT_ANGLE) {
-      outsideRotLimits.setText(angle + "° is more than maximum allowed roation angle");
-      outsideRotLimits.set(true);
-      cancel();
-    } else {
-      outsideRotLimits.set(false);
-    }
+    // TODO: Debug
+    // if (angle < ClawConstants.MIN_ROT_ANGLE) {
+    //   outsideRotLimits.setText(angle + "° is less than minimum allowed roation angle");
+    //   outsideRotLimits.set(true);
+    //   cancel();
+    // } else if (angle > ClawConstants.MAX_ROT_ANGLE) {
+    //   outsideRotLimits.setText(angle + "° is more than maximum allowed roation angle");
+    //   outsideRotLimits.set(true);
+    //   cancel();
+    // } else {
+    //   outsideRotLimits.set(false);
+    // }
   }
 
   // Called when the command is initially scheduled.
