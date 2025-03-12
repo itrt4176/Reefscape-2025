@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
@@ -22,6 +24,7 @@ public class RotationSetpoint extends Command {
   PIDController leftpid = new PIDController(0.02, 0.0, 0.00);
   PIDController rightpid = new PIDController(0.02, 0.0, 0.00);
 
+  Alert outsideRotLimits = new Alert(getSubsystem(), "Attempted to exceed rotation limits", AlertType.kWarning);
   
   /** Creates a new RotationSetpoint. */
   public RotationSetpoint(Claw claw, double angle) {
@@ -32,6 +35,17 @@ public class RotationSetpoint extends Command {
 
     addRequirements(claw);
 
+    if (angle < ClawConstants.MIN_ROT_ANGLE) {
+      outsideRotLimits.setText(angle + "° is less than minimum allowed roation angle");
+      outsideRotLimits.set(true);
+      cancel();
+    } else if (angle > ClawConstants.MIN_ROT_ANGLE) {
+      outsideRotLimits.setText(angle + "° is more than maximum allowed roation angle");
+      outsideRotLimits.set(true);
+      cancel();
+    } else {
+      outsideRotLimits.set(false);
+    }
   }
 
   // Called when the command is initially scheduled.

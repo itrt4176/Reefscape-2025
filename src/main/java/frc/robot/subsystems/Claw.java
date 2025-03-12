@@ -121,6 +121,10 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     return atHome;
   }
 
+  public double getRotationDegrees() {
+    return getLeftRotationDegrees() - getRotationDegrees();
+  }
+
   public double getLeftRotationDegrees()
   {
     return leftMotor.getEncoder().getPosition() * 2;
@@ -183,6 +187,7 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arc Degrees", getArcDegrees());
+    SmartDashboard.putNumber("Wrist Rotation Degrees", getRotationDegrees());
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());
     SmartDashboard.putBoolean("Is Homed", isRotationHomed());
