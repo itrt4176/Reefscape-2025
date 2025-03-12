@@ -23,6 +23,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -340,15 +341,35 @@ public class RobotContainer {
       )
     );
 
-    driverController.povLeft().whileTrue(
-      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0).until(
-        () -> claw.isSwitchTriggered()
+    driverController.povLeft().toggleOnTrue(
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0)
+      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+      .until(claw::isSwitchTriggered)
+      .andThen(
+        setWristArcOnly(ClawConstants.SCORE_ARC),
+        parallel(
+          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+          new ClawSetArcAngle(claw, () -> 
+          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+            .until(armCommands.atGoal()).withTimeout(1.25)
+        )
       )
     );
 
-    driverController.povRight().whileTrue(
-      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0).until(
-        () -> claw.isSwitchTriggered()
+    driverController.povRight().toggleOnTrue(
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0)
+      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+      .until(claw::isSwitchTriggered)
+      .andThen(
+        setWristArcOnly(ClawConstants.SCORE_ARC),
+        parallel(
+          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+          new ClawSetArcAngle(claw, () ->
+          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+          .until(armCommands.atGoal()).withTimeout(1.25)
+        )
       )
     );
     

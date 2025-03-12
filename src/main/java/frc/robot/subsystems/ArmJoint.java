@@ -53,6 +53,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
     LEVEL_TWO,
     LEVEL_THREE,
     LEVEL_FOUR,
+    LEVEL_FOUR_SPIT,
     LOW_ALGAE,
     HIGH_ALGAE,
     START
