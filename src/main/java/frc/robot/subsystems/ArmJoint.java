@@ -329,5 +329,6 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
     SmartDashboard.putNumber(getName() + " Motor Voltage", jointMotor.get() * jointMotor.getBusVoltage());
     SmartDashboard.putNumber(getName() + " Goal", goal.in(Degrees));
     SmartDashboard.putNumber(getName() + " Manual Adjustment", goalAdjustment.in(Degrees));
+    SmartDashboard.putBoolean(getName() + " at Goal", atGoal.getAsBoolean());
   }
 }
