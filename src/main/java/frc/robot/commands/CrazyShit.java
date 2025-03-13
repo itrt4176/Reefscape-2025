@@ -4,8 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -13,31 +15,33 @@ public class CrazyShit extends Command {
 
   private Claw claw;
 
-  double angleRot; 
-  double angleArc;
+  private double rotSetpoint; 
+  private double arcSetpoint;
 
-  double rotSpeed;
-  double rightSpeed;
+  private double rotAngle;
+  private double arcAngle;
 
-  double arcSpeed;
+  private double rotSpeed;
+  private double rightSpeed;
 
-  boolean rotationTime;
+  private double arcSpeed;
 
-  PIDController leftpid = new PIDController(0.02, 0.0, 0.00);
-  PIDController rightpid = new PIDController(0.02, 0.0, 0.00);
+  private boolean rotationTime;
+
+  private PIDController rotPID = new PIDController(0.02, 0.0, 0.00);
 
   private PIDController pid = new PIDController(0.014, 0.000, 0.0);
 
 
   /** Creates a new CrazyShit. */
-  public CrazyShit(Claw claw, double angleRot, double angleArc) {
+  public CrazyShit(Claw claw, double rotSetpoint, double arcSetpoint) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.claw = claw;
-    this.angleRot = angleRot;
 
-    this.angleArc = angleArc;
+    this.rotSetpoint = rotSetpoint;
 
+    this.arcSetpoint = arcSetpoint;
 
     addRequirements(claw);
   }
@@ -56,18 +60,23 @@ public class CrazyShit extends Command {
 
     if(rotationTime)
     {
-      rotSpeed = leftpid.calculate(claw.getLeftRotationDegrees() - claw.getRightRotationDegrees(), angleRot);
+      rotationTime = false;
+      rotAngle = claw.getLeftRotationDegrees() + -claw.getRightRotationDegrees();
 
-      claw.setLeftSpeed(rotSpeed);
-      claw.setRightSpeed(-rotSpeed);
+      if (rotAtSetpoint()) return;
+
+      rotSpeed = rotPID.calculate(rotAngle, rotSetpoint);
+      claw.setRotationSpeed(rotSpeed);
     }
     else
     {
-      arcSpeed = pid.calculate(claw.getArcDegrees(), angleArc);
-
-      claw.setArcingSpeed(-arcSpeed);
+      arcSpeed = MathUtil.clamp(pid.calculate(claw.getArcDegrees(), arcSetpoint), -ClawConstants.MAX_OUTPUT * 0.5, ClawConstants.MAX_OUTPUT * 0.5);
 
       rotationTime = true;
+
+      if (arcAtSetpoint()) return;
+      
+      claw.setArcingSpeed(arcSpeed);
     }
     
 
@@ -75,11 +84,21 @@ public class CrazyShit extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    claw.setArcingSpeed(0.0);
+  }
+
+  private boolean rotAtSetpoint() {
+    return rotSpeed < 0.02 && (Math.abs(rotAngle) - rotSetpoint) < 1.0;
+  }
+
+  private boolean arcAtSetpoint() {
+    return arcSpeed < 0.01 && (Math.abs(claw.getArcDegrees() - arcAngle) < 0.8);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return arcAtSetpoint() && rotAtSetpoint();
   }
 }

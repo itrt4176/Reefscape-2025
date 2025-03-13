@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
 
-    DataLogManager.start();
-    Epilogue.bind(this);
+    // DataLogManager.start();
+    // Epilogue.bind(this);
   }
 
   /**

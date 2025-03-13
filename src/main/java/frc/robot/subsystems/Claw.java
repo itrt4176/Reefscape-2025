@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -45,6 +46,8 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   DigitalInput rotationInput;
 
+  DigitalInput detectStick;
+
   private final Trigger atHome = new Trigger(this::isRotationHomed);
 
   /** Creates a new Claw. */
@@ -54,10 +57,12 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
     gripMotor = new SparkMax(5, MotorType.kBrushless);
 
-    leftConfig.idleMode(IdleMode.kCoast);
-    rightConfig.idleMode(IdleMode.kCoast);
+    leftConfig.idleMode(IdleMode.kCoast)
+      .smartCurrentLimit(5)
+      .inverted(false);
 
-    rightConfig.inverted(true);
+    rightConfig.apply(leftConfig)
+      .inverted(true);
 
 
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -67,6 +72,8 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     arcThrift = new AnalogEncoder(2);
 
     rotationInput = new DigitalInput(0);
+
+    detectStick = new DigitalInput(8);
 
     zeroRotation();
   }
@@ -89,8 +96,13 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void zeroRotation()
   {
-    leftMotor.getEncoder().setPosition(0);
-    rightMotor.getEncoder().setPosition(0);
+    var leftOffset =
+      ClawConstants.ROTATION_ZERO_OFFSET / 2.0 / ClawConstants.CLAW_DEGREE_ROT_CONVERSION;
+    
+      var rightOffset = -leftOffset;
+
+    leftMotor.getEncoder().setPosition(leftOffset);
+    rightMotor.getEncoder().setPosition(rightOffset);
   }
 
   public boolean isRotationHomed()
@@ -103,6 +115,10 @@ public class Claw extends SubsystemBase implements BrakingMotors {
    */
   public Trigger homed() {
     return atHome;
+  }
+
+  public double getRotationDegrees() {
+    return getLeftRotationDegrees() - getRightRotationDegrees();
   }
 
   public double getLeftRotationDegrees()
@@ -131,12 +147,12 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
   public void setRightSpeed(double speed)
   {
-    rightMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+    rightMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT * 2.0, ClawConstants.MAX_OUTPUT * 2.0));
   }
 
   public void setLeftSpeed(double speed)
   {
-    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT, ClawConstants.MAX_OUTPUT));
+    leftMotor.set(MathUtil.clamp(speed, -ClawConstants.MAX_OUTPUT * 2.0, ClawConstants.MAX_OUTPUT * 2.0));
   }
 
 
@@ -158,15 +174,23 @@ public class Claw extends SubsystemBase implements BrakingMotors {
     ).ignoringDisable(true);
   }
 
+  public boolean isSwitchTriggered()
+  {
+    return !detectStick.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Arc Degrees", getArcDegrees());
+    SmartDashboard.putNumber("Wrist Rotation Degrees", getRotationDegrees());
     SmartDashboard.putNumber("Rotation Left Degrees", getLeftRotationDegrees());
     SmartDashboard.putNumber("Rotation Right Degrees", getRightRotationDegrees());
     SmartDashboard.putBoolean("Is Homed", isRotationHomed());
 
     SmartDashboard.putNumber("Left Speed", getLeftRotationSpeed());
     SmartDashboard.putNumber("Right Speed", getRightRotationSpeed());
+
+    SmartDashboard.putBoolean("In Position", isSwitchTriggered());
   }
 }

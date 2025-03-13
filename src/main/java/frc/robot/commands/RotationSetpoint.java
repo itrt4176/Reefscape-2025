@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.Claw;
@@ -22,6 +24,7 @@ public class RotationSetpoint extends Command {
   PIDController leftpid = new PIDController(0.02, 0.0, 0.00);
   PIDController rightpid = new PIDController(0.02, 0.0, 0.00);
 
+  Alert outsideRotLimits = new Alert(getSubsystem(), "Attempted to exceed rotation limits", AlertType.kWarning);
   
   /** Creates a new RotationSetpoint. */
   public RotationSetpoint(Claw claw, double angle) {
@@ -32,6 +35,18 @@ public class RotationSetpoint extends Command {
 
     addRequirements(claw);
 
+    // TODO: Debug
+    // if (angle < ClawConstants.MIN_ROT_ANGLE) {
+    //   outsideRotLimits.setText(angle + "° is less than minimum allowed roation angle");
+    //   outsideRotLimits.set(true);
+    //   cancel();
+    // } else if (angle > ClawConstants.MAX_ROT_ANGLE) {
+    //   outsideRotLimits.setText(angle + "° is more than maximum allowed roation angle");
+    //   outsideRotLimits.set(true);
+    //   cancel();
+    // } else {
+    //   outsideRotLimits.set(false);
+    // }
   }
 
   // Called when the command is initially scheduled.
@@ -41,14 +56,9 @@ public class RotationSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double setpoint = (angle/2.0);
 
-    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees(), setpoint);
-    claw.setLeftSpeed(leftSpeed);
-
-
-    rightSpeed = rightpid.calculate(claw.getRightRotationDegrees(), -setpoint);
-    claw.setRightSpeed(rightSpeed);
+    leftSpeed = leftpid.calculate(claw.getLeftRotationDegrees() + -claw.getRightRotationDegrees(), angle);
+    claw.setRotationSpeed(leftSpeed);
     
   }
 
@@ -65,7 +75,7 @@ public class RotationSetpoint extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 1.65));
+    return ((leftSpeed + rightSpeed) < 0.02 && (Math.abs((claw.getLeftRotationDegrees()-claw.getRightRotationDegrees()) - angle) < 1.0));
 
   }
 }

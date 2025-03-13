@@ -13,13 +13,17 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.File;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.ctre.phoenix.led.RainbowAnimation;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -96,6 +100,11 @@ public class RobotContainer {
 
   private final RotationSetpoint ninetyRot = new RotationSetpoint(claw, 90);
 
+  private final CrazyShit test1 = new CrazyShit(claw, 90.0, claw.getArcDegrees());
+
+  private final CrazyShit test2 = new CrazyShit(claw, 0.0, claw.getArcDegrees());
+
+
   private final HomeWrist homeWrist = new HomeWrist(claw);
 
   private final CommandXboxController driverController = new CommandXboxController(
@@ -142,6 +151,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final IntakePositioning storeIntake = new IntakePositioning(intake, IntakeConstants.STORE_ANGLE);
   private final IntakePositioning intakeDown = new IntakePositioning(intake, IntakeConstants.INTAKE_DOWN);
+  private final IntakePositioning intakeClimb = new IntakePositioning(intake, IntakeConstants.CLIMB);
 
   private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
   private Trigger robotEnabled = new Trigger(RobotState::isEnabled);
@@ -231,8 +241,14 @@ public class RobotContainer {
       () -> intake.setSpeed(0) 
     ));
 
+    // driverController.x().onTrue(test1);
+    // driverController.y().onTrue(test2);
+
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
+
+    // driverController.leftBumper().whileTrue(new StartEndCommand(() -> claw.setArcingSpeed(0.2), () -> claw.setArcingSpeed(0), claw));
+    // driverController.rightBumper().whileTrue(new StartEndCommand(() -> claw.setArcingSpeed(-0.2), () -> claw.setArcingSpeed(0), claw));
 
 
     driverController.leftTrigger(0.5).whileTrue(
@@ -242,12 +258,12 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.intake().or(driverController.povLeft()).onTrue(
+    armControlPanel.intake().onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
         armControlPanel.setIntakeLED(LEDMode.Blink),
         parallel(
           elbowJoint.setPosition(Position.INTAKE).andThen(
-            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 50),
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 5),
             shoulderJoint.setPosition(Position.INTAKE)
           ),
           setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
@@ -256,7 +272,7 @@ public class RobotContainer {
       )  
     );
 
-    armControlPanel.level1().or(driverController.povDown()).onTrue(
+    armControlPanel.level1().onTrue(
       setWristAndArm(
         ClawConstants.L1_ARC,
         ClawConstants.L1_ROT,
@@ -281,10 +297,10 @@ public class RobotContainer {
         ClawConstants.CLIMB_ROT,
         Position.CLIMB,
         armControlPanel::setArmFlatLED
-      )
+      ).alongWith(intakeClimb)
     );
 
-    armControlPanel.level3().or(driverController.povRight()).onTrue(
+    armControlPanel.level3().onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
         armControlPanel.setLevel3LED(LEDMode.Blink),
         parallel(
@@ -307,7 +323,7 @@ public class RobotContainer {
       )
     );
 
-    armControlPanel.level4().or(driverController.povUp()).onTrue(
+    armControlPanel.level4().onTrue(
       setWristAndArm(
         ClawConstants.L4_ARC,
         ClawConstants.L4_ROT,
@@ -325,15 +341,66 @@ public class RobotContainer {
       )
     );
 
+    driverController.povLeft().toggleOnTrue(
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0)
+      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+      .until(claw::isSwitchTriggered)
+      .andThen(
+        setWristArcOnly(ClawConstants.SCORE_ARC),
+        parallel(
+          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+          new ClawSetArcAngle(claw, () -> 
+          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+            .until(armCommands.atGoal())
+        )
+      )
+    );
+
+    driverController.povRight().toggleOnTrue(
+      drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0)
+      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+      .until(claw::isSwitchTriggered)
+      .andThen(
+        setWristArcOnly(ClawConstants.SCORE_ARC),
+        parallel(
+          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+          new ClawSetArcAngle(claw, () ->
+          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+          .until(armCommands.atGoal())
+        )
+      )
+    );
     
     armControlPanel.armOverride().whileTrue(armCommands.adjustOffset(armControlPanel::getShoulderJoint, armControlPanel::getElbowJoint));
 
     driverController.start().onTrue(homeWrist);
 
-    claw.homed().onTrue(runOnce(claw::zeroRotation));
+    driverController.povDown().onTrue(setWristArcOnly(ClawConstants.SCORE_ARC));
+
+    driverController.povUp().onTrue(
+      defer(
+        () -> new RotationSetpoint(claw, 180.0),
+        Set.of(claw)
+      )
+    );
+
+
+    // claw.homed().onTrue(runOnce(claw::zeroRotation));
   }
 
   private void configureSysIdBindings() {
+    robotEnabled.onChange(defer(() -> {
+      var command = none();
+
+      for (BrakingMotors subsystem : brakingSubsystems) {
+        command = command.alongWith(subsystem.enableMotorBrakes(RobotState.isEnabled()));
+      }
+
+      return command;
+    }, Set.of()));
+
     // Shoulder joint sysid routines
     // Hold down each button to perform its routine
     driverController.y().whileTrue(shoulderJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -343,14 +410,18 @@ public class RobotContainer {
 
     // Elbow joint sysid routines
     // Hold down each button to perform its routine
-    driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driverController.y().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driverController.a().whileTrue(elbowJoint.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // driverController.b().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driverController.x().whileTrue(elbowJoint.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   private Command setWrist(double arcAngle, double rotationAngle) {
     return new RotationSetpoint(claw, rotationAngle).andThen(new ClawSetArcAngle(claw, arcAngle));
+  }
+
+  private Command setWristArcOnly(double arcAngle){
+    return new ClawSetArcAngle(claw, arcAngle);
   }
 
  
