@@ -57,14 +57,12 @@ public class Claw extends SubsystemBase implements BrakingMotors {
 
     gripMotor = new SparkMax(5, MotorType.kBrushless);
 
-    leftConfig.idleMode(IdleMode.kCoast);
-    rightConfig.idleMode(IdleMode.kCoast);
+    leftConfig.idleMode(IdleMode.kCoast)
+      .smartCurrentLimit(5)
+      .inverted(false);
 
-    leftConfig.smartCurrentLimit(5);
-    rightConfig.smartCurrentLimit(5);
-
-    rightConfig.inverted(true);
-    leftConfig.inverted(false);
+    rightConfig.apply(leftConfig)
+      .inverted(true);
 
 
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
