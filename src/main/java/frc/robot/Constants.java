@@ -71,7 +71,7 @@ public final class Constants {
       8.665, 
       160.0 * 1.30, 
       220.0 * 0.85, 
-      1.0, 
+      1.75, 
       0.60459, 
       0.026192, 
       13.975,
@@ -84,10 +84,10 @@ public final class Constants {
     static {
       angleMap.put(ArmJoint.Position.CLIMB, 180.0);
       angleMap.put(ArmJoint.Position.INTAKE, 82.9);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 180.0);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 181.8);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 184.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 177.6);
-      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 87.5);
+      angleMap.put(ArmJoint.Position.LEVEL_FOUR, 91.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR_SPIT, 145.0);
       angleMap.put(ArmJoint.Position.LOW_ALGAE, 146.0);
       angleMap.put(ArmJoint.Position.HIGH_ALGAE, 174.3);
@@ -106,7 +106,7 @@ public final class Constants {
       1.45087, 
       160.0 * 1.30, 
       220.0 * 0.85, 
-      1.0, 
+      1.25, 
       0.18808, 
       .035588, 
       23.908,
@@ -118,7 +118,7 @@ public final class Constants {
     static {
       angleMap.put(ArmJoint.Position.CLIMB, 123.0);
       angleMap.put(ArmJoint.Position.INTAKE, 197.8);
-      angleMap.put(ArmJoint.Position.LEVEL_ONE, 2.5);
+      angleMap.put(ArmJoint.Position.LEVEL_ONE, 4.75);
       angleMap.put(ArmJoint.Position.LEVEL_TWO, 28.3);
       angleMap.put(ArmJoint.Position.LEVEL_THREE, 58.5);
       angleMap.put(ArmJoint.Position.LEVEL_FOUR, 90.0);
@@ -135,6 +135,9 @@ public final class Constants {
     public static final double ROTATION_ZERO_OFFSET = 4.0;
     public static final double ENCODER_OFFSET = 206.0;
     public static final double MAX_OUTPUT = 0.125;
+
+    public static final double MIN_ROT_ANGLE = -90.0;
+    public static final double MAX_ROT_ANGLE = 190.0;
 
     public static final double INTAKE_ARC = 50.0;
     public static final double INTAKE_ROT = 90.0;

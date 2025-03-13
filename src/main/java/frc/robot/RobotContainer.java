@@ -263,7 +263,7 @@ public class RobotContainer {
         armControlPanel.setIntakeLED(LEDMode.Blink),
         parallel(
           elbowJoint.setPosition(Position.INTAKE).andThen(
-            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 50),
+            waitUntil(() -> elbowJoint.getAngle().in(Degrees) >= 5),
             shoulderJoint.setPosition(Position.INTAKE)
           ),
           setWrist(ClawConstants.INTAKE_ARC, ClawConstants.INTAKE_ROT)
@@ -352,7 +352,7 @@ public class RobotContainer {
           new ClawSetArcAngle(claw, () -> 
           elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
           startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
-            .until(armCommands.atGoal()).withTimeout(1.25)
+            .until(armCommands.atGoal())
         )
       )
     );
@@ -368,7 +368,7 @@ public class RobotContainer {
           new ClawSetArcAngle(claw, () ->
           elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
           startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
-          .until(armCommands.atGoal()).withTimeout(1.25)
+          .until(armCommands.atGoal())
         )
       )
     );
@@ -377,9 +377,14 @@ public class RobotContainer {
 
     driverController.start().onTrue(homeWrist);
 
-    driverController.povDown().onTrue(
-        setWristArcOnly(
-            ClawConstants.SCORE_ARC));
+    driverController.povDown().onTrue(setWristArcOnly(ClawConstants.SCORE_ARC));
+
+    driverController.povUp().onTrue(
+      defer(
+        () -> new RotationSetpoint(claw, 180.0),
+        Set.of(claw)
+      )
+    );
 
 
     // claw.homed().onTrue(runOnce(claw::zeroRotation));
