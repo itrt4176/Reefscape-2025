@@ -28,6 +28,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
@@ -158,7 +159,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
     pid.setGoal(goal.in(Rotations));
 
     
-    atGoal = new Trigger(pid::atGoal);
+    atGoal = new Trigger(pid::atGoal).debounce(0.04, DebounceType.kBoth);
 
     setDefaultCommand(run(this::moveJoint));
 
