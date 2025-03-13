@@ -189,7 +189,9 @@ public class RobotContainer {
     drivebase.setDefaultCommand(joystickDrive);
 
     autoChooser.setDefaultOption("Do Nothing", none());
+
     autoChooser.addOption("Leave starting position", drivebase.driveToDistanceCommand(Units.inchesToMeters(60 - (39 / 2.0) / 2.0), -0.25));
+
     autoChooser.addOption(
       "Place L1", 
       new HomeWrist(claw).andThen(
@@ -209,6 +211,80 @@ public class RobotContainer {
               .withTimeout(1.5)
           )
         )
+      )
+    );
+
+    autoChooser.addOption(
+      "Place L4 Left",
+      new HomeWrist(claw).andThen(
+        setWristAndArm(
+          ClawConstants.L3_ARC,
+          ClawConstants.L3_ROT,
+          Position.LEVEL_THREE,
+          armControlPanel::setLevel1LED
+        ),
+        waitUntil(armCommands.atGoal()),
+        setWristAndArm(
+          ClawConstants.L4_ARC,
+          ClawConstants.L4_ROT,
+          Position.LEVEL_FOUR,
+          armControlPanel::setLevel4LED
+        ),
+        waitUntil(armCommands.atGoal()),
+        drivebase.driveToDistanceCommand(Units.inchesToMeters(68.5 - (39 / 2.0)), -0.175)
+          .finallyDo(() -> drivebase.drive(new ChassisSpeeds())),
+        waitUntil(armCommands.atGoal()),
+        waitSeconds(1.25),
+        drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0)
+          .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+          .until(claw::isSwitchTriggered)
+          .andThen(
+            setWristArcOnly(ClawConstants.SCORE_ARC),
+            parallel(
+              armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+              new ClawSetArcAngle(claw, () ->
+              elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+              startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+              .until(armCommands.atGoal())
+            )
+          )
+      )
+    );
+
+    autoChooser.addOption(
+      "Place L4 Right",
+      new HomeWrist(claw).andThen(
+        setWristAndArm(
+          ClawConstants.L3_ARC,
+          ClawConstants.L3_ROT,
+          Position.LEVEL_THREE,
+          armControlPanel::setLevel1LED
+        ),
+        waitUntil(armCommands.atGoal()),
+        setWristAndArm(
+          ClawConstants.L4_ARC,
+          ClawConstants.L4_ROT,
+          Position.LEVEL_FOUR,
+          armControlPanel::setLevel4LED
+        ),
+        waitUntil(armCommands.atGoal()),
+        drivebase.driveToDistanceCommand(Units.inchesToMeters(68.5 - (39 / 2.0)), -0.175)
+          .finallyDo(() -> drivebase.drive(new ChassisSpeeds())),
+        waitUntil(armCommands.atGoal()),
+        waitSeconds(1.25),
+        drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0)
+          .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+          .until(claw::isSwitchTriggered)
+          .andThen(
+            setWristArcOnly(ClawConstants.SCORE_ARC),
+            parallel(
+              armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+              new ClawSetArcAngle(claw, () ->
+              elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
+              startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+              .until(armCommands.atGoal())
+            )
+          )
       )
     );
     
@@ -361,34 +437,36 @@ public class RobotContainer {
 
     driverController.povLeft().toggleOnTrue(
       drivebase.driveRobotRelativeCommand(() -> -0.15, () -> -0.3, () -> 0.0)
-      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
-      .until(claw::isSwitchTriggered)
-      .andThen(
-        setWristArcOnly(ClawConstants.SCORE_ARC),
-        parallel(
-          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
-          new ClawSetArcAngle(claw, () -> 
-          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
-          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
-            .until(armCommands.atGoal())
+        .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+        .until(claw::isSwitchTriggered)
+        .andThen(
+          setWristArcOnly(ClawConstants.SCORE_ARC),
+          parallel(
+            armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+            new ClawSetArcAngle(claw, () -> elbowJoint.getAngle().in(Degrees))
+              .repeatedly()
+              .until(armCommands.atGoal()),
+            startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+              .until(armCommands.atGoal())
+          )
         )
-      )
     );
 
     driverController.povRight().toggleOnTrue(
       drivebase.driveRobotRelativeCommand(() -> -0.15, () -> 0.3, () -> 0.0)
-      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
-      .until(claw::isSwitchTriggered)
-      .andThen(
-        setWristArcOnly(ClawConstants.SCORE_ARC),
-        parallel(
-          armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
-          new ClawSetArcAngle(claw, () ->
-          elbowJoint.getAngle().in(Degrees)).repeatedly().until(armCommands.atGoal()),
-          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
-          .until(armCommands.atGoal())
+        .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+        .until(claw::isSwitchTriggered)
+        .andThen(
+          setWristArcOnly(ClawConstants.SCORE_ARC),
+          parallel(
+            armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
+            new ClawSetArcAngle(claw, () -> elbowJoint.getAngle().in(Degrees))
+              .repeatedly()
+              .until(armCommands.atGoal()),
+            startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+              .until(armCommands.atGoal())
+          )
         )
-      )
     );
     
     armControlPanel.armOverride().whileTrue(armCommands.adjustOffset(armControlPanel::getShoulderJoint, armControlPanel::getElbowJoint));
