@@ -70,8 +70,8 @@ public final class Constants {
       0.0,
       8.665, 
       160.0 * 1.30, 
-      220.0 * 0.85, 
-      1.75, 
+      220.0 * 0.8, 
+      1.5, 
       0.60459, 
       0.026192, 
       13.975,
@@ -105,8 +105,8 @@ public final class Constants {
       0.0,
       1.45087, 
       160.0 * 1.30, 
-      220.0 * 0.85, 
-      1.25, 
+      220.0 * 0.80, 
+      1.0, 
       0.18808, 
       .035588, 
       23.908,
@@ -134,7 +134,7 @@ public final class Constants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ROTATION_ZERO_OFFSET = 4.0;
     public static final double ENCODER_OFFSET = 206.0;
-    public static final double MAX_OUTPUT = 0.125;
+    public static final double MAX_OUTPUT = 0.425;
 
     public static final double MIN_ROT_ANGLE = -90.0;
     public static final double MAX_ROT_ANGLE = 190.0;
