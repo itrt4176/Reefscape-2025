@@ -9,6 +9,7 @@ import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ElbowJointConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -156,13 +158,21 @@ public class RobotContainer {
   private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
   private Trigger robotEnabled = new Trigger(RobotState::isEnabled);
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>(); 
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Disable the arm joints for tuning
     // shoulderJoint.setEnabled(false);
     // elbowJoint.setEnabled(false);
+
+    Preferences.initBoolean("Brake in disabled", false);
+
+    for (BrakingMotors subsystem : brakingSubsystems) {
+      subsystem.enableMotorBrakes(
+        Preferences.getBoolean("Brake in disabled", false)
+      );
+    }
 
     // Configure the trigger bindings
     configureBindings();
@@ -179,7 +189,7 @@ public class RobotContainer {
     drivebase.setDefaultCommand(joystickDrive);
 
     autoChooser.setDefaultOption("Do Nothing", none());
-    autoChooser.addOption("Leave starting position", drivebase.driveToDistanceCommand(Units.inchesToMeters(60), -0.25));
+    autoChooser.addOption("Leave starting position", drivebase.driveToDistanceCommand(Units.inchesToMeters(60 - (39 / 2.0) / 2.0), -0.25));
     autoChooser.addOption(
       "Place L1", 
       new HomeWrist(claw).andThen(
@@ -190,7 +200,15 @@ public class RobotContainer {
           Position.LEVEL_ONE,
           armControlPanel::setLevel1LED
         ),
-        drivebase.driveToDistanceCommand(Units.inchesToMeters(70 - 10), -0.25)
+        drivebase.driveToDistanceCommand(Units.inchesToMeters(64.5 - (39 / 2.0)), -0.25)
+          .finallyDo(() -> drivebase.drive(new ChassisSpeeds())),
+        startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw).alongWith(
+          waitSeconds(0.5).andThen(
+            drivebase.driveRobotRelativeCommand(() -> 0.25, () -> 0.0, () -> 0.0)
+              .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
+              .withTimeout(1.5)
+          )
+        )
       )
     );
     

@@ -174,4 +174,8 @@ public final class Constants {
 
     public static final double CLIMB = 145.0;
   }
+
+  public static class PreferenceConstants {
+    public static final String BRAKE_IN_DISABLED = "Inital brake mode";
+  }
 }
