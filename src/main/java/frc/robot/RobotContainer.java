@@ -453,7 +453,7 @@ public class RobotContainer {
           new ClawSetArcAngle(claw, () -> elbowJoint.getAngle().in(Degrees))
             .repeatedly()
             .until(armCommands.atGoal()),
-          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0), claw)
+          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
             .until(armCommands.atGoal())
         )
       );
