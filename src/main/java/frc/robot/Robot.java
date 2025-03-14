@@ -5,8 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.EpilogueConfiguration;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.logging.EpilogueBackend;
+import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.epilogue.logging.NTEpilogueBackend;
+import edu.wpi.first.epilogue.logging.errors.ErrorHandler;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -39,7 +46,23 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
 
-    DataLogManager.start();
+    Epilogue.configure(config -> {
+      if (DriverStation.isFMSAttached()) {
+        config.backend = new FileBackend(DataLogManager.getLog());
+      } else {
+        config.backend = EpilogueBackend.multi(
+          new FileBackend(DataLogManager.getLog()),
+          new NTEpilogueBackend(NetworkTableInstance.getDefault())
+        );
+
+        if (isSimulation()) {
+          config.errorHandler = ErrorHandler.crashOnError();
+        }
+
+        config.root = "RobotLog";
+      }
+    });
+
     Epilogue.bind(this);
   }
 
