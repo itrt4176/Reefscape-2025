@@ -388,6 +388,7 @@ public class RobotContainer {
     // claw.homed().onTrue(runOnce(claw::zeroRotation));
   }
 
+  @SuppressWarnings("unused")
   private void configureSysIdBindings() {
     robotEnabled.onChange(defer(() -> {
       var command = none();
