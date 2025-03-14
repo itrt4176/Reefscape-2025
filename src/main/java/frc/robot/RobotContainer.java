@@ -114,6 +114,7 @@ public class RobotContainer {
 
   private final BrakingMotors[] brakingSubsystems = {drivebase, shoulderJoint, elbowJoint, claw};
   private Trigger robotEnabled = new Trigger(RobotState::isEnabled);
+  private Trigger fmsConnected = new Trigger(DriverStation::isFMSAttached);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -249,6 +250,12 @@ public class RobotContainer {
 
       return command;
     }, Set.of()));
+
+    fmsConnected.onTrue(runOnce(() -> {
+      for (BrakingMotors subsystem : brakingSubsystems) {
+        subsystem.setMotorBrakes(true);
+      }
+    }).ignoringDisable(true));
 
     driverController.a().whileTrue(startEnd(() -> claw.setGripSpeed(-0.30), () -> claw.setGripSpeed(0), claw));
 
