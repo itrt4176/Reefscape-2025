@@ -175,7 +175,12 @@ public class RobotContainer {
       "Place L4 Left",
       new HomeWrist(claw).andThen(
         waitUntil(armCommands.atGoal()).withTimeout(1.25),
-        armCommands.setPosition(Position.LEVEL_THREE),
+        setWristAndArm(
+          ClawConstants.L4_ARC, 
+          ClawConstants.L4_ROT, 
+          Position.LEVEL_THREE, 
+          armControlPanel :: setLevel3LED
+        ),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
           ClawConstants.L4_ARC,
@@ -197,7 +202,12 @@ public class RobotContainer {
       "Place L4 Right",
       new HomeWrist(claw).andThen(
         waitUntil(armCommands.atGoal()).withTimeout(1.25),
-        armCommands.setPosition(Position.LEVEL_FOUR),
+        setWristAndArm(
+          ClawConstants.L4_ARC, 
+          ClawConstants.L4_ROT, 
+          Position.LEVEL_THREE, 
+          armControlPanel :: setLevel3LED
+        ),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
           ClawConstants.L4_ARC,
