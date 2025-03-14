@@ -150,6 +150,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Place L1", 
       new HomeWrist(claw).andThen(
+        waitUntil(armCommands.atGoal()).withTimeout(1.25),
         waitSeconds(0.75),
         setWristAndArm(
           ClawConstants.L1_ARC,
@@ -173,6 +174,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Place L4 Left",
       new HomeWrist(claw).andThen(
+        waitUntil(armCommands.atGoal()).withTimeout(1.25),
         armCommands.setPosition(Position.LEVEL_THREE),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
@@ -186,7 +188,7 @@ public class RobotContainer {
           Units.inchesToMeters(DriveConstants.AUTO_DISTANCE_INCHES),
           DriveConstants.AUTO_L4_SPEED
         ),
-        waitUntil(armCommands.atGoal()).raceWith(waitSeconds(1.75)),
+        waitUntil(armCommands.atGoal()).withTimeout(1.75),
         boingAlign(true)
       )
     );
@@ -194,6 +196,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Place L4 Right",
       new HomeWrist(claw).andThen(
+        waitUntil(armCommands.atGoal()).withTimeout(1.25),
         armCommands.setPosition(Position.LEVEL_FOUR),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
@@ -207,7 +210,7 @@ public class RobotContainer {
           Units.inchesToMeters(DriveConstants.AUTO_DISTANCE_INCHES),
           DriveConstants.AUTO_L4_SPEED
         ),
-        waitUntil(armCommands.atGoal()).raceWith(waitSeconds(1.75)),
+        waitUntil(armCommands.atGoal()).withTimeout(1.75),
         boingAlign(false)
       )
     );
