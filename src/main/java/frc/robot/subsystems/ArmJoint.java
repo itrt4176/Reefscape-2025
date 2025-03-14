@@ -87,7 +87,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
   
   private MutAngle goal;
   private MutAngle goalAdjustment;
-  private Position goalPosition;
+  @SuppressWarnings("unused") private Position goalPosition;
 
   private ProfiledPIDController pid;
   private ArmFeedforward ff;
