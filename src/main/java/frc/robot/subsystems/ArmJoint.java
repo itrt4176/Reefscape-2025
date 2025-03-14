@@ -87,6 +87,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
   
   private MutAngle goal;
   private MutAngle goalAdjustment;
+  private Position goalPosition;
 
   private ProfiledPIDController pid;
   private ArmFeedforward ff;
@@ -133,6 +134,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
 
     goal = Degrees.mutable(angleMap.get(Position.START));
     goalAdjustment = Degrees.mutable(0.0);
+    goalPosition = Position.START;
 
     pid = new ProfiledPIDController(
       pidConfig.p(),
@@ -222,6 +224,7 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
 
   public Command setPosition(Position position) {
     return runOnce(() -> {
+      goalPosition = position;
       goal.mut_replace(angleMap.get(position), Degrees);
       goalAdjustment.mut_replace(0, Degrees);
       pid.setGoal(goal.in(Rotations) + goalAdjustment.in(Rotations));
