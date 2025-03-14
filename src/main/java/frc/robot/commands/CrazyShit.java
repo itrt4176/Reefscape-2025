@@ -22,8 +22,6 @@ public class CrazyShit extends Command {
   private double arcAngle;
 
   private double rotSpeed;
-  private double rightSpeed;
-
   private double arcSpeed;
 
   private boolean rotationTime;
