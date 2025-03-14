@@ -39,6 +39,11 @@ public class ArmCommands {
       .alongWith(elbowJoint.adjustGoal(elbowJointAdjuster));
   }
 
+  public Command directDrive(DoubleSupplier shoulderJointOutput, DoubleSupplier elbowJointOutput) {
+    return shoulderJoint.directDrive(shoulderJointOutput)
+      .alongWith(elbowJoint.directDrive(elbowJointOutput));
+  }
+
   public Trigger atGoal() {
     return atGoal;
   }

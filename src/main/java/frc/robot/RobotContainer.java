@@ -468,7 +468,12 @@ public class RobotContainer {
         )
     );
     
-    armControlPanel.armOverride().whileTrue(armCommands.adjustOffset(armControlPanel::getShoulderJoint, armControlPanel::getElbowJoint));
+    armControlPanel.armOverride().whileTrue(
+      armCommands.adjustOffset(
+        () -> MathUtil.applyDeadband(armControlPanel.getShoulderJoint(), 0.05, 0.5),
+        () -> MathUtil.applyDeadband(armControlPanel.getElbowJoint(), 0.05, 0.5)
+      )
+    );
 
     driverController.start().onTrue(homeWrist);
 

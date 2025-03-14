@@ -249,6 +249,18 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
     pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
   }
 
+  public Command directDrive(DoubleSupplier output) {
+    return runOnce(() -> setEnabled(false)).andThen(
+      runEnd(
+        () -> jointMotor.set(output.getAsDouble()),
+        () -> {
+          pid.reset(angle.in(Rotations), velocity.in(RotationsPerSecond));
+          setEnabled(true);
+        }
+      )
+    );
+  }
+
   private void moveJoint() {
     // Move joint only runs for the first time after the robot is enabled
     // for the first time. The ProfiledPIDController considers time since
