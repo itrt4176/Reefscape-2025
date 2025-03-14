@@ -173,12 +173,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Place L4 Left",
       new HomeWrist(claw).andThen(
-        setWristAndArm(
-          ClawConstants.L3_ARC,
-          ClawConstants.L3_ROT,
-          Position.LEVEL_THREE,
-          armControlPanel::setLevel3LED
-        ),
+        armCommands.setPosition(Position.LEVEL_THREE),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
           ClawConstants.L4_ARC,
@@ -199,12 +194,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Place L4 Right",
       new HomeWrist(claw).andThen(
-        setWristAndArm(
-          ClawConstants.L3_ARC,
-          ClawConstants.L3_ROT,
-          Position.LEVEL_THREE,
-          armControlPanel::setLevel3LED
-        ),
+        armCommands.setPosition(Position.LEVEL_FOUR),
         waitUntil(armCommands.atGoal()),
         setWristAndArm(
           ClawConstants.L4_ARC,
@@ -444,7 +434,8 @@ public class RobotContainer {
   private Command boingAlign(boolean left) {
     var direction = left ? -1.0 : 1.0;
     
-    return drivebase.driveRobotRelativeCommand(() -> -0.125, () -> direction * 0.3, () -> 0.0)
+    return drivebase.driveRobotRelativeCommand(() -> -0.115, () -> direction * 0.35, () -> 0.0)
+      .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
       .until(claw::isSwitchTriggered)
       .andThen(
         setWristArcOnly(ClawConstants.SCORE_ARC),

@@ -137,7 +137,7 @@ public final class Constants {
     public static final double CLAW_DEGREE_ROT_CONVERSION = 2.0;
     public static final double ROTATION_ZERO_OFFSET = 4.0;
     public static final double ENCODER_OFFSET = 206.0;
-    public static final double MAX_OUTPUT = 0.425;
+    public static final double MAX_OUTPUT = 0.500;
 
     public static final double MIN_ROT_ANGLE = -90.0;
     public static final double MAX_ROT_ANGLE = 190.0;
