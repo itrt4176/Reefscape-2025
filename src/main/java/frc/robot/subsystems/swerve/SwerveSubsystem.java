@@ -425,7 +425,8 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
       double speedInMetersPerSecond) {
     return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
         .until(() -> swerveDrive.getPose().getTranslation()
-            .getDistance(new Translation2d(0, 0)) > distanceInMeters);
+            .getDistance(new Translation2d(0, 0)) > distanceInMeters)
+        .finallyDo(() -> swerveDrive.drive(new ChassisSpeeds()));
   }
 
   /**
