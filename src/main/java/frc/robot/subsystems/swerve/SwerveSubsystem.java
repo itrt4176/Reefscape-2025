@@ -143,7 +143,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     setupPathPlanner();
     SmartDashboard.putData("drive_field",d_field);
 
-    setMotorBrake(false);
+    setMotorBrakes(false);
 
     swerveDrive.setMaximumAllowableSpeeds(
       swerveDrive.getMaximumChassisVelocity() * 0.75,
@@ -642,13 +642,13 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
    *
    * @param brake True to set motors to brake mode, false for coast.
    */
-  public void setMotorBrake(boolean brake) {
+  public void setMotorBrakes(boolean brake) {
     swerveDrive.setMotorIdleMode(brake);
   }
 
   @Override
-  public Command enableMotorBrakes(boolean enable) {
-      return runOnce(() -> setMotorBrake(enable)).ignoringDisable(true);
+  public Command motorBrakes(boolean enable) {
+      return runOnce(() -> setMotorBrakes(enable)).ignoringDisable(true);
   }
 
   /**

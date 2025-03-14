@@ -305,11 +305,16 @@ public class ArmJoint extends SubsystemBase implements BrakingMotors {
   }
 
   @Override
-  public Command enableMotorBrakes(boolean enable) {
+  public void setMotorBrakes(boolean enable) {
     var idleMode = enable ? IdleMode.kBrake : IdleMode.kCoast;
+    jointMotor.configure(jointConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 
-    return runOnce(() -> jointMotor.configure(jointConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters))
-      .ignoringDisable(true);
+  @Override
+  public Command motorBrakes(boolean enable) {
+    
+
+    return runOnce(() -> setMotorBrakes(enable)).ignoringDisable(true);
   }
 
   @Override

@@ -177,5 +177,6 @@ public final class Constants {
 
   public static class PreferenceConstants {
     public static final String BRAKE_IN_DISABLED = "Inital brake mode";
+    public static final boolean BRAKE_IN_DISABLED_DEFAULT = true;
   }
 }

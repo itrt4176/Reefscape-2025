@@ -163,15 +163,18 @@ public class Claw extends SubsystemBase implements BrakingMotors {
   }
 
   @Override
-  public Command enableMotorBrakes(boolean enable) {
+  public void setMotorBrakes(boolean enable) {
     var idleMode = enable ? IdleMode.kBrake : IdleMode.kCoast;
 
-    return runOnce(
-      () -> {
-        leftMotor.configure(leftConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        rightMotor.configure(rightConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-      }
-    ).ignoringDisable(true);
+    leftMotor.configure(leftConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    rightMotor.configure(rightConfig.idleMode(idleMode), ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  @Override
+  public Command motorBrakes(boolean enable) {
+    
+
+    return runOnce(() -> setMotorBrakes(enable)).ignoringDisable(true);
   }
 
   public boolean isSwitchTriggered()

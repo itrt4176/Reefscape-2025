@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.PreferenceConstants;
 import frc.robot.commands.IntakePositioning;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -166,12 +167,10 @@ public class RobotContainer {
     // shoulderJoint.setEnabled(false);
     // elbowJoint.setEnabled(false);
 
-    Preferences.initBoolean("Brake in disabled", false);
+    Preferences.initBoolean(PreferenceConstants.BRAKE_IN_DISABLED, PreferenceConstants.BRAKE_IN_DISABLED_DEFAULT);
 
     for (BrakingMotors subsystem : brakingSubsystems) {
-      subsystem.enableMotorBrakes(
-        Preferences.getBoolean("Brake in disabled", false)
-      );
+      subsystem.setMotorBrakes(Preferences.getBoolean(PreferenceConstants.BRAKE_IN_DISABLED, PreferenceConstants.BRAKE_IN_DISABLED_DEFAULT));
     }
 
     // Configure the trigger bindings
@@ -307,7 +306,7 @@ public class RobotContainer {
       var command = none();
 
       for (BrakingMotors subsystem : brakingSubsystems) {
-        command = command.alongWith(subsystem.enableMotorBrakes(RobotState.isEnabled()));
+        command = command.alongWith(subsystem.motorBrakes(RobotState.isEnabled()));
       }
 
       return command;
@@ -491,7 +490,7 @@ public class RobotContainer {
       var command = none();
 
       for (BrakingMotors subsystem : brakingSubsystems) {
-        command = command.alongWith(subsystem.enableMotorBrakes(RobotState.isEnabled()));
+        command = command.alongWith(subsystem.motorBrakes(RobotState.isEnabled()));
       }
 
       return command;
@@ -538,8 +537,6 @@ public class RobotContainer {
     );
   }
 
-    
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -569,6 +566,4 @@ public class RobotContainer {
 
     return autoChooser.getSelected();
   }
-
-  public void setMotorBrake(boolean brake) { drivebase.setMotorBrake(brake); }
 }
