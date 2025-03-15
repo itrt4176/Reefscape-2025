@@ -447,7 +447,7 @@ public class RobotContainer {
   private Command boingAlign(boolean left) {
     var direction = left ? -1.0 : 1.0;
     
-    return drivebase.driveRobotRelativeCommand(() -> -0.115, () -> direction * 0.35, () -> 0.0)
+    return drivebase.driveRobotRelativeCommand(() -> -0.125, () -> direction * 0.325, () -> 0.0)
       .finallyDo(() -> drivebase.drive(new ChassisSpeeds()))
       .until(claw::isSwitchTriggered)
       .andThen(
@@ -456,10 +456,10 @@ public class RobotContainer {
           armCommands.setPosition(Position.LEVEL_FOUR_SPIT),
           new ClawSetArcAngle(claw, () -> elbowJoint.getAngle().in(Degrees))
             .repeatedly()
-            .until(armCommands.atGoal()),
-          startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
             .until(armCommands.atGoal())
-        )
+          // startEnd(() -> claw.setGripSpeed(0.30), () -> claw.setGripSpeed(0))
+          //   .until(armCommands.atGoal())
+        ).withTimeout(0.75)
       );
   }
 
