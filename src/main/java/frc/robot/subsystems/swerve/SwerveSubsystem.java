@@ -10,11 +10,15 @@ import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -32,6 +36,8 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -72,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean visionDriveTest = false;
+  private final boolean visionDriveTest = true;
   /**
    * PhotonVision class to keep an accurate odometry.
    */
@@ -81,6 +87,15 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   private final Field2d d_field = new Field2d();
 
   private boolean slowMode = false;
+
+  private boolean testBit = false;
+
+  PhotonCamera cam1 = new PhotonCamera("First - ThriftyCamera");
+  ///PhotonCamera cam2 = new PhotonCamera("cam2");
+  /// 
+  ///
+  /// 
+  private double cameraToTargetY = 0;
 
 
   /**
@@ -177,6 +192,40 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   public void periodic() {
     // When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest) {
+      var result = cam1.getLatestResult();
+      SmartDashboard.putNumber("camResult",  result.getTimestampSeconds());
+      testBit = true;
+      SmartDashboard.putBoolean("testBit",testBit);
+      boolean hasTargets = result.hasTargets();
+      SmartDashboard.putBoolean("cameraHasTarget", hasTargets);
+      if (hasTargets) {
+        List<PhotonTrackedTarget> targets = result.getTargets();
+        PhotonTrackedTarget target = result.getBestTarget();
+
+        // Get information from target.
+        double yaw = target.getYaw();
+        double pitch = target.getPitch();
+        double area = target.getArea();
+        double skew = target.getSkew();
+        Transform3d pose = target.getBestCameraToTarget();
+        SmartDashboard.putNumber("pose Y", pose.getY());
+        cameraToTargetY = pose.getY();
+
+        SmartDashboard.putNumber("cameraToTargetY", cameraToTargetY);
+        List<TargetCorner> corners = target.getDetectedCorners();
+
+        // Get information from target.
+        int targetID = target.getFiducialId();
+        SmartDashboard.putNumber("tag ID", targetID);
+        double poseAmbiguity = target.getPoseAmbiguity();
+        Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+        Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
+      }
+
+
+
+
+
       swerveDrive.updateOdometry();
       // vision.updatePoseEstimation(swerveDrive);
     }
@@ -446,6 +495,16 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     slowMode = enable;
   }
 
+  public Command driveTagAlign() {
+    return run(() -> {
+    ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
+    swerveDrive.drive(velocity);
+
+    if (cameraToTargetY < .5) {
+      swerveDrive.drive(new ChassisSpeeds(0, 0, 0));
+    }
+  });
+  }
   /**
    * Command to drive the robot using translative values and heading as angular
    * velocity.

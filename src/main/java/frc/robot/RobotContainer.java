@@ -267,10 +267,12 @@ public class RobotContainer {
       )
     );
 
-    driverController.y().toggleOnTrue(new StartEndCommand(
+    /*driverController.y().toggleOnTrue(new StartEndCommand(
       () -> intake.setSpeed(-1.0), 
       () -> intake.setSpeed(0) 
     ));
+*/
+    driverController.y().onTrue(drivebase.driveTagAlign());
 
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
@@ -282,6 +284,7 @@ public class RobotContainer {
         () -> drivebase.enableSlowMode(false)
       )
     );
+   
 
     armControlPanel.intake().onTrue(
       armControlPanel.setAllLEDs(LEDMode.Off).andThen(
