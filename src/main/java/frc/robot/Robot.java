@@ -45,6 +45,9 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
 
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
+
     Epilogue.configure(config -> {
       if (DriverStation.isFMSAttached()) {
         config.backend = new FileBackend(DataLogManager.getLog());

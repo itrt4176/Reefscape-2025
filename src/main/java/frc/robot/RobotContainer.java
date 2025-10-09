@@ -272,7 +272,7 @@ public class RobotContainer {
       () -> intake.setSpeed(0) 
     ));
 */
-    driverController.y().onTrue(drivebase.driveTagAlign());
+    driverController.y().debounce(.1).onTrue(drivebase.driveTagAlign());
 
     driverController.leftBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(1.0), () -> climber.setWinchSpeed(0), climber));
     driverController.rightBumper().whileTrue(new StartEndCommand(() -> climber.setWinchSpeed(-1.0), () -> climber.setWinchSpeed(0), climber));
