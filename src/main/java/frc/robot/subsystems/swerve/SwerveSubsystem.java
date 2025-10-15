@@ -500,11 +500,12 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
     ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
 
-    return new FunctionalCommand(null,
-        () -> swerveDrive.drive(velocity),
-        interrupted -> swerveDrive.drive(stop),
-        () -> cameraToTargetY < .5,
-        this);
+    return runOnce(() -> {
+      swerveDrive.drive(velocity);
+    }).until(() -> cameraToTargetY < .5)
+        .andThen(() -> {
+          swerveDrive.drive(stop);
+        });
   }
   /**
    * Command to drive the robot using translative values and heading as angular
