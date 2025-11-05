@@ -49,6 +49,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
@@ -521,9 +522,30 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   });
   }
 
+  public Command driveTagAlignF() {
+    ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
+    ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
+    return new FunctionalCommand(null,
+        () -> swerveDrive.drive(velocity),
+        interrupted -> swerveDrive.drive(stop),
+        () -> cameraToTargetY < .5,
+        this);
+  }
+
+  public Command driveTagAlignD() {
+    ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
+    ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
+    return runOnce(() -> {
+      swerveDrive.drive(velocity);
+    }).until(() -> cameraToTargetY < .5)
+        .andThen(() -> {
+          swerveDrive.drive(stop);
+        });
+  }
+
  
 
-  /**
+  /** 
    * Command to drive the robot using translative values and heading as angular
    * velocity.
    *
