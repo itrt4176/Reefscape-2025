@@ -90,13 +90,13 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
 
   private boolean testBit = false;
 
-  PhotonCamera cam1 = new PhotonCamera("First - ThriftyCamera");
+  PhotonCamera cam1 = new PhotonCamera("ELP GlobalShutter AR0234");//"First - ThriftyCamera");
   ///PhotonCamera cam2 = new PhotonCamera("cam2");
   /// 
   ///
   /// 
   private double cameraToTargetY = 0;
-
+  private double cameraToTargetX = 0;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -212,6 +212,11 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
         cameraToTargetY = pose.getY();
 
         SmartDashboard.putNumber("cameraToTargetY", cameraToTargetY);
+
+        cameraToTargetX = pose.getX();
+
+        SmartDashboard.putNumber("cameraToTargetX", cameraToTargetX);
+
         List<TargetCorner> corners = target.getDetectedCorners();
 
         // Get information from target.
@@ -497,14 +502,27 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
 
   public Command driveTagAlign() {
     return run(() -> {
-    ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
+      int y_direction = 1;
+      if (cameraToTargetY > .5) {
+        y_direction = -1; 
+      }
+
+      double x_speed = -.1;
+      if (cameraToTargetX < .3) {
+        x_speed = 0;
+      }
+
+    ChassisSpeeds velocity = new ChassisSpeeds(x_speed, y_direction *.02, 0);
     swerveDrive.drive(velocity);
 
-    if (cameraToTargetY < .5) {
+    if (cameraToTargetY < .5 && cameraToTargetY > .45) {
       swerveDrive.drive(new ChassisSpeeds(0, 0, 0));
     }
   });
   }
+
+ 
+
   /**
    * Command to drive the robot using translative values and heading as angular
    * velocity.
