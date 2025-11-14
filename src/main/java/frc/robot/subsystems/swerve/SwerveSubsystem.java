@@ -33,6 +33,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -98,6 +99,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   /// 
   private double cameraToTargetY = 0;
   private double cameraToTargetX = 0;
+  private double cameraToTargetTheta = 0;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -217,6 +219,9 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
         cameraToTargetX = pose.getX();
 
         SmartDashboard.putNumber("cameraToTargetX", cameraToTargetX);
+
+        cameraToTargetTheta = pose.getRotation().getAngle();
+        SmartDashboard.putNumber("cameraToTargetTheta", cameraToTargetTheta);
 
         List<TargetCorner> corners = target.getDetectedCorners();
 
@@ -501,6 +506,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
     slowMode = enable;
   }
 
+  // Not very good version
   public Command driveTagAlign() {
     return run(() -> {
       int y_direction = 1;
@@ -522,6 +528,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
   });
   }
 
+  // FunctionalCommand version
   public Command driveTagAlignF() {
     ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
     ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
@@ -532,6 +539,7 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
         this);
   }
 
+  // Decorator version
   public Command driveTagAlignD() {
     ChassisSpeeds velocity = new ChassisSpeeds(0, -.1, 0);
     ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
@@ -542,6 +550,46 @@ public class SwerveSubsystem extends SubsystemBase implements BrakingMotors {
           swerveDrive.drive(stop);
         });
   }
+
+   // Decorator version
+   public Command driveTagAlignDecoratorProportional() {
+    float kP = 0.1f;
+
+   
+    
+    ChassisSpeeds stop = new ChassisSpeeds(0, 0, 0);
+    return run(() -> {
+
+      if (Math.abs(cameraToTargetX) < .4) {
+        cameraToTargetX = 0;
+      }
+      double v_x = MathUtil.clamp(cameraToTargetX  * -kP,-.3, .3);
+  
+      if (Math.abs(cameraToTargetY) < .5) {
+        cameraToTargetY = 0;
+      }
+      double v_y = MathUtil.clamp(cameraToTargetY  * -kP*1.5,-.3, .3);
+  
+      if (Math.abs(cameraToTargetTheta) < 10) {
+        cameraToTargetTheta = 0;
+      }
+  
+      double v_theta = MathUtil.clamp(Units.degreesToRadians(cameraToTargetTheta) * -kP ,Units.degreesToRadians(-5), Units.degreesToRadians(5));
+  
+      // XXX_EF Need to swap v_x and v_y
+      ChassisSpeeds velocity = new ChassisSpeeds(0, v_x, 0);
+      SmartDashboard.putNumber("align_vx", velocity.vxMetersPerSecond);
+      SmartDashboard.putNumber("align_vy", velocity.vyMetersPerSecond);
+      SmartDashboard.putNumber("align_vtheta", velocity.omegaRadiansPerSecond);
+      
+      swerveDrive.drive(velocity);
+    }).until(() -> cameraToTargetX == 0 && cameraToTargetY == 0 && cameraToTargetTheta == 0)
+        .andThen(() -> {
+          SmartDashboard.putBoolean("stoppedInEnd", true);
+          swerveDrive.drive(stop);
+        });
+  }
+
 
  
 
